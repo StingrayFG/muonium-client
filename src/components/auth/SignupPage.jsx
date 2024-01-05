@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 
-export default function LoginPage() {
+export default function SignupPage() {
   const navigate = useNavigate();
 
   const userData = sessionStorage.getItem('user');
@@ -29,14 +29,9 @@ export default function LoginPage() {
     event.preventDefault();
 
     const formUserData = {login: event.target.elements.login.value, password: event.target.elements.password.value}
-    await axios.post(process.env.REACT_APP_BACKEND_URL + '/auth/login', {userData: formUserData})
+    await axios.post(process.env.REACT_APP_BACKEND_URL + '/auth/signup', {userData: formUserData})
       .then(res => {
-        if (res.data.exists === true) {
-          sessionStorage.setItem('user', JSON.stringify({login: event.target.elements.login.value, accessToken: res.data.accessToken}));  
-          navigate('/drive');
-        } else {
-          showMessage('Wrong user data');
-        }
+        navigate('/login');
       })
       .catch(err => {
         showMessage('Something went wrong');
@@ -49,7 +44,7 @@ export default function LoginPage() {
       <div className='w-full h-screen place-content-center grid
       text-xl font-sans text-neutral-200'>
         <div className='w-96 h-auto
-        bg-neutral-700
+        bg-neutral-600
         border-solid border-2 border-neutral-200 rounded-lg'>
           <form onSubmit={handleSubmit} className='w-full px-2 py-2'>
             <input className='w-full h-10 pl-2 pb-1
@@ -64,11 +59,17 @@ export default function LoginPage() {
               placeholder='Password'
               name='password'
               type='password'/>    
+            <input className='w-full h-10 pl-2 pb-1 mt-2
+            bg-neutral-700
+            border-solid border-2 border-neutral-200 rounded-md outline-none '
+              placeholder='Confirm password'
+              name='confirmpassword'
+              type='password'/> 
             <button className='w-full h-10 pl-2 pb-1 mt-6
             bg-neutral-700 hover:bg-neutral-600 active:bg-neutral-500 font-sans text-neutral-200 
             border-solid border-2 border-neutral-200 rounded-md outline-none'>
               <p className='place-self-center'>
-                Log in
+                Sign up
               </p>
             </button >
           </form>              
@@ -78,7 +79,7 @@ export default function LoginPage() {
           {'' + message}
         </p>       
       </div>  
-    );
+    ) 
   } else {
     return null;
   }
