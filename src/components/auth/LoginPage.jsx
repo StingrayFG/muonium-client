@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 
@@ -32,8 +32,11 @@ export default function LoginPage() {
     await axios.post(process.env.REACT_APP_BACKEND_URL + '/auth/login', {userData: formUserData})
       .then(res => {
         if (res.data.exists === true) {
-          sessionStorage.setItem('user', JSON.stringify({login: event.target.elements.login.value, accessToken: res.data.accessToken}));  
-          navigate('/drive');
+          console.log(res.data);
+
+          sessionStorage.setItem('user', JSON.stringify({login: event.target.elements.login.value, accessToken: res.data.accessToken,
+            userUuid: res.data.userUuid, driveUuid: res.data.driveUuid}));  
+          navigate('/drive');      
         } else {
           showMessage('Wrong user data');
         }
@@ -48,10 +51,10 @@ export default function LoginPage() {
     return (
       <div className='w-full h-screen place-content-center grid
       text-xl font-sans text-neutral-200'>
-        <div className='w-96 h-auto
+        <div className='w-96 h-auto grid
         bg-neutral-700
         border-solid border-2 border-neutral-200 rounded-lg'>
-          <form onSubmit={handleSubmit} className='w-full px-2 py-2'>
+          <form onSubmit={handleSubmit} className='w-full px-2 py-2 grid'>
             <input className='w-full h-10 pl-2 pb-1
             bg-neutral-700
             border-solid border-2 border-neutral-200 rounded-md outline-none '
@@ -71,6 +74,10 @@ export default function LoginPage() {
                 Log in
               </p>
             </button >
+
+            <Link className='place-self-center mt-2' to='/signup'>
+              Sign up
+            </Link>
           </form>              
         </div>
         <p className={`place-self-center mt-2 transition-all duration-250

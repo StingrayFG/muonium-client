@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 
@@ -43,10 +43,10 @@ export default function SignupPage() {
     return (
       <div className='w-full h-screen place-content-center grid
       text-xl font-sans text-neutral-200'>
-        <div className='w-96 h-auto
-        bg-neutral-600
+        <div className='w-96 h-auto grid
+        bg-neutral-700
         border-solid border-2 border-neutral-200 rounded-lg'>
-          <form onSubmit={handleSubmit} className='w-full px-2 py-2'>
+          <form onSubmit={handleSubmit} className='w-full px-2 py-2 grid'>
             <input className='w-full h-10 pl-2 pb-1
             bg-neutral-700
             border-solid border-2 border-neutral-200 rounded-md outline-none '
@@ -72,6 +72,9 @@ export default function SignupPage() {
                 Sign up
               </p>
             </button >
+            <Link className='place-self-center mt-2' to='/login'>
+              Log in
+            </Link>
           </form>              
         </div>
         <p className={`place-self-center mt-2 transition-all duration-250
