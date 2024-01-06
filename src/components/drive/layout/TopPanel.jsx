@@ -1,12 +1,16 @@
 import { useNavigate } from "react-router-dom";
 
+import { useSelector, useDispatch } from 'react-redux';
+import { clearUser } from 'services/UserSlice';
+
 export default function TopPanel () {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const userData = JSON.parse(sessionStorage.getItem('user'));
+  const userData = useSelector(state => state.user);
 
   const logOut = () => {
-    sessionStorage.removeItem('user');
+    dispatch(clearUser());
     navigate('/login');
   };
 

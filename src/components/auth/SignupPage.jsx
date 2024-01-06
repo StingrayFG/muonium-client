@@ -1,11 +1,32 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { signupUser } from 'services/UserSlice';
 
 export default function SignupPage() {
   const navigate = useNavigate();
-  
-  const userData = sessionStorage.getItem('user');
+  const dispatch = useDispatch();
+
+  const userData = useSelector(state => state.user);
+
+  useEffect(() => {
+    if(userData) {
+      navigate('/drive');
+    }
+  })
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = {login: event.target.elements.login.value, password: event.target.elements.password.value}
+
+    await dispatch(signupUser(data))
+    .then(res => {
+      if (res.type === 'user/signup/rejected') {
+        showMessage('Wrong user data')
+      }
+    })
+  };
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
   const [showingMessage, setShowingMessage] = useState();
@@ -16,26 +37,6 @@ export default function SignupPage() {
     setShowingMessage(true);
     await delay(1500);
     setShowingMessage(false);
-  };
-
-  useEffect(() => {
-    if(userData) {
-      navigate('/drive');
-    }
-  })
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const formUserData = {login: event.target.elements.login.value, password: event.target.elements.password.value}
-    await axios.post(process.env.REACT_APP_BACKEND_URL + '/auth/signup', {userData: formUserData})
-      .then(res => {
-        navigate('/login');
-      })
-      .catch(err => {
-        showMessage('Something went wrong');
-        console.error(err);
-      });
   };
   
   if (!userData) {

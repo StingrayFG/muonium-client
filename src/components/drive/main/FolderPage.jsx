@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 
 export default function FolderPage () {
-  const userData = JSON.parse(sessionStorage.getItem('user'));
+  const userData = JSON.parse(localStorage.getItem('user')) || {a: 1};
 
   const [file, setFile] = useState();
   const [fileUuid, setFileUuid] = useState();
@@ -64,29 +64,6 @@ export default function FolderPage () {
         console.error(err);
       });
   };
-
-
-  useEffect(() => {
-    const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    formData.append('body', JSON.stringify({ ownerUuid: userData.userUuid, parentUuid: '/root', driveUuid: userData.driveUuid }));
-    
-    axios.post(process.env.REACT_APP_BACKEND_URL + '/file/upload', formData, {headers}, {
-      onUploadProgress: (progressEvent) => {
-        const progress = (progressEvent.loaded / progressEvent.total);
-        setProgress(progress);
-      }})
-      .then(res => {
-        setFileUuid(res.data.fileUuid)
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  })
-
 
   return (
     <div className='w-full h-full

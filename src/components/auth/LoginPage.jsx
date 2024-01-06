@@ -1,11 +1,32 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { loginUser } from 'services/UserSlice';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  
-  const userData = sessionStorage.getItem('user');
+  const dispatch = useDispatch();
+
+  const userData = useSelector(state => state.user);
+
+  useEffect(() => {
+    if(userData) {
+      navigate('/drive');
+    }
+  })
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = {login: event.target.elements.login.value, password: event.target.elements.password.value}
+
+    await dispatch(loginUser(data))
+    .then(res => {
+      if (res.type === 'user/login/rejected') {
+        showMessage('Wrong user data')
+      }
+    })
+  };
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
   const [showingMessage, setShowingMessage] = useState();
@@ -18,27 +39,6 @@ export default function LoginPage() {
     setShowingMessage(false);
   };
 
-  useEffect(() => {
-    if(userData) {
-      navigate('/drive');
-    }
-  })
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const formUserData = {login: event.target.elements.login.value, password: event.target.elements.password.value}
-    await axios.post(process.env.REACT_APP_BACKEND_URL + '/auth/login', {userData: formUserData})
-      .then(res => {
-        sessionStorage.setItem('user', JSON.stringify({login: event.target.elements.login.value, accessToken: res.data.accessToken,
-          userUuid: res.data.userUuid, driveUuid: res.data.driveUuid}));  
-        navigate('/drive');      
-      })
-      .catch(err => {
-        showMessage('Wrong user data');
-      });
-  };
-  
   if (!userData) {
     return (
       <div className='w-full h-screen place-content-center grid
@@ -72,7 +72,7 @@ export default function LoginPage() {
             </Link>
           </form>              
         </div>
-        <p className={`place-self-center mt-2 transition-all duration-250
+        <p className={`place-self-center mt-2 transition-all duration-500
         ${showingMessage ? 'opacity-100': 'opacity-0'}`}>
           {'' + message}
         </p>       
