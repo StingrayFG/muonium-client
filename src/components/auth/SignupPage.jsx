@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
-
 export default function SignupPage() {
   const navigate = useNavigate();
-
-  const userData = sessionStorage.getItem('user');
-  const delay = ms => new Promise(res => setTimeout(res, ms));
   
+  const userData = sessionStorage.getItem('user');
+
+  const delay = ms => new Promise(res => setTimeout(res, ms));
   const [showingMessage, setShowingMessage] = useState();
   const [message, setMessage] = useState();
 

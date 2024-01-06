@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
-
 export default function LoginPage() {
   const navigate = useNavigate();
-
-  const userData = sessionStorage.getItem('user');
-  const delay = ms => new Promise(res => setTimeout(res, ms));
   
+  const userData = sessionStorage.getItem('user');
+
+  const delay = ms => new Promise(res => setTimeout(res, ms));
   const [showingMessage, setShowingMessage] = useState();
   const [message, setMessage] = useState();
 
@@ -31,19 +30,12 @@ export default function LoginPage() {
     const formUserData = {login: event.target.elements.login.value, password: event.target.elements.password.value}
     await axios.post(process.env.REACT_APP_BACKEND_URL + '/auth/login', {userData: formUserData})
       .then(res => {
-        if (res.data.exists === true) {
-          console.log(res.data);
-
-          sessionStorage.setItem('user', JSON.stringify({login: event.target.elements.login.value, accessToken: res.data.accessToken,
-            userUuid: res.data.userUuid, driveUuid: res.data.driveUuid}));  
-          navigate('/drive');      
-        } else {
-          showMessage('Wrong user data');
-        }
+        sessionStorage.setItem('user', JSON.stringify({login: event.target.elements.login.value, accessToken: res.data.accessToken,
+          userUuid: res.data.userUuid, driveUuid: res.data.driveUuid}));  
+        navigate('/drive');      
       })
       .catch(err => {
-        showMessage('Something went wrong');
-        console.error(err);
+        showMessage('Wrong user data');
       });
   };
   
