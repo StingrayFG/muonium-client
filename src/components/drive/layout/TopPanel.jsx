@@ -26,7 +26,7 @@ export default function TopPanel () {
         bg-white'>
           Next
         </button>
-        <div className='w-[100rem] h-16 ml-64 bg-white'>
+        <div className='w-[50rem] h-16 ml-64 bg-white'>
           <p className='mt-5 ml-5'>Route</p>
         </div>
         <div className='h-16 w-64 mr-4 ml-auto bg-white '>

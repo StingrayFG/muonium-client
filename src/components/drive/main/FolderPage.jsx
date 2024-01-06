@@ -1,15 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 
-export default function FolderPage () {
-  const userData = JSON.parse(localStorage.getItem('user')) || {a: 1};
+import handleFileUpload from 'services/FileService.jsx';
+import FileElement from 'components/drive/main/element/FileElement.jsx';
+import FileContextMenu from 'components/drive/main/menu/FileContextMenu.jsx';
+
+export default function FolderPage ({ address }) {
+  const userData = useSelector(state => state.user);
 
   const [file, setFile] = useState();
-  const [fileUuid, setFileUuid] = useState();
-
   const [requiresUpload, setRequiresUpload] = useState();
-  const [progress, setProgress] = useState(0);
+  const [requiresUpdate, setRequiresUpdate] = useState(true);
 
   const [children, setChildren] = useState();
 
@@ -18,57 +21,91 @@ export default function FolderPage () {
     handleChange(acceptedFiles[0])
   }, []);
 
-  const {
-    getRootProps,
-    getInputProps
-  } = useDropzone({
-    onDrop, multiple: false, noDragEventsBubbling: true, //noClick: true
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop, multiple: false, noDragEventsBubbling: true, noClick: true
   });
-
 
   const handleChange = (file) => {
     setFile(file);
     if (file.size < (1024 * 1024 * 100)) {
       setRequiresUpload(true);
-    } else {
-      setProgress(0);
     }
   };
 
   useEffect(() => {
-    if (requiresUpload)
-    {
-      handleSubmit();
+    if (requiresUpload) {
+      handleFileUpload(userData, file);
       setRequiresUpload(false);
     }
   });
 
+  useEffect(() => {
+    if (requiresUpdate) {
+      const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
 
-  const handleSubmit = async () => {
-    const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
+      const body = { ownerUuid: userData.userUuid, parentUuid: address, driveUuid: userData.driveUuid };
+      
+      axios.post(process.env.REACT_APP_BACKEND_URL + '/folder/get', body, {headers})
+        .then(res => {
+          setChildren(res.data);
+          console.log(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+        });
 
-    const formData = new FormData();
-    formData.append('file', file);
+      setRequiresUpdate(false);
+    }
+  });
 
-    formData.append('body', JSON.stringify({ ownerUuid: userData.userUuid, parentUuid: '/root', driveUuid: userData.driveUuid }));
-    
-    await axios.post(process.env.REACT_APP_BACKEND_URL + '/file/upload', formData, {headers}, {
-      onUploadProgress: (progressEvent) => {
-        const progress = (progressEvent.loaded / progressEvent.total);
-        setProgress(progress);
-      }})
-      .then(res => {
-        setFileUuid(res.data.fileUuid)
-      })
-      .catch(err => {
-        console.error(err);
-      });
+
+
+  const [clicked, setClicked] = useState(false);
+  const [clickedElement, setClickedElement] = useState();
+  const [point, setPoint] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  useEffect(() => {
+    const handleClick = () => setClicked(false);
+    window.addEventListener('click', handleClick);
+    return () => {
+      window.removeEventListener('click', handleClick);
+    };
+  }, []);
+
+  const handleContextMenuClick= (event, file) => {
+    event.preventDefault();
+    console.log(file);
+    setClickedElement(file);
+    setClicked(true);
+    setPoint({
+      x: event.pageX,
+      y: event.pageY,
+    });
   };
 
   return (
-    <div className='w-full h-full
+    <div className='w-full h-full px-4 py-4
       bg-neutral-600' {...getRootProps()}>
       <input {...getInputProps()} />
+      <div className='grid grid-cols-6 grid-rows-2 
+      border-solid border-2 border-black'>
+        {children &&
+        <>
+          {children.files.map((file) => (
+            <FileElement key={file.uuid} file={file} handleContextMenuClick={handleContextMenuClick}/>
+          ))}
+        </>
+        }
+
+        {clicked && (
+        <FileContextMenu point={point} file={clickedElement}/>
+      )}
+      </div>
+
+
     </div>
   );
 }
