@@ -22,7 +22,7 @@ export default function FolderPage ({ address }) {
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop, multiple: false, noDragEventsBubbling: true, noClick: true
+    onDrop, multiple: false, noDragEventsBubbling: true, noClick: true, noKeyboard: true,
   });
 
   const handleChange = (file) => {
@@ -35,7 +35,7 @@ export default function FolderPage ({ address }) {
 
   useEffect(() => {
     if (requiresUpload) {
-      FileService.handleFileUpload(userData, file);
+      FileService.handleUpload(userData, file);
       setRequiresUpload(false);
     }
   });
@@ -44,7 +44,7 @@ export default function FolderPage ({ address }) {
     if (requiresUpdate) {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
 
-      const body = { ownerUuid: userData.userUuid, driveUuid: userData.driveUuid, parentUuid: address };
+      const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, parentUuid: address };
       
       axios.post(process.env.REACT_APP_BACKEND_URL + '/folder/get', body, {headers})
         .then(res => {
@@ -76,7 +76,7 @@ export default function FolderPage ({ address }) {
     };
   }, []);
 
-  const handleContextMenuClick = (event, file) => {
+  const handleFileContextMenuClick = (event, file) => {
     event.preventDefault();
     console.log(file);
     setClickedElement(file);
@@ -87,26 +87,31 @@ export default function FolderPage ({ address }) {
     });
   };
 
+
+  const [renaming, setRenaming] = useState();
+
+  const enableRenaming = () => {
+    setRenaming(true);
+    console.log('enabled')
+  };
+
   return (
     <div className='w-full h-full px-4 py-4
-      bg-neutral-600' {...getRootProps()}>
+    bg-gradient-to-b from-zinc-600 to-zinc-600'
+    {...getRootProps()}>
       <input {...getInputProps()} />
-      <div className='grid grid-cols-6 grid-rows-2 
-      border-solid border-2 border-black'>
-        {children &&
-        <>
+      <div className='grid grid-cols-6 grid-rows-1'>
+        {children && <>
           {children.files.map((file) => (
-            <FileElement key={file.uuid} file={file} handleContextMenuClick={handleContextMenuClick}/>
+            <FileElement key={file.uuid} file={file} handleContextMenuClick={handleFileContextMenuClick} 
+            renaming={renaming} setRenaming={setRenaming} clickedElement={clickedElement}/>
           ))}
-        </>
-        }
+        </>}
 
         {clicked && (
-          <FileContextMenu point={point} file={clickedElement}/>
+          <FileContextMenu point={point} file={clickedElement} enableRenaming={enableRenaming}/>
         )}
       </div>
-
-
     </div>
   );
 }
