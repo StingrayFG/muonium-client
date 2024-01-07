@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 
-import handleFileUpload from 'services/FileService.jsx';
+import FileService from 'services/FileService.jsx';
 import FileElement from 'components/drive/main/element/FileElement.jsx';
 import FileContextMenu from 'components/drive/main/menu/FileContextMenu.jsx';
 
@@ -26,15 +26,16 @@ export default function FolderPage ({ address }) {
   });
 
   const handleChange = (file) => {
+    console.log(file)
     setFile(file);
-    if (file.size < (1024 * 1024 * 100)) {
+    if (file && (file.size < (1024 * 1024 * 100))) {
       setRequiresUpload(true);
     }
   };
 
   useEffect(() => {
     if (requiresUpload) {
-      handleFileUpload(userData, file);
+      FileService.handleFileUpload(userData, file);
       setRequiresUpload(false);
     }
   });
@@ -43,7 +44,7 @@ export default function FolderPage ({ address }) {
     if (requiresUpdate) {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
 
-      const body = { ownerUuid: userData.userUuid, parentUuid: address, driveUuid: userData.driveUuid };
+      const body = { ownerUuid: userData.userUuid, driveUuid: userData.driveUuid, parentUuid: address };
       
       axios.post(process.env.REACT_APP_BACKEND_URL + '/folder/get', body, {headers})
         .then(res => {
@@ -75,7 +76,7 @@ export default function FolderPage ({ address }) {
     };
   }, []);
 
-  const handleContextMenuClick= (event, file) => {
+  const handleContextMenuClick = (event, file) => {
     event.preventDefault();
     console.log(file);
     setClickedElement(file);
@@ -101,8 +102,8 @@ export default function FolderPage ({ address }) {
         }
 
         {clicked && (
-        <FileContextMenu point={point} file={clickedElement}/>
-      )}
+          <FileContextMenu point={point} file={clickedElement}/>
+        )}
       </div>
 
 
