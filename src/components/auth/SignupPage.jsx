@@ -22,13 +22,14 @@ export default function SignupPage() {
 
     await dispatch(signupUser(data))
     .then(res => {
+      console.log(res)
       if (!data.login || !data.password) {
         showMessage('Please enter correct data');
-      } else if (data.password != event.target.elements.password.value) {
+      } else if (data.password !== event.target.elements.password.value) {
         showMessage('Passwords do not match')
       } else if (res.type === 'user/signup/rejected') {
         showMessage('Something went wrong, try again later')
-      } else if (res.type === 'user/login/fullfilled') {
+      } else if (res.type === 'user/signup/fulfilled') {
         navigate('/login');
       }
     })
@@ -51,8 +52,8 @@ export default function SignupPage() {
       bg-gradient-to-b from-neutral-900/75 to-neutral-100/75
       text-lg font-semibold font-sans text-neutral-200'>
         <div className='w-96 h-auto grid
-        bg-gradient-to-b from-neutral-500 to-neutral-700 
-        border-solid border-2 border-neutral-700 rounded-xl'>
+        bg-gradient-to-b from-gray-500 to-gray-600 
+        border-solid border-2 border-gray-700 rounded-md'>
           <form onSubmit={handleSubmit} className='w-full px-4 py-4 grid'> 
             <p className='h-6'>Login</p> 
             <input className='w-full h-10 pl-2 mt-2
