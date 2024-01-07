@@ -32,8 +32,7 @@ export default function TopPanel () {
           </button>
         </div>
 
-        <div className='w-full h-12 pl-4 ml-4 mr-4 bg-white flex text-left
-          text-neutral-800
+        <div className='w-full h-12 pl-4 ml-4 mr-4 bg-white flex text-left text-neutral-800
           bg-gradient-to-b from-neutral-300 to-neutral-400 
           border-solid border-2 border-neutral-400 rounded-lg'>
             <p className='place-self-center'>Route</p>

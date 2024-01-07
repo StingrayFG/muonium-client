@@ -50,25 +50,23 @@ export default function LoginPage() {
       bg-gradient-to-b from-neutral-900/75 to-neutral-100/75
       text-lg font-semibold font-sans text-neutral-200'>
         <div className='w-96 h-auto grid
-        bg-gradient-to-b from-gray-500 to-gray-600 
-        border-solid border-2 border-gray-700 rounded-md'>
+        bg-gradient-to-b from-zinc-500 to-zinc-600 
+        border-solid border-2 border-zinc-700 rounded-md'>
           <form onSubmit={handleSubmit} className='w-full px-4 py-4 grid'>
             <p className='h-6'>Login</p>
-            <input className='w-full h-10 pl-2 mt-2
+            <input className='w-full h-12 pl-3 mt-2
             text-neutral-800
             bg-gradient-to-b from-neutral-300 to-neutral-400 
             border-solid border-2 border-neutral-400 rounded-md outline-none'
               name='login'
               type='text'/>
             <p className='h-6 mt-2'>Password</p>
-            <input className='w-full h-10 pl-2 mt-2
-            text-neutral-800
+            <input className='w-full h-12 pl-3 mt-2 text-neutral-800
             bg-gradient-to-b from-neutral-300 to-neutral-400 
             border-solid border-2 border-neutral-400 rounded-md outline-none'
               name='password'
               type='password'/>    
-            <button className='w-full h-10 pl-2 mt-10
-            text-neutral-200
+            <button className='w-full h-12 pl-3 mt-10 grid text-neutral-200
             bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800 
             hover:from-neutral-600 hover:to-neutral-700 hover:border-neutral-700           
             border-solid border-2 rounded-md outline-none'>
