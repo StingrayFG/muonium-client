@@ -24,7 +24,6 @@ export const userSlice = createSlice({
   initialState: JSON.parse(localStorage.getItem('user')),
   reducers: {
     clearUser: (state) => {
-      console.log(state);
       localStorage.removeItem('user');
       return null;
     },
@@ -35,7 +34,6 @@ export const userSlice = createSlice({
       return action.payload;
     });
     builder.addCase(signupUser.fulfilled, (state, action) => {
-      console.log(1);
       return null;
     });
   },
