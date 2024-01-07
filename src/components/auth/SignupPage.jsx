@@ -22,8 +22,14 @@ export default function SignupPage() {
 
     await dispatch(signupUser(data))
     .then(res => {
-      if (res.type === 'user/signup/rejected') {
-        showMessage('Wrong user data')
+      if (!data.login || !data.password) {
+        showMessage('Please enter correct data');
+      } else if (data.password != event.target.elements.password.value) {
+        showMessage('Passwords do not match')
+      } else if (res.type === 'user/signup/rejected') {
+        showMessage('Something went wrong, try again later')
+      } else if (res.type === 'user/login/fullfilled') {
+        navigate('/login');
       }
     })
   };
@@ -42,42 +48,50 @@ export default function SignupPage() {
   if (!userData) {
     return (
       <div className='w-full h-screen place-content-center grid
-      text-xl font-sans text-neutral-200'>
+      bg-gradient-to-b from-neutral-900/75 to-neutral-100/75
+      text-lg font-semibold font-sans text-neutral-200'>
         <div className='w-96 h-auto grid
-        bg-neutral-700
-        border-solid border-2 border-neutral-200 rounded-lg'>
-          <form onSubmit={handleSubmit} className='w-full px-2 py-2 grid'>
-            <input className='w-full h-10 pl-2 pb-1
-            bg-neutral-700
-            border-solid border-2 border-neutral-200 rounded-md outline-none '
-              placeholder='Login'
+        bg-gradient-to-b from-neutral-500 to-neutral-700 
+        border-solid border-2 border-neutral-700 rounded-xl'>
+          <form onSubmit={handleSubmit} className='w-full px-4 py-4 grid'> 
+            <p className='h-6'>Login</p> 
+            <input className='w-full h-10 pl-2 mt-2
+            text-neutral-800
+            bg-gradient-to-b from-neutral-300 to-neutral-400 
+            border-solid border-2 border-neutral-400 rounded-md outline-none'
               name='login'
               type='text'/>
-            <input className='w-full h-10 pl-2 pb-1 mt-2
-            bg-neutral-700
-            border-solid border-2 border-neutral-200 rounded-md outline-none '
-              placeholder='Password'
+            <p className='h-6 mt-4'>Password</p>
+            <input className='w-full h-10 pl-2 mt-2
+            text-neutral-800
+            bg-gradient-to-b from-neutral-300 to-neutral-400 
+            border-solid border-2 border-neutral-400 rounded-md outline-none'
               name='password'
-              type='password'/>    
-            <input className='w-full h-10 pl-2 pb-1 mt-2
-            bg-neutral-700
-            border-solid border-2 border-neutral-200 rounded-md outline-none '
-              placeholder='Confirm password'
+              type='password'/>  
+            <p className='h-6 mt-4'>Repeat password</p> 
+            <input className='w-full h-10 pl-2 mt-2
+            text-neutral-800
+            bg-gradient-to-b from-neutral-300 to-neutral-400 
+            border-solid border-2 border-neutral-400 rounded-md outline-none'
               name='confirmpassword'
               type='password'/> 
-            <button className='w-full h-10 pl-2 pb-1 mt-6
-            bg-neutral-700 hover:bg-neutral-600 active:bg-neutral-500 font-sans text-neutral-200 
-            border-solid border-2 border-neutral-200 rounded-md outline-none'>
+            <button className='w-full h-10 pl-2 mt-12
+            text-neutral-200
+            bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800 
+            hover:from-neutral-600 hover:to-neutral-700 hover:border-neutral-700           
+            border-solid border-2 rounded-lg outline-none'>
               <p className='place-self-center'>
                 Sign up
               </p>
             </button >
-            <Link className='place-self-center mt-2' to='/login'>
-              Log in
+
+            <Link className='place-self-center mt-1 mb-1
+            text-neutral-200 hover:text-neutral-400' to='/login'>
+              Already registered? Log in
             </Link>
           </form>              
         </div>
-        <p className={`place-self-center mt-2 transition-all duration-250
+        <p className={`place-self-center mt-2 transition-all duration-500
         ${showingMessage ? 'opacity-100': 'opacity-0'}`}>
           {'' + message}
         </p>       
