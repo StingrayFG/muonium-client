@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
-import axios from 'axios';
+
+import { setAbsolutePath, setInitial, confirmUpdate } from 'services/slice/PathSlice';
 
 import FileService from 'services/FileService.jsx';
 import FileElement from 'components/drive/main/element/FileElement.jsx';
@@ -13,14 +15,24 @@ import FolderContextMenu from 'components/drive/main/menu/FolderContextMenu.jsx'
 
 import DefaultContextMenu from 'components/drive/main/menu/DefaultContextMenu.jsx';
 
-export default function FolderPage ({ address }) {
+export default function FolderPage ({ path }) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const userData = useSelector(state => state.user);
+  const pathData = useSelector(state => state.path);
 
   const [file, setFile] = useState();
   const [requiresUpload, setRequiresUpload] = useState();
 
   const [requiresUpdate, setRequiresUpdate] = useState(true);
-  const [children, setChildren] = useState();
+  const [currentFolder, setCurrentFolder] = useState();
+
+  const { uuid } = useParams();
+
+  if (!path) { 
+    path = uuid;
+  }
 
   // Dropzone
   const onDrop = useCallback(acceptedFiles => {
@@ -42,16 +54,16 @@ export default function FolderPage ({ address }) {
   // Upload
   useEffect(() => {
     if (requiresUpload) {
-      FileService.handleUpload(userData, file, address);
+      FileService.HandleUpload(userData, file, path);
       setRequiresUpload(false);
     }
   });
 
   useEffect(() => {
     if (requiresUpdate) {
-      FolderService.handleGet(userData, address)
+      FolderService.handleGet(userData, path)
       .then(res => {
-        setChildren(res);
+        setCurrentFolder(res);
       })
       .catch(err => {
         console.error(err);
@@ -116,48 +128,85 @@ export default function FolderPage ({ address }) {
 
   // Rename
   const [renaming, setRenaming] = useState();
-  const enableRenaming = () => {
-    setRenaming(true);
-  };
-
+  
   const [creatingFolder, setCreatingFolder] = useState();
-  const createFolder = () => {
-    setCreatingFolder(true);
-    console.log('enabled')
-  };
 
+  // Path
+  useEffect(() => {
+    if (!pathData.currentPath) {
+      dispatch(setInitial({uuid: path}));
+    }
+  });
+
+  useEffect(() => {
+    if (path !== pathData.currentPath) {
+      if (pathData.currentPath === 'trash') { 
+        navigate('/drive/trash'); 
+      }
+      else if (pathData.currentPath === 'root') { 
+        navigate('/drive/home'); 
+      }
+      else if (pathData.currentPath) { 
+        navigate('/drive/folder/' + pathData.currentPath); 
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (currentFolder) {
+      if (pathData.currentPath === 'trash') { 
+        dispatch(setAbsolutePath({ absolutePath: '/trash' }));
+      }
+      else if (pathData.currentPath === 'root') { 
+        dispatch(setAbsolutePath({ absolutePath: '/root'}));
+      }
+      else if (pathData.currentPath) { 
+        dispatch(setAbsolutePath({ absolutePath: currentFolder.absolutePath }));
+      }
+    }
+    //console.log(pathData.pathHistory)
+  });
+
+  //Update
+  useEffect(() => {
+    if (pathData.requiresUpdate) { 
+      setRequiresUpdate(true);
+      dispatch(confirmUpdate());
+    }
+  });
+  
 
   return (
     <div className='w-full h-full px-4 py-4
-    bg-gradient-to-b from-zinc-600 to-zinc-600'
+    bg-gradient-to-b from-zinc-600/90 to-zinc-700/90'
     {...getRootProps()} 
     onContextMenu={handleContextMenuClick}>
       <input {...getInputProps()} />
-      <div className='grid grid-cols-6 grid-rows-1'>
+      <div className='grid grid-cols-6'>
         {creatingFolder && (
-          <FolderElement folder={{ parentUuid: address, uuid: 'placeholder', name: '' }} 
-          renaming={creatingFolder} setRenaming={setCreatingFolder} clickedElement={{ uuid:'placeholder' }} />
+          <FolderElement folder={{ parentUuid: path, uuid: 'placeholder', name: '' }} 
+          renaming={creatingFolder} setRenaming={setCreatingFolder} clickedElement={{ uuid: 'placeholder' }} />
         )}
 
-        {children && <>
-          {children.files.map((file) => (
+        {currentFolder && <>
+          {currentFolder.files.map((file) => (
             <FileElement key={file.uuid} file={file} handleContextMenuClick={handleFileContextMenuClick} 
             renaming={renaming} setRenaming={setRenaming} clickedElement={clickedElement}/>
           ))}
-          {children.folders.map((folder) => (
+          {currentFolder.folders.map((folder) => (
             <FolderElement key={folder.uuid} folder={folder} handleContextMenuClick={handleFolderContextMenuClick} 
             renaming={renaming} setRenaming={setRenaming} clickedElement={clickedElement}/>
           ))}
         </>}
 
         {(clicked && (contextMenuType === 'default')) && (
-          <DefaultContextMenu point={point} createFolder={createFolder}/>        
+          <DefaultContextMenu point={point} setCreatingFolder={setCreatingFolder}/>        
         )}
         {(clicked && (contextMenuType === 'file')) && (
-          <FileContextMenu point={point} file={clickedElement} enableRenaming={enableRenaming}/>
+          <FileContextMenu point={point} file={clickedElement} setRenaming={setRenaming}/>
         )}
         {(clicked && (contextMenuType === 'folder')) && (
-          <FolderContextMenu point={point} folder={clickedElement} enableRenaming={enableRenaming}/>
+          <FolderContextMenu point={point} folder={clickedElement} setRenaming={setRenaming}/>
         )}
       </div>
     </div>

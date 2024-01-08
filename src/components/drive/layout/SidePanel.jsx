@@ -1,23 +1,34 @@
-import { Link } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+
+import { moveToNew } from 'services/slice/PathSlice';
 
 export default function SidePanel () {
+  const dispatch = useDispatch();
+
+  const moveToPath = (path) => {
+    dispatch(moveToNew({uuid: path}));
+  }
+
   return (
     <div className='w-96 h-full
-      text-2xl text-neutral-200
-      bg-gradient-to-b from-zinc-600 to-zinc-600 
-      border-solid border-r-2 border-zinc-800'>
+    bg-gradient-to-b from-zinc-600/90 to-zinc-700/90
+    border-solid border-r-2 border-zinc-800
+    text-2xl font-semibold font-sans text-neutral-200'>
 
-        <Link className='w-[22rem] ml-4 mt-4 px-2 py-2 flex 
-        hover:bg-cyan-900 active:bg-cyan-800'
-        to='/drive/home'>
-          <p>Home</p>
-        </Link>
+      <button className='w-full h-12 px-3 flex text-left 
+      hover:bg-gradient-to-b hover:from-zinc-400 hover:to-zinc-500 rounded-md'
+      onClick={() => {moveToPath('root')}}>
+        <img src='/icons/house.svg' alt='prev' width='28' className='place-self-center'/>
+        <p className='ml-2 place-self-center'>Home</p>
+      </button>
 
-        <Link className='w-[22rem] ml-4 px-2 py-2 flex 
-        hover:bg-cyan-900 active:bg-cyan-800'
-        to='/drive/trash'>
-          <p>Trash</p>
-        </Link>
+      <button className='w-full h-12 px-3 flex text-left 
+      hover:bg-gradient-to-b hover:from-zinc-400 hover:to-zinc-500 rounded-md'
+      onClick={() => {moveToPath('trash')}}>
+        <img src='/icons/trash.svg' alt='prev' width='28' className='place-self-center mt-1'/>
+        <p className='ml-2 place-self-center'>Trash</p>
+      </button>
+
     </div>
   );
 }
