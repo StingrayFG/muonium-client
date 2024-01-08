@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 import FileService from 'services/FileService.jsx';
 
-export default function FileElement ({ file, handleContextMenuClick, renaming, setRenaming, clickedElement }) {
+export default function FileElement ({ file, handleContextMenuClick, clickedElement, renaming, setRenaming }) {
   const userData = useSelector(state => state.user);
 
   const setName = async (event) => {
-    console.log('setname')
-    setRenaming(false);
     file.name = event.target.value;
     await FileService.handleRename(userData, file)
     .then(() => {
@@ -25,11 +23,11 @@ export default function FileElement ({ file, handleContextMenuClick, renaming, s
       border-solid border-2 border-neutral-400 rounded-lg'>
       </div>
 
-      {((renaming) && (file == clickedElement)) ? 
+      {((renaming) && (file.uuid === clickedElement.uuid)) ? 
       <div className='w-full h-16 mt-2 grid place-self-center'>
         <textarea className='w-full place-self-center h-full text-center outline-none resize-none
         bg-transparent 
-        border-transparent border-2 border-neutral-200
+        border-solid border-0 border-neutral-200
         text-lg font-semibold font-sans text-neutral-200'
         name='name'
         defaultValue={file.name} 
@@ -41,7 +39,7 @@ export default function FileElement ({ file, handleContextMenuClick, renaming, s
       : 
       <div className='w-full h-16 mt-2 grid place-self-center'>
         <p className='w-full place-self-center h-full text-center select-none
-        border-transparent border-2 border-neutral-200
+        border-solid border-0 border-neutral-200
         text-lg font-semibold font-sans text-neutral-200'>
           {file.name}   
         </p>
