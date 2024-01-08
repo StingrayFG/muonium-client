@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-
 import { useSelector, useDispatch } from 'react-redux';
+
 import { loginUser } from 'services/slice/UserSlice';
 
 export default function LoginPage() {
@@ -66,13 +66,11 @@ export default function LoginPage() {
             border-solid border-2 border-neutral-400 rounded-md outline-none'
               name='password'
               type='password'/>    
-            <button className='w-full h-12 pl-3 mt-10 grid text-neutral-200
+            <button className='w-full h-12 mt-10 grid text-neutral-200
             bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800 
             hover:from-neutral-600 hover:to-neutral-700 hover:border-neutral-700           
             border-solid border-2 rounded-md outline-none'>
-              <p className='place-self-center'>
-                Log in
-              </p>
+              <p className='place-self-center'>Log in</p>
             </button >
 
             <Link className='place-self-center mt-1 mb-1

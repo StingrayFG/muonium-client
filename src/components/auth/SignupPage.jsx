@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-
 import { useSelector, useDispatch } from 'react-redux';
+
 import { signupUser } from 'services/slice/UserSlice';
 
 export default function SignupPage() {
@@ -78,9 +78,7 @@ export default function SignupPage() {
             bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800 
             hover:from-neutral-600 hover:to-neutral-700 hover:border-neutral-700           
             border-solid border-2 rounded-lg outline-none'>
-              <p className='place-self-center'>
-                Sign up
-              </p>
+              <p className='place-self-center'>Sign up</p>
             </button >
 
             <Link className='place-self-center mt-1 mb-1
