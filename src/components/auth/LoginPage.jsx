@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { loginUser } from 'services/UserSlice';
+import { loginUser } from 'services/slice/UserSlice';
 
 export default function LoginPage() {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from 'react-redux';
-import { clearUser } from 'services/UserSlice';
+import { clearUser } from 'services/slice/UserSlice';
 
 export default function TopPanel () {
   const navigate = useNavigate();

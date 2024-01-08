@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { signupUser } from 'services/UserSlice';
+import { signupUser } from 'services/slice/UserSlice';
 
 export default function SignupPage() {
   const navigate = useNavigate();
