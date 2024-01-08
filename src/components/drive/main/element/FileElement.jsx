@@ -1,9 +1,13 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { requestUpdate } from 'services/slice/PathSlice';
 
 import FileService from 'services/FileService.jsx';
 
 export default function FileElement ({ file, handleContextMenuClick, clickedElement, renaming, setRenaming }) {
+  const dispatch = useDispatch();
+
   const userData = useSelector(state => state.user);
 
   const setName = async (event) => {
@@ -11,6 +15,7 @@ export default function FileElement ({ file, handleContextMenuClick, clickedElem
     await FileService.handleRename(userData, file)
     .then(() => {
       setRenaming(false);
+      dispatch(requestUpdate());
     })
   }
 
@@ -27,7 +32,7 @@ export default function FileElement ({ file, handleContextMenuClick, clickedElem
       <div className='w-full h-16 mt-2 grid place-self-center'>
         <textarea className='w-full place-self-center h-full text-center outline-none resize-none
         bg-transparent 
-        border-solid border-0 border-neutral-200
+        border-solid border-2 border-neutral-200 rounded-lg
         text-lg font-semibold font-sans text-neutral-200'
         name='name'
         defaultValue={file.name} 
