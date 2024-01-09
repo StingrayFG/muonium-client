@@ -39,10 +39,10 @@ export default function FolderPage ({ path }) {
   // Dropzone
   const onDrop = useCallback(acceptedFiles => {
     console.log(acceptedFiles);
-    handleChange(acceptedFiles[0])
+    handleChange(acceptedFiles[0]);
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, open } = useDropzone({
     onDrop, multiple: false, noDragEventsBubbling: true, noClick: true, noKeyboard: true,
   });
 
@@ -57,7 +57,7 @@ export default function FolderPage ({ path }) {
   useEffect(() => {
     if (requiresUpload) {
       FileService.handleUpload(userData, file, path)
-      .then(res => {
+      .then(() => {
         dispatch(requestUpdate());
       })
       setRequiresUpload(false);
@@ -86,6 +86,10 @@ export default function FolderPage ({ path }) {
   });
   const [contextMenuType, setContextMenuType] = useState('default');
 
+  const openFileInput = () => {
+    open();
+  }
+  
   useEffect(() => {
     const handleClick = () => setClicked(false);
     window.addEventListener('click', handleClick);
@@ -133,7 +137,6 @@ export default function FolderPage ({ path }) {
 
   // Rename
   const [renaming, setRenaming] = useState();
-  
   const [creatingFolder, setCreatingFolder] = useState();
 
   // Path
@@ -182,11 +185,12 @@ export default function FolderPage ({ path }) {
   
 
   return (
-    <div className='w-full h-full px-4 py-4
-    bg-gradient-to-b from-zinc-600/90 to-zinc-700/90'
-    {...getRootProps()} 
+    <div className='w-full h-full px-4 py-4 overflow-y-scroll
+    bg-gradient-to-b from-zinc-600/90 to-zinc-700/90'{...getRootProps()}
     onContextMenu={handleContextMenuClick}>
+      <div className='h-full'>
       <input {...getInputProps()} />
+
       <div className='grid grid-cols-6'>
         {creatingFolder && (
           <FolderElement folder={{ parentUuid: path, uuid: 'placeholder', name: '' }} 
@@ -203,19 +207,18 @@ export default function FolderPage ({ path }) {
             renaming={renaming} setRenaming={setRenaming} clickedElement={clickedElement}/>
           ))}
         </>}
-        
-        {((pathData.currentPath !== 'trash') && clicked) && <>
-          {(contextMenuType === 'default') && <DefaultContextMenu point={point} setCreatingFolder={setCreatingFolder}/>}
+
+        {((pathData.currentPath !== 'trash') && clicked) && <div>
+          {(contextMenuType === 'default') && <DefaultContextMenu point={point} setCreatingFolder={setCreatingFolder} openFileInput={openFileInput}/>}
           {(contextMenuType === 'file') && <FileContextMenu point={point} file={clickedElement} setRenaming={setRenaming}/>}
           {(contextMenuType === 'folder') && <FolderContextMenu point={point} folder={clickedElement} setRenaming={setRenaming}/>}  
-        </>}
+        </div>}
 
         {((pathData.currentPath === 'trash') && clicked) && <>
           {(contextMenuType === 'file') && <TrashFileContextMenu point={point} file={clickedElement} />}
           {(contextMenuType === 'folder') && <TrashFolderContextMenu point={point} folder={clickedElement} />}  
         </>}
-
-
+        </div>
       </div>
     </div>
   );
