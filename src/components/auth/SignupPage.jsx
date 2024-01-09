@@ -22,7 +22,6 @@ export default function SignupPage() {
 
     await dispatch(signupUser(data))
     .then(res => {
-      console.log(res)
       if (!data.login || !data.password) {
         showMessage('Please enter correct data');
       } else if (data.password !== event.target.elements.password.value) {

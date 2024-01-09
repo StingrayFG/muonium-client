@@ -22,7 +22,6 @@ export default function LoginPage() {
 
     await dispatch(loginUser(data))
     .then(res => {
-      console.log(res);
       if (!data.login || !data.password) {
         showMessage('Please enter correct data');
       } else if (res.type === 'user/login/rejected') {
