@@ -185,7 +185,7 @@ export default function FolderPage ({ path }) {
   
 
   return (
-    <div className='w-full h-full px-4 py-4 overflow-y-scroll
+    <div className='w-full h-full px-4 py-4 overflow-y-scroll scrollbar-none
     bg-gradient-to-b from-zinc-600/90 to-zinc-700/90'{...getRootProps()}
     onContextMenu={handleContextMenuClick}>
       <div className='h-full'>
