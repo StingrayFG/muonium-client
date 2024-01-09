@@ -17,7 +17,7 @@ export default function App () {
         <Route exact path='drive' element={<Navigate replace to='/drive/home' />} />
         <Route path='/drive' element={<DrivePanels />}>
           <Route path='folder/:uuid' element={<FolderPage />} />
-          <Route path='home' element={<FolderPage path={'root'}/>} />
+          <Route path='home' element={<FolderPage path={'home'}/>} />
           <Route path='trash' element={<FolderPage path={'trash'}/>} />
         </Route>
       </Routes> 

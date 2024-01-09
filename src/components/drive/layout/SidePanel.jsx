@@ -17,7 +17,7 @@ export default function SidePanel () {
 
       <button className='w-full h-12 px-3 flex text-left 
       hover:bg-gradient-to-b hover:from-zinc-400 hover:to-zinc-500 rounded-md'
-      onClick={() => {moveToPath('root')}}>
+      onClick={() => {moveToPath('home')}}>
         <img src='/icons/house.svg' alt='prev' width='28' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Home</p>
       </button>

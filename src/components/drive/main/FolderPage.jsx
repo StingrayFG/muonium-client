@@ -148,7 +148,7 @@ export default function FolderPage ({ path }) {
       if (pathData.currentPath === 'trash') { 
         navigate('/drive/trash'); 
       }
-      else if (pathData.currentPath === 'root') { 
+      else if (pathData.currentPath === 'home') { 
         navigate('/drive/home'); 
       }
       else if (pathData.currentPath) { 
@@ -162,8 +162,8 @@ export default function FolderPage ({ path }) {
       if (pathData.currentPath === 'trash') { 
         dispatch(setAbsolutePath({ absolutePath: '/trash' }));
       }
-      else if (pathData.currentPath === 'root') { 
-        dispatch(setAbsolutePath({ absolutePath: '/root'}));
+      else if (pathData.currentPath === 'home') { 
+        dispatch(setAbsolutePath({ absolutePath: '/home'}));
       }
       else if (pathData.currentPath) { 
         dispatch(setAbsolutePath({ absolutePath: currentFolder.absolutePath }));
