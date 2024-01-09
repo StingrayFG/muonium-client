@@ -1,6 +1,13 @@
-import { useSelector } from 'react-redux';
+import { useRef } from 'react';
 
 export default function DefaultContextMenu ({ point, setCreatingFolder}) {
+  const windowWidth = useRef(window.innerWidth).current;
+  const windowHeight = useRef(window.innerHeight).current;
+
+  const menuHeight = 4 + 40 * 2;
+
+  if (point.x + 192 > windowWidth) { point.x -= 192; }
+  if (point.y + menuHeight > windowHeight) { point.y -= menuHeight; }
 
   return (
     <div className='w-48

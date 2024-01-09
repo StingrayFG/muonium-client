@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { requestUpdate } from 'services/slice/PathSlice';
@@ -24,6 +25,15 @@ export default function FileContextMenu ({ point, file, setRenaming }) {
     .then(() => { dispatch(requestUpdate()); })
   }
 
+  
+  const windowWidth = useRef(window.innerWidth).current;
+  const windowHeight = useRef(window.innerHeight).current;
+
+  const menuHeight = 4 + 40 * 4;
+
+  if (point.x + 192 > windowWidth) { point.x -= 192; }
+  if (point.y + menuHeight > windowHeight) { point.y -= menuHeight; }
+  
   return (
     <div className='w-48
     bg-gradient-to-b from-zinc-600 to-zinc-700 
