@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 
 import { setAbsolutePath, setInitial, confirmUpdate, requestUpdate } from 'services/slice/PathSlice';
+import { getDrive } from 'services/slice/DriveSlice';
 
 import FileService from 'services/FileService.jsx';
 import FileElement from 'components/drive/main/element/FileElement.jsx';
@@ -54,6 +55,15 @@ export default function FolderPage ({ path }) {
   };
 
   // Upload
+  
+  useEffect(() => {
+    if (pathData.requiresUpdate) { 
+      setRequiresUpdate(true);
+      dispatch(confirmUpdate());
+      dispatch(getDrive(userData.driveUuid))
+    }
+  });
+  
   useEffect(() => {
     if (requiresUpload) {
       FileService.handleUpload(userData, file, path)
@@ -175,14 +185,6 @@ export default function FolderPage ({ path }) {
     //console.log(pathData)
   });
 
-  //Update
-  useEffect(() => {
-    if (pathData.requiresUpdate) { 
-      setRequiresUpdate(true);
-      dispatch(confirmUpdate());
-    }
-  });
-  
 
   return (
     <div className='w-full h-full px-4 py-4 overflow-y-scroll scrollbar-none

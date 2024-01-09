@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { clearUser } from 'services/slice/UserSlice';
@@ -9,6 +9,7 @@ export default function TopPanel () {
   const dispatch = useDispatch();
 
   const userData = useSelector(state => state.user);
+  const driveData = useSelector(state => state.drive);
   const pathData = useSelector(state => state.path);
 
   const logOut = () => {
@@ -57,9 +58,17 @@ export default function TopPanel () {
         </div>
 
         <div className='ml-auto flex'>
-          <div className='w-60 h-12 pl-4 flex text-left
+        <div className='w-72 h-12 pl-4 flex text-left
           bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800         
           border-solid border-2 rounded-l-md outline-none'>
+            <p className='place-self-center'>
+              {(driveData.spaceUsed / (1024 * 1024)).toFixed(1)} MB / {(driveData.spaceTotal / (1024 * 1024)).toFixed(1)} MB
+              {' (' + (driveData.spaceUsed / driveData.spaceTotal * 100).toFixed(0) + '% full)'}
+            </p>
+          </div>
+          <div className='w-72 h-12 pl-4 flex text-left
+          bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800         
+          border-solid border-2 outline-none'>
             <p className='place-self-center'>{userData.login}</p>
           </div>
           <button className='w-12 h-12 grid
