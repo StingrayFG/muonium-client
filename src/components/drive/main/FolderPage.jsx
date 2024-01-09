@@ -3,15 +3,17 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 
-import { setAbsolutePath, setInitial, confirmUpdate } from 'services/slice/PathSlice';
+import { setAbsolutePath, setInitial, confirmUpdate, requestUpdate } from 'services/slice/PathSlice';
 
 import FileService from 'services/FileService.jsx';
 import FileElement from 'components/drive/main/element/FileElement.jsx';
 import FileContextMenu from 'components/drive/main/menu/FileContextMenu.jsx';
+import TrashFileContextMenu from 'components/drive/main/menu/TrashFileContextMenu.jsx';
 
 import FolderService from 'services/FolderService.jsx'
 import FolderElement from 'components/drive/main/element/FolderElement.jsx';
 import FolderContextMenu from 'components/drive/main/menu/FolderContextMenu.jsx';
+import TrashFolderContextMenu from 'components/drive/main/menu/TrashFolderContextMenu.jsx';
 
 import DefaultContextMenu from 'components/drive/main/menu/DefaultContextMenu.jsx';
 
@@ -54,7 +56,10 @@ export default function FolderPage ({ path }) {
   // Upload
   useEffect(() => {
     if (requiresUpload) {
-      FileService.HandleUpload(userData, file, path);
+      FileService.handleUpload(userData, file, path)
+      .then(res => {
+        dispatch(requestUpdate());
+      })
       setRequiresUpload(false);
     }
   });
@@ -164,7 +169,7 @@ export default function FolderPage ({ path }) {
         dispatch(setAbsolutePath({ absolutePath: currentFolder.absolutePath }));
       }
     }
-    //console.log(pathData.pathHistory)
+    //console.log(pathData)
   });
 
   //Update
@@ -198,16 +203,19 @@ export default function FolderPage ({ path }) {
             renaming={renaming} setRenaming={setRenaming} clickedElement={clickedElement}/>
           ))}
         </>}
+        
+        {((pathData.currentPath !== 'trash') && clicked) && <>
+          {(contextMenuType === 'default') && <DefaultContextMenu point={point} setCreatingFolder={setCreatingFolder}/>}
+          {(contextMenuType === 'file') && <FileContextMenu point={point} file={clickedElement} setRenaming={setRenaming}/>}
+          {(contextMenuType === 'folder') && <FolderContextMenu point={point} folder={clickedElement} setRenaming={setRenaming}/>}  
+        </>}
 
-        {(clicked && (contextMenuType === 'default')) && (
-          <DefaultContextMenu point={point} setCreatingFolder={setCreatingFolder}/>        
-        )}
-        {(clicked && (contextMenuType === 'file')) && (
-          <FileContextMenu point={point} file={clickedElement} setRenaming={setRenaming}/>
-        )}
-        {(clicked && (contextMenuType === 'folder')) && (
-          <FolderContextMenu point={point} folder={clickedElement} setRenaming={setRenaming}/>
-        )}
+        {((pathData.currentPath === 'trash') && clicked) && <>
+          {(contextMenuType === 'file') && <TrashFileContextMenu point={point} file={clickedElement} />}
+          {(contextMenuType === 'folder') && <TrashFolderContextMenu point={point} folder={clickedElement} />}  
+        </>}
+
+
       </div>
     </div>
   );

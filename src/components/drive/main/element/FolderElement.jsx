@@ -27,13 +27,19 @@ export default function FolderElement ({ folder, handleContextMenuClick, clicked
     }
   }
 
+  const handleDoubleClick = () => {
+    if(!folder.isRemoved) {
+      dispatch(moveToNew(folder))
+    }
+  }
+
   return (
     <div className='w-10/12 h-full grid place-self-center
     border-solid border-0 border-black'>
       <div className='w-48 h-48 place-self-center  relative
       border-solid border-0 border-black rounded-lg' 
       onContextMenu={(event) => {handleContextMenuClick(event, folder)}}
-      onDoubleClick={() => { dispatch(moveToNew(folder)) }}>
+      onDoubleClick={handleDoubleClick}>
         <div className='w-36 h-16 right-0 absolute
         bg-gradient-to-b from-zinc-600 to-zinc-700
         border-solid border-2 border-zinc-700 rounded-lg'>

@@ -3,7 +3,6 @@ import axios from 'axios';
 const FileService = {
   handleUpload: async (userData, file, parentUuid) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
-
     const formData = new FormData();
     formData.append('file', file);
     
@@ -18,7 +17,6 @@ const FileService = {
 
   handleDownload: async (userData, file) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
-
     const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, fileUuid: file.uuid };
 
     await axios.post(process.env.REACT_APP_BACKEND_URL + '/file/download', body, {headers})
@@ -33,7 +31,6 @@ const FileService = {
 
   handleRename: async (userData, file) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
-
     const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, fileUuid: file.uuid, fileName: file.name };
 
     await axios.put(process.env.REACT_APP_BACKEND_URL + '/file/rename', body, {headers})
@@ -47,7 +44,6 @@ const FileService = {
 
   handleCopy: async (userData, file) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
-
     const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, fileUuid: file.uuid };
 
     await axios.put(process.env.REACT_APP_BACKEND_URL + '/file/copy', body, {headers})
@@ -61,7 +57,6 @@ const FileService = {
 
   handleRemove: async (userData, file) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
-
     const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, fileUuid: file.uuid };
 
     await axios.put(process.env.REACT_APP_BACKEND_URL + '/file/remove', body, {headers})
@@ -73,12 +68,24 @@ const FileService = {
     });  
   },
 
-  handleDelete: async (userData, file) => {
+  handleRecover: async (userData, file) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
-
     const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, fileUuid: file.uuid };
 
-    await axios.delete(process.env.REACT_APP_BACKEND_URL + '/file/delete', body, {headers})
+    await axios.put(process.env.REACT_APP_BACKEND_URL + '/file/recover', body, {headers})
+    .then(res => {
+      return(res.data);
+    })
+    .catch(err => {
+      return(err);
+    });  
+  },
+
+  handleDelete: async (userData, file) => {
+    const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
+    const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, fileUuid: file.uuid };
+
+    await axios.post(process.env.REACT_APP_BACKEND_URL + '/file/delete', body, {headers})
     .then(res => {
       return(res.data);
     })
