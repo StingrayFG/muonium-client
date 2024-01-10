@@ -52,7 +52,7 @@ export default function FolderElement ({ folder, handleContextMenuClick, clicked
 
       {((renaming) && (folder.uuid === clickedElement.uuid)) ? 
       <div className='w-full h-16 mt-2 grid place-self-center'>
-        <textarea className='w-full place-self-center h-full text-center outline-none resize-none
+        <textarea className='w-full h-full place-self-center text-center outline-none resize-none
         bg-transparent 
         border-solid border-2 border-neutral-200 rounded-lg
         text-lg font-semibold font-sans text-neutral-200'

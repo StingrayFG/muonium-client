@@ -76,7 +76,7 @@ export default function FolderPage ({ path }) {
 
   useEffect(() => {
     if (requiresUpdate) {
-      FolderService.handleGet(userData, path)
+      FolderService.handleGetByUuid(userData, path)
       .then(res => {
         setCurrentFolder(res);
       })

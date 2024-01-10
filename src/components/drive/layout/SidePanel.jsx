@@ -16,14 +16,14 @@ export default function SidePanel () {
     text-2xl font-semibold font-sans text-neutral-200'>
 
       <button className='w-full h-12 px-3 flex text-left 
-      hover:bg-gradient-to-b hover:from-zinc-400 hover:to-zinc-500 rounded-md'
+      hover:bg-gradient-to-b hover:from-zinc-400 hover:to-zinc-500'
       onClick={() => {moveToPath('home')}}>
         <img src='/icons/house.svg' alt='prev' width='28' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Home</p>
       </button>
 
       <button className='w-full h-12 px-3 flex text-left 
-      hover:bg-gradient-to-b hover:from-zinc-400 hover:to-zinc-500 rounded-md'
+      hover:bg-gradient-to-b hover:from-zinc-400 hover:to-zinc-500'
       onClick={() => {moveToPath('trash')}}>
         <img src='/icons/trash.svg' alt='prev' width='28' className='place-self-center mt-1'/>
         <p className='ml-2 place-self-center'>Trash</p>

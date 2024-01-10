@@ -1,8 +1,11 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { clearUser } from 'services/slice/UserSlice';
-import { moveToNext, moveToPrevious } from 'services/slice/PathSlice';
+import { moveToNew, moveToNext, moveToPrevious, requestUpdate, setAbsolutePath } from 'services/slice/PathSlice';
+
+import FolderService from 'services/FolderService.jsx';
 
 export default function TopPanel () {
   const navigate = useNavigate();
@@ -29,32 +32,92 @@ export default function TopPanel () {
     }
   }
 
+  const [editingPath, setEditingPath] = useState(false);
+  const [previousPath, setPreviousPath] = useState('');
+  const [postContent, setPostContent] = useState(pathData.absolutePath);
+  
+  useEffect(() => {
+    if ((!editingPath) && (postContent !== pathData.absolutePath)) {
+      setPostContent(pathData.absolutePath);
+      setPreviousPath(pathData.absolutePath);
+    }
+  })
+
+  const savePreviousPath = (event) => {
+    setPreviousPath(event.target.value);
+    setEditingPath(true);
+  }
+
+  const setPath = (event) => {
+    let path = event.target.value;
+    if (path[path.length - 1] === '/') { path = path.slice(0, path.length - 1); }
+    FolderService.handleGetByPath(userData, path)
+    .then(res => {
+      setPostContent(path);
+      dispatch(moveToNew({ uuid: res.uuid }));
+      dispatch(setAbsolutePath({ absolutePath: path }));
+      setEditingPath(false);
+    })
+    .catch(err => {
+      setPostContent(previousPath);
+      showMessage('Incorrect path');
+      setEditingPath(false);
+    })
+  }
+
+  const delay = ms => new Promise(res => setTimeout(res, ms));
+  const [showingMessage, setShowingMessage] = useState();
+  const [message, setMessage] = useState();
+
+  const showMessage = async (msg) => {
+    setMessage(msg);
+    setShowingMessage(true);
+    await delay(1500);
+    setShowingMessage(false);
+  };
+
   return (
     <div className='w-full h-20 px-4 py-4 flex
       bg-gradient-to-b from-zinc-600 to-zinc-700
       border-solid border-b-2 border-zinc-800
       text-lg font-semibold font-sans text-neutral-200'>
         <div className='flex'>
-          <button className='w-12 h-12 grid
+          <button className={`w-12 h-12 grid
           bg-gradient-to-b from-neutral-300 to-neutral-400 border-neutral-400
-          hover:from-neutral-400 hover:to-neutral-500 hover:border-neutral-500       
-          border-solid border-2 rounded-l-lg'
+          ${(pathData.positionInHistory > 0) ? 
+          'hover:from-neutral-400 hover:to-neutral-500 hover:border-neutral-500' : 'pointer-events-none'}  
+          border-solid border-2 rounded-l-lg`}
           onClick={handlePreviousPath}>
-            <img src='/icons/chevron-left.svg' alt='prev' width='28' className='place-self-center'/>
+            <img src='/icons/chevron-left.svg' alt='prev' width='28' 
+            className={`place-self-center ${(pathData.positionInHistory > 0) ? 'opacity-100' : 'opacity-30'}`}/>
           </button>
-          <button className='w-12 h-12 grid
+          <button className={`w-12 h-12 grid
           bg-gradient-to-b from-neutral-300 to-neutral-400 border-neutral-400
-          hover:from-neutral-400 hover:to-neutral-500 hover:border-neutral-500 
-          border-solid border-2 rounded-r-lg'
+          ${(pathData.positionInHistory < pathData.pathHistory.length - 1) ? 
+            'hover:from-neutral-400 hover:to-neutral-500 hover:border-neutral-500' : 'pointer-events-none'}  
+          border-solid border-2 rounded-r-lg`}
           onClick={handleNextPath}>
-          <img src='/icons/chevron-right.svg' alt='next' width='28' className='place-self-center'/>
+            <img src='/icons/chevron-right.svg' alt='next' width='28' 
+            className={`place-self-center ${(pathData.positionInHistory < pathData.pathHistory.length - 1) ? 'opacity-100' : 'opacity-30'}`}/>
           </button>
         </div>
 
-        <div className='w-full h-12 pl-4 ml-4 mr-4 bg-white flex text-left text-neutral-800
+        <div className='w-full h-12 px-4 ml-4 mr-4 bg-white flex text-left text-neutral-800
           bg-gradient-to-b from-neutral-300 to-neutral-400 
           border-solid border-2 border-neutral-400 rounded-lg'>
-            <p className='place-self-center'>{pathData.absolutePath}</p>
+            <textarea className='w-full h-[28px] place-self-center outline-none resize-none
+            bg-transparent'
+            name='path'
+            value={postContent}
+            onChange={e => setPostContent(e.target.value)}
+            onBlur={setPath}
+            onFocus={savePreviousPath}
+            onKeyDown={(event) => { if (event.code === 'Enter') { event.target.blur(); } }}>
+            </textarea> 
+            <p className={`w-64 text-right place-self-center transition-all duration-500
+            ${showingMessage ? 'opacity-100': 'opacity-0'}`}>
+            {'' + message}  
+            </p>
         </div>
 
         <div className='ml-auto flex'>

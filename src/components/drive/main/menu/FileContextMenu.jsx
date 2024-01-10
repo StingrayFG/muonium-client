@@ -15,7 +15,7 @@ export default function FileContextMenu ({ point, file, setRenaming }) {
     .then(() => { dispatch(requestUpdate()); })
   }
 
-  const handleCopy= async () => {
+  const handleCopy = async () => {
     await FileService.handleCopy(userData, file)
     .then(() => { dispatch(requestUpdate()); })
   }

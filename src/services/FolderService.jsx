@@ -14,18 +14,35 @@ const FolderService = {
     });   
   },
 
-  handleGet: async (userData, parentUuid) => { 
+  handleGetByUuid: async (userData, parentUuid) => { 
     return new Promise( async function(resolve, reject) {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
       const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, parentUuid };
       
-      await axios.post(process.env.REACT_APP_BACKEND_URL + '/folder/get', body, {headers})
+      await axios.post(process.env.REACT_APP_BACKEND_URL + '/folder/get/uuid', body, {headers})
       .then(res => {
         resolve(res.data);
         return(res.data);
       })
       .catch(err => {
-        reject();
+        reject(err);
+        return(err);
+      });
+    })
+  },
+  
+  handleGetByPath: async (userData, path) => { 
+    return new Promise( async function(resolve, reject) {
+      const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
+      const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, path };
+      
+      await axios.post(process.env.REACT_APP_BACKEND_URL + '/folder/get/path', body, {headers})
+      .then(res => {
+        resolve(res.data);
+        return(res.data);
+      })
+      .catch(err => {
+        reject(err);
         return(err);
       });
     })
