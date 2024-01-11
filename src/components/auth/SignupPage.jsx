@@ -27,7 +27,7 @@ export default function SignupPage() {
       } else if (data.password !== event.target.elements.password.value) {
         showMessage('Passwords do not match')
       } else if (res.type === 'user/signup/rejected') {
-        showMessage('Something went wrong, try again later')
+        showMessage('Username is already used')
       } else if (res.type === 'user/signup/fulfilled') {
         navigate('/login');
       }
