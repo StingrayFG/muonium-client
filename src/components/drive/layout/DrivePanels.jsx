@@ -11,7 +11,7 @@ export default function DrivePanels () {
   const userData = useSelector(state => state.user);
 
   useEffect(() => {
-    if(!userData) {
+    if (!userData) {
       navigate('/login');
     }
   })
