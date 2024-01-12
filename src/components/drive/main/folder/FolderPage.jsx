@@ -24,10 +24,11 @@ export default function FolderPage ({ folderUuid }) {
   if (!folderUuid) { 
     folderUuid = uuid;
   }
-  
+
   // Update
   const [requiresUpdate, setRequiresUpdate] = useState(true);
   const [currentFolder, setCurrentFolder] = useState();
+  const [requiresContextReset, setRequiresContextReset] = useState(false);
 
   useEffect(() => {
     if (!pathData.currentUuid) {
@@ -60,6 +61,7 @@ export default function FolderPage ({ folderUuid }) {
         await FolderService.handleGetByUuid(userData, pathData.currentUuid)
         .then(res => {
           console.log(res)
+          setRequiresContextReset(true)
           setCurrentFolder(res);
           dispatch(setAbsolutePath({ currentAbsolutePath: res.absolutePath }));
         })
@@ -74,7 +76,7 @@ export default function FolderPage ({ folderUuid }) {
   return (
     <div className='w-full h-full overflow-y-scroll scrollbar-none
     bg-gradient-to-b from-zinc-600/90 to-zinc-700/90'>
-      <FolderContext.Provider value={{ currentFolder }}> 
+      <FolderContext.Provider value={{ currentFolder, requiresContextReset, setRequiresContextReset }}> 
         <DropzoneComponent>
           <ContextMenuComponent>
             <FolderContentsComponent />   

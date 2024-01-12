@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
 import { FolderContext } from 'components/drive/main/context/FolderContext.jsx';
@@ -20,6 +20,13 @@ export default function FolderPage ({ children }) {
     y: 0,
   });
   const [contextMenuType, setContextMenuType] = useState('default');
+
+  useEffect(() => {
+    if (folderContext.requiresContextReset) {
+      folderContext.setRequiresContextReset(false);
+      setClickedElement({ uuid: ''});
+    }
+  })
 
   const handleFileContextMenuClick = (event, file) => {
     event.preventDefault();
