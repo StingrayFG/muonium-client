@@ -11,7 +11,7 @@ export default function FolderPage ({ children }) {
   const contextMenuContext = useContext(ContextMenuContext);
 
   return (
-    <div className='grid grid-cols-6 px-4 py-4'>
+    <div className='grid grid-cols-6 gap-4 px-4 py-4'>
       {contextMenuContext.creatingFolder && (
         <FolderElement/>
         )}

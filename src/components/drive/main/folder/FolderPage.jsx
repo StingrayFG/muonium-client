@@ -69,7 +69,6 @@ export default function FolderPage ({ folderUuid }) {
         }); 
       }
     }
-
     getFolder();
   });
 
