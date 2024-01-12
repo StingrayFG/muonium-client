@@ -69,8 +69,8 @@ export default function FolderPage ({ children }) {
   };
 
   // Rename
-  const [renaming, setRenaming] = useState();
-  const [creatingFolder, setCreatingFolder] = useState();
+  const [renaming, setRenaming] = useState(false);
+  const [creatingFolder, setCreatingFolder] = useState(false);
 
   return (
     <div className='w-full h-full'

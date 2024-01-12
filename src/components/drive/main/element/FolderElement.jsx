@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { moveToNew, requestUpdate } from 'services/slice/PathSlice';
@@ -18,6 +18,13 @@ export default function FolderElement ({ folder }) {
 
   if (!folder) { folder = { uuid: '', name: '', parentUuid: folderContext.currentFolder.uuid } }
 
+  const [previousName, setPreviousName] = useState('');
+  const [inputData, setInputData] = useState(folder.name);
+
+  const savePreviousName = (event) => {
+    setPreviousName(event.target.value);
+  }
+
   const setName = async (event) => {
     if (event.target.value) {
       folder.name = event.target.value;
@@ -34,6 +41,10 @@ export default function FolderElement ({ folder }) {
           dispatch(requestUpdate());
         })
       }
+    } else {
+      setInputData(previousName);
+      contextMenuContext.setCreatingFolder(false);
+      contextMenuContext.setRenaming(false);
     }
   }
 
@@ -68,8 +79,10 @@ export default function FolderElement ({ folder }) {
         border-solid border-2 border-neutral-200 rounded-lg
         text-lg font-semibold font-sans text-neutral-200'
         name='name'
-        defaultValue={folder.name}
+        value={inputData}
+        onChange={e => setInputData(e.target.value)}
         autoFocus={true}
+        onFocus={savePreviousName}
         onBlur={setName}
         onKeyDown={(event) => { if (event.code === 'Enter') { event.target.blur(); } }}>
         </textarea> 

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { requestUpdate } from 'services/slice/PathSlice';
@@ -13,13 +13,25 @@ export default function FileElement ({ file }) {
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
 
+  const [previousName, setPreviousName] = useState('');
+  const [inputData, setInputData] = useState(file.name);
+
+  const savePreviousName = (event) => {
+    setPreviousName(event.target.value);
+  }
+
   const setName = async (event) => {
-    file.name = event.target.value;
-    await FileService.handleRename(userData, file)
-    .then(() => {
+    if (event.target.value) {
+      file.name = event.target.value;
+      await FileService.handleRename(userData, file)
+      .then(() => {
+        contextMenuContext.setRenaming(false);
+        dispatch(requestUpdate());
+      })
+    } else {
+      setInputData(previousName);
       contextMenuContext.setRenaming(false);
-      dispatch(requestUpdate());
-    })
+    }
   }
 
   return (
@@ -38,8 +50,10 @@ export default function FileElement ({ file }) {
         border-solid border-2 border-neutral-200 rounded-lg
         text-lg font-semibold font-sans text-neutral-200'
         name='name'
-        defaultValue={file.name} 
+        value={inputData} 
+        onChange={e => setInputData(e.target.value)}
         autoFocus={true}
+        onFocus={savePreviousName}
         onBlur={setName}
         onKeyDown={(event) => { if (event.code === 'Enter') { event.target.blur(); } }}>
         </textarea> 
