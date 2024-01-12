@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { requestUpdate } from 'services/slice/PathSlice';
 
+import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
+
 import FileService from 'services/FileService.jsx';
 
-export default function FileElement ({ file, handleContextMenuClick, clickedElement, renaming, setRenaming }) {
+export default function FileElement ({ file }) {
+  const contextMenuContext = useContext(ContextMenuContext);
+  
   const dispatch = useDispatch();
-
   const userData = useSelector(state => state.user);
 
   const setName = async (event) => {
     file.name = event.target.value;
     await FileService.handleRename(userData, file)
     .then(() => {
-      setRenaming(false);
+      contextMenuContext.setRenaming(false);
       dispatch(requestUpdate());
     })
   }
@@ -22,13 +25,13 @@ export default function FileElement ({ file, handleContextMenuClick, clickedElem
   return (
     <div className='w-10/12 h-full grid place-self-center
     border-solid border-0 border-black'
-    onContextMenu={(event) => {handleContextMenuClick(event, file)}}>
+    onContextMenu={(event) => {contextMenuContext.handleFileContextMenuClick(event, file)}}>
       <div className='w-36 h-48 place-self-center
       bg-gradient-to-b from-neutral-300 to-neutral-400
       border-solid border-2 border-neutral-400 rounded-lg'>
       </div>
 
-      {((renaming) && (file.uuid === clickedElement.uuid)) ? 
+      {((contextMenuContext.renaming) && (file.uuid === contextMenuContext.clickedElement.uuid)) ? 
       <div className='w-full h-16 mt-2 grid place-self-center'>
         <textarea className='w-full place-self-center h-full text-center outline-none resize-none
         bg-transparent 

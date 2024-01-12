@@ -1,35 +1,45 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { moveToNew, requestUpdate } from 'services/slice/PathSlice';
 
+import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
+import { FolderContext } from 'components/drive/main/context/FolderContext.jsx';
+
+
 import FolderService from 'services/FolderService.jsx';
 
-export default function FolderElement ({ folder, handleContextMenuClick, clickedElement, renaming, setRenaming }) {
+export default function FolderElement ({ folder }) {
+  const contextMenuContext = useContext(ContextMenuContext);
+  const folderContext = useContext(FolderContext);
+  
   const dispatch = useDispatch();
-
   const userData = useSelector(state => state.user);
 
+  if (!folder) { folder = { uuid: '', name: '', parentUuid: folderContext.currentFolder.uuid } }
+
   const setName = async (event) => {
-    folder.name = event.target.value;
-    if (folder.uuid === 'placeholder') {
-      await FolderService.handleCreate(userData, folder)
-      .then(() => {
-        setRenaming(false);
-        dispatch(requestUpdate());
-      })
-    } else {
-      await FolderService.handleRename(userData, folder)
-      .then(() => {
-        setRenaming(false);
-        dispatch(requestUpdate());
-      })
+    if (event.target.value) {
+      folder.name = event.target.value;
+      if (contextMenuContext.creatingFolder) {
+        await FolderService.handleCreate(userData, folder, folderContext.currentFolder.absolutePath)
+        .then(() => {
+          contextMenuContext.setCreatingFolder(false);
+          dispatch(requestUpdate());
+        })
+      } else {
+        await FolderService.handleRename(userData, folder)
+        .then(() => {
+          contextMenuContext.setRenaming(false);
+          dispatch(requestUpdate());
+        })
+      }
     }
   }
 
   const handleDoubleClick = () => {
     if(!folder.isRemoved) {
-      dispatch(moveToNew(folder))
+      dispatch(moveToNew({ uuid: folder.uuid }));
     }
   }
 
@@ -38,7 +48,7 @@ export default function FolderElement ({ folder, handleContextMenuClick, clicked
     border-solid border-0 border-black'>
       <div className='w-48 h-48 place-self-center  relative
       border-solid border-0 border-black rounded-lg' 
-      onContextMenu={(event) => {handleContextMenuClick(event, folder)}}
+      onContextMenu={(event) => {contextMenuContext.handleFolderContextMenuClick(event, folder)}}
       onDoubleClick={handleDoubleClick}>
         <div className='w-36 h-16 right-0 absolute
         bg-gradient-to-b from-zinc-600 to-zinc-700
@@ -50,7 +60,8 @@ export default function FolderElement ({ folder, handleContextMenuClick, clicked
         </div> 
       </div>
 
-      {((renaming) && (folder.uuid === clickedElement.uuid)) ? 
+      {(((contextMenuContext.renaming) && (folder.uuid === contextMenuContext.clickedElement.uuid)) || 
+      ((contextMenuContext.creatingFolder) && (!folder.uuid))) ? 
       <div className='w-full h-16 mt-2 grid place-self-center'>
         <textarea className='w-full h-full place-self-center text-center outline-none resize-none
         bg-transparent 

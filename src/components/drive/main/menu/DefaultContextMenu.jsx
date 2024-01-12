@@ -1,6 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useContext } from 'react';
 
-export default function DefaultContextMenu ({ point, setCreatingFolder, openFileInput }) {
+import { DropzoneContext } from 'components/drive/main/context/DropzoneContext';
+import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
+
+export default function DefaultContextMenu ({ point }) {
+  const dropzoneContext = useContext(DropzoneContext);
+  const contextMenuContext = useContext(ContextMenuContext);
 
   const windowWidth = useRef(window.innerWidth).current;
   const windowHeight = useRef(window.innerHeight).current;
@@ -18,14 +23,14 @@ export default function DefaultContextMenu ({ point, setCreatingFolder, openFile
     style={{position: 'absolute', top: point.y, left: point.x}}>
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-zinc-400 hover:to-zinc-500 rounded'
-      onClick={openFileInput}>
+      onClick={() => { dropzoneContext.open() }}>
         <img src='/icons/upload.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Upload a file</p>
       </button>    
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-zinc-400 hover:to-zinc-500 rounded'
-      onClick={() => { setCreatingFolder(true) }}>
+      onClick={() => { contextMenuContext.setCreatingFolder(true) }}>
         <img src='/icons/file-plus.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>New folder</p>
       </button>    

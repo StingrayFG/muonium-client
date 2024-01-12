@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const FolderService = {
-  handleCreate: async (userData, folder) => {
+  handleCreate: async (userData, folder, parentAbsolutePath) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
-    const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, parentUuid: folder.parentUuid, folderName: folder.name };
+    const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, parentUuid: folder.parentUuid, folderName: folder.name, parentAbsolutePath };
     
     await axios.post(process.env.REACT_APP_BACKEND_URL + '/folder/create', body, {headers})
     .then(res => {

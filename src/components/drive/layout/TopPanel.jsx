@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { clearUser } from 'services/slice/UserSlice';
-import { moveToNew, moveToNext, moveToPrevious, requestUpdate, setAbsolutePath } from 'services/slice/PathSlice';
+import { setAbsolutePath, moveToNew, moveToNext, moveToPrevious } from 'services/slice/PathSlice';
 
 import FolderService from 'services/FolderService.jsx';
 
@@ -34,12 +34,16 @@ export default function TopPanel () {
 
   const [editingPath, setEditingPath] = useState(false);
   const [previousPath, setPreviousPath] = useState('');
-  const [postContent, setPostContent] = useState(pathData.absolutePath);
+  const [inputData, setInputData] = useState();
   
   useEffect(() => {
-    if ((!editingPath) && (postContent !== pathData.absolutePath)) {
-      setPostContent(pathData.absolutePath);
-      setPreviousPath(pathData.absolutePath);
+    if (!inputData) { setInputData(pathData.currentAbsolutePath); }
+  })
+
+  useEffect(() => {
+    if (!editingPath && (inputData !== pathData.currentAbsolutePath)) {
+      setInputData(pathData.currentAbsolutePath);
+      setPreviousPath(pathData.currentAbsolutePath);
     }
   })
 
@@ -48,18 +52,17 @@ export default function TopPanel () {
     setEditingPath(true);
   }
 
-  const setPath = (event) => {
+  const setPath = async (event) => {
     let path = event.target.value;
     if (path[path.length - 1] === '/') { path = path.slice(0, path.length - 1); }
-    FolderService.handleGetByPath(userData, path)
+    await FolderService.handleGetByPath(userData, path)
     .then(res => {
-      setPostContent(path);
       dispatch(moveToNew({ uuid: res.uuid }));
-      dispatch(setAbsolutePath({ absolutePath: path }));
+      dispatch(setAbsolutePath({ currentAbsolutePath: path }));
       setEditingPath(false);
     })
     .catch(err => {
-      setPostContent(previousPath);
+      setInputData(previousPath);
       showMessage('Incorrect path');
       setEditingPath(false);
     })
@@ -108,8 +111,8 @@ export default function TopPanel () {
             <textarea className='w-full h-[28px] place-self-center outline-none resize-none
             bg-transparent'
             name='path'
-            value={postContent}
-            onChange={e => setPostContent(e.target.value)}
+            value={inputData}
+            onChange={e => setInputData(e.target.value)}
             onBlur={setPath}
             onFocus={savePreviousPath}
             onKeyDown={(event) => { if (event.code === 'Enter') { event.target.blur(); } }}>

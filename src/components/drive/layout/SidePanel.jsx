@@ -6,8 +6,9 @@ export default function SidePanel () {
   const dispatch = useDispatch();
 
   const moveToPath = (path) => {
-    dispatch(moveToNew({uuid: path}));
+    dispatch(moveToNew({ uuid: path }));
   }
+    
 
   return (
     <div className='w-96 h-full

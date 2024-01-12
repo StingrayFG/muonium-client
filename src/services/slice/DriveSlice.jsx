@@ -4,8 +4,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 export const getDrive = createAsyncThunk(
   'drive/get',
   async (driveUuid, thunkAPI) => {
-    const driveData = { driveUuid };
-    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/drive/get', { uuid: driveUuid })
+    const driveData = { uuid: driveUuid };
+    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/drive/get', driveData)
     return res.data;
   },
 );

@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import DrivePanels from 'components/drive/layout/DrivePanels.jsx';
-import FolderPage from 'components/drive/main/FolderPage.jsx';
+import FolderPage from 'components/drive/main/folder/FolderPage.jsx';
 
 import LoginPage from 'components/auth/LoginPage.jsx';
 import SignupPage from 'components/auth/SignupPage.jsx';
@@ -17,8 +17,8 @@ export default function App () {
         <Route exact path='drive' element={<Navigate replace to='/drive/home' />} />
         <Route path='/drive' element={<DrivePanels />}>
           <Route path='folder/:uuid' element={<FolderPage />} />
-          <Route path='home' element={<FolderPage path={'home'}/>} />
-          <Route path='trash' element={<FolderPage path={'trash'}/>} />
+          <Route path='home' element={<FolderPage folderUuid={'home'}/>} />
+          <Route path='trash' element={<FolderPage folderUuid={'trash'}/>} />
         </Route>
       </Routes> 
     </BrowserRouter>    

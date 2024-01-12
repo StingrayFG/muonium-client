@@ -3,35 +3,35 @@ import { createSlice } from '@reduxjs/toolkit'
 export const pathSlice = createSlice({
   name: 'path',
   initialState: {
-    absolutePath: '',
-    currentPath: '',
+    currentAbsolutePath: '',
+    currentUuid: '',
     positionInHistory: 0,
     pathHistory: [],
     requiresUpdate: true,
   },
   reducers: {
-    setAbsolutePath:(state, path) => {
-      state.absolutePath = path.payload.absolutePath;
+    setAbsolutePath:(state, action) => {
+      state.currentAbsolutePath = action.payload.currentAbsolutePath;
     }, 
-    setInitial:(state, path) => {
-      state.pathHistory.push(path.payload.uuid);
-      state.currentPath = path.payload.uuid;
+    setInitialUuid:(state, action) => {
+      state.pathHistory.push(action.payload.uuid);
+      state.currentUuid = action.payload.uuid;
     }, 
-    moveToNew: (state, path) => {
+    moveToNew: (state, action) => {
       state.pathHistory = state.pathHistory.slice(0, state.positionInHistory + 1)
-      state.pathHistory.push(path.payload.uuid);
-      state.currentPath = path.payload.uuid;
+      state.pathHistory.push(action.payload.uuid);
+      state.currentUuid = action.payload.uuid;
       state.positionInHistory += 1;
       state.requiresUpdate = true;
     },
     moveToNext: (state) => {
       state.positionInHistory += 1;
-      state.currentPath = state.pathHistory[state.positionInHistory];
+      state.currentUuid = state.pathHistory[state.positionInHistory];
       state.requiresUpdate = true;
     },
     moveToPrevious: (state) => {
       state.positionInHistory -= 1;
-      state.currentPath = state.pathHistory[state.positionInHistory];
+      state.currentUuid = state.pathHistory[state.positionInHistory];
       state.requiresUpdate = true;
     },
     confirmUpdate: (state) => {
@@ -43,4 +43,4 @@ export const pathSlice = createSlice({
   },
 });
 
-export const { setAbsolutePath, setInitial, moveToNew, moveToNext, moveToPrevious, confirmUpdate, requestUpdate } = pathSlice.actions;
+export const { setAbsolutePath, setInitialUuid, moveToNew, moveToNext, moveToPrevious, confirmUpdate, requestUpdate } = pathSlice.actions;

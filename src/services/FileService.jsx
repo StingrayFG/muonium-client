@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const FileService = {
-  handleUpload: async (userData, file, parentUuid) => {
+  handleUpload: async (userData, parentUuid, file) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
     const formData = new FormData();
     formData.append('file', file);

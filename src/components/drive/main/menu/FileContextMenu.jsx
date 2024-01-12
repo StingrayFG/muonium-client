@@ -1,13 +1,16 @@
-import { useRef } from 'react';
+import { useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+
+import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
 
 import { requestUpdate } from 'services/slice/PathSlice';
 
 import FileService from 'services/FileService.jsx';
 
-export default function FileContextMenu ({ point, file, setRenaming }) {
-  const dispatch = useDispatch();
+export default function FileContextMenu ({ point, file }) {
+  const contextMenuContext = useContext(ContextMenuContext);
 
+  const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
 
   const handleDownload = async () => {
@@ -48,7 +51,7 @@ export default function FileContextMenu ({ point, file, setRenaming }) {
      
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-zinc-400 hover:to-zinc-500 rounded'
-      onClick={() => { setRenaming(true) }}>
+      onClick={() => { contextMenuContext.setRenaming(true) }}>
         <img src='/icons/pencil.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Rename</p>
       </button>
