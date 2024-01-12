@@ -24,7 +24,7 @@ export default function FolderPage ({ folderUuid }) {
   if (!folderUuid) { 
     folderUuid = uuid;
   }
-
+  
   // Update
   const [requiresUpdate, setRequiresUpdate] = useState(true);
   const [currentFolder, setCurrentFolder] = useState();
@@ -33,21 +33,20 @@ export default function FolderPage ({ folderUuid }) {
     if (!pathData.currentUuid) {
       dispatch(setInitialUuid({ uuid: folderUuid }));
     }
-  });
 
-  useEffect(() => {
+    if (pathData.currentUuid !== folderUuid) {
+      if (pathData.currentUuid === 'trash') { 
+        navigate('/drive/trash'); 
+      }
+      else if (pathData.currentUuid === 'home') { 
+        navigate('/drive/home'); 
+      }
+      else if (pathData.currentUuid) { 
+        navigate('/drive/folder/' + pathData.currentUuid); 
+      }
+    } 
+
     if (pathData.requiresUpdate) {
-      if (pathData.currentUuid !== folderUuid) {
-        if (pathData.currentUuid === 'trash') { 
-          navigate('/drive/trash'); 
-        }
-        else if (pathData.currentUuid === 'home') { 
-          navigate('/drive/home'); 
-        }
-        else if (pathData.currentUuid) { 
-          navigate('/drive/folder/' + pathData.currentUuid); 
-        }
-      } 
       setRequiresUpdate(true);
       dispatch(confirmUpdate());
       dispatch(getDrive(userData.driveUuid))
