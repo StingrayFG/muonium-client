@@ -18,10 +18,12 @@ export const pathSlice = createSlice({
       state.currentUuid = action.payload.uuid;
     }, 
     moveToNew: (state, action) => {
-      state.pathHistory = state.pathHistory.slice(0, state.positionInHistory + 1)
-      state.pathHistory.push(action.payload.uuid);
-      state.currentUuid = action.payload.uuid;
-      state.positionInHistory += 1;
+      if (state.currentUuid !== action.payload.uuid) {
+        state.pathHistory = state.pathHistory.slice(0, state.positionInHistory + 1)
+        state.pathHistory.push(action.payload.uuid);
+        state.currentUuid = action.payload.uuid;
+        state.positionInHistory += 1;
+      }
       state.requiresUpdate = true;
     },
     moveToNext: (state) => {
