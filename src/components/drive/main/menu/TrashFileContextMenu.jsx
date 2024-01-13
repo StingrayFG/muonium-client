@@ -28,7 +28,7 @@ export default function TrashFileContextMenu ({ point, file }) {
   if (point.y + menuHeight > windowHeight) { point.y -= menuHeight; }
 
   return (
-    <div className='w-48
+    <div className='w-60
     bg-gradient-to-b from-zinc-600 to-zinc-700 
     border-solid border-2 border-zinc-800 rounded-md
     text-lg font-semibold font-sans text-neutral-200' 
