@@ -128,7 +128,7 @@ export default function TopPanel () {
           bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800         
           border-solid border-2 rounded-l-md outline-none'>
             <p className='place-self-center'>
-              {(driveData.spaceUsed / (1024 * 1024)).toFixed(1)} MB / {(driveData.spaceTotal / (1024 * 1024)).toFixed(1)} MB
+              {(driveData.spaceUsed / (1024 * 1024)).toFixed(0)} MB / {(driveData.spaceTotal / (1024 * 1024)).toFixed(0)} MB
               {' (' + (driveData.spaceUsed / driveData.spaceTotal * 100).toFixed(0) + '% full)'}
             </p>
           </div>

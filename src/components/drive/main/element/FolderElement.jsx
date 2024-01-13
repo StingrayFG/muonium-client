@@ -66,7 +66,7 @@ export default function FolderElement ({ folder }) {
   }
 
   useEffect(() => {
-    const move = async () => {
+    const moveElement = async () => {
       if (contextMenuContext.requiresMove) {
         contextMenuContext.setRequiresMove(false);
         if (contextMenuContext.clickedElement.type === 'file') {
@@ -82,7 +82,7 @@ export default function FolderElement ({ folder }) {
         }
       }
     }
-    move();
+    moveElement();
   })
 
   return (

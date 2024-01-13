@@ -6,6 +6,7 @@ import { ContextMenuContext } from 'components/drive/main/context/ContextMenuCon
 import { requestUpdate } from 'services/slice/PathSlice';
 
 import FolderService from 'services/FolderService.jsx';
+import BookmarkService from 'services/BookmarkService.jsx';
 
 export default function FileContextMenu ({ point, folder }) {
   const contextMenuContext = useContext(ContextMenuContext);
@@ -16,6 +17,11 @@ export default function FileContextMenu ({ point, folder }) {
   const handleRemove = async () => {
     await FolderService.handleRemove(userData, folder)
     .then(() => { dispatch(requestUpdate()); })
+  }
+
+  const handleAddBookmark = async () => {
+    await BookmarkService.handleCreate(userData, folder)
+    //.then(() => { dispatch(requestUpdate()); })
   }
   
   const windowWidth = useRef(window.innerWidth).current;
@@ -37,6 +43,13 @@ export default function FileContextMenu ({ point, folder }) {
       onClick={() => { contextMenuContext.setRenaming(true) }}>
         <img src='/icons/pencil.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Rename</p>
+      </button>
+
+      <button className='w-full h-10 px-2 flex text-left 
+      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
+      onClick={handleAddBookmark}>
+        <img src='/icons/star.svg' alt='prev' width='20' className='place-self-center'/>
+        <p className='ml-2 place-self-center'>Add bookmark</p>
       </button>
 
       <button className='w-full h-10 px-2 flex text-left 
