@@ -97,11 +97,10 @@ export default function FolderElement ({ folder }) {
     onMouseDown={(event) => { contextMenuContext.enableDragging(event, folder) }}
     onMouseEnter={() => { contextMenuContext.setHoveredElement(folder) }}
     onMouseLeave={() => { contextMenuContext.setHoveredElement({ uuid: '' })}}
-    onContextMenu={(event) => { contextMenuContext.handleFolderContextMenuClick(event, folder) }}>
-
+    onContextMenu={(event) => { contextMenuContext.handleFolderContextMenuClick(event, folder) }}
+    onDoubleClick={handleDoubleClick}>
       <div className='w-48 h-48 mt-4 place-self-center  relative
-      border-solid border-0 border-black rounded-lg' 
-      onDoubleClick={handleDoubleClick}>
+      border-solid border-0 border-black rounded-lg'>
         <div className='w-36 h-16 right-0 absolute
         bg-gradient-to-b from-zinc-400 to-zinc-500
         border-solid border-2 border-zinc-500 rounded-md'>

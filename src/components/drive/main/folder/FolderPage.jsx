@@ -7,6 +7,7 @@ import { getDrive } from 'services/slice/DriveSlice';
 
 import { FolderContext } from 'components/drive/main/context/FolderContext';
 
+import SidePanel from 'components/drive/layout/SidePanel.jsx';
 import DropzoneComponent from 'components/drive/main/folder/DropzoneComponent';
 import ContextMenuComponent from 'components/drive/main/folder/ContextMenuComponent';
 import FolderContentsComponent from 'components/drive/main/folder/FolderContentsComponent';
@@ -74,14 +75,15 @@ export default function FolderPage ({ folderUuid }) {
   });
 
   return (
-    <div className='w-full h-full overflow-y-scroll scrollbar-none
+    <div className='w-full h-full overflow-y-scroll scrollbar-none 
     bg-gradient-to-b from-zinc-600/90 to-zinc-700/90'>
       <FolderContext.Provider value={{ currentFolder, requiresContextReset, setRequiresContextReset }}> 
-        <DropzoneComponent>
-          <ContextMenuComponent>
+        <ContextMenuComponent>
+          <SidePanel />
+          <DropzoneComponent>
             <FolderContentsComponent />   
-          </ContextMenuComponent>
-        </DropzoneComponent>
+          </DropzoneComponent>
+        </ContextMenuComponent>
       </FolderContext.Provider>     
     </div>
   );

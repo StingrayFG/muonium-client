@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { moveToNew } from 'services/slice/PathSlice';
 
+import { FolderContext } from 'components/drive/main/context/FolderContext.jsx';
+
 import BookmarkService from 'services/BookmarkService.jsx';
 
-import FolderElement from 'components/drive/main/element/FolderElement.jsx';
+import BookmarkElement from 'components/drive/main/element/BookmarkElement.jsx';
 
 export default function SidePanel () {
+  const folderContext = useContext(FolderContext);
+
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
 
@@ -19,7 +23,7 @@ export default function SidePanel () {
 
   useEffect(() => {
     const getBookmarks = async () => {
-      if (userData && !bookmarks) {
+      if (userData && folderContext.requiresContextReset) {
         await BookmarkService.handleGet(userData)
         .then(res => {
           setBookmarks(res);
@@ -33,15 +37,8 @@ export default function SidePanel () {
     getBookmarks();
   })
 
-  const handleClick = (folder) => {
-    if (!folder.isRemoved) {
-      dispatch(moveToNew({ uuid: folder.uuid }));
-    }
-  }
-
   return (
     <div className='w-96 h-full
-    bg-gradient-to-b from-zinc-600/90 to-zinc-700/90
     border-solid border-r-2 border-zinc-800
     text-2xl font-semibold font-sans text-neutral-200'>
       <div className='w-full h-12 px-3 flex text-left text-neutral-400'
@@ -69,13 +66,8 @@ export default function SidePanel () {
       </div>
 
       {bookmarks && <>
-        {bookmarks.map((folder) => (
-          <button className='w-full h-12 px-3 flex text-left 
-          hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-          key={folder.uuid}
-          onClick={() => { handleClick(folder) }}>
-            <p className='ml-2 place-self-center'>{folder.name}</p>
-          </button>
+        {bookmarks.map((bookmark) => (
+          <BookmarkElement key={bookmark.uuid} bookmark={bookmark}/>
         ))}
       </>}
 

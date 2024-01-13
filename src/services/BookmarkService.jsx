@@ -31,9 +31,9 @@ const BookmarkService = {
     })
   },
 
-  handleDelete: async (userData) => {
+  handleDelete: async (userData, folder) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
-    const body = { userUuid: userData.userUuid };
+    const body = { userUuid: userData.userUuid, folderUuid: folder.uuid };
 
     await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/delete', body, {headers})
     .then(res => {

@@ -8,14 +8,15 @@ import TrashFileContextMenu from 'components/drive/main/menu/TrashFileContextMen
 import FolderContextMenu from 'components/drive/main/menu/FolderContextMenu.jsx';
 import TrashFolderContextMenu from 'components/drive/main/menu/TrashFolderContextMenu.jsx';
 import DefaultContextMenu from 'components/drive/main/menu/DefaultContextMenu.jsx';
+import BookmarkContextMenu from 'components/drive/main/menu/BookmarkContextMenu.jsx';
 
 export default function FolderPage ({ children }) {
   const folderContext = useContext(FolderContext);
 
   // Context menu
-  const [clicked, setClicked] = useState(false);
+  const [isContextMenu, setIsContextMenu] = useState(false);
   const [clickedElement, setClickedElement] = useState({ uuid: ''});
-  const [point, setPoint] = useState({
+  const [contextMenuPoint, setContextMenuPoint] = useState({
     x: 0,
     y: 0,
   });
@@ -34,8 +35,8 @@ export default function FolderPage ({ children }) {
 
     setContextMenuType('file')
     setClickedElement(file);
-    setClicked(true);
-    setPoint({
+    setIsContextMenu(true);
+    setContextMenuPoint({
       x: event.pageX,
       y: event.pageY,
     });
@@ -47,8 +48,8 @@ export default function FolderPage ({ children }) {
 
     setContextMenuType('folder')
     setClickedElement(folder);
-    setClicked(true);
-    setPoint({
+    setIsContextMenu(true);
+    setContextMenuPoint({
       x: event.pageX,
       y: event.pageY,
     });
@@ -56,14 +57,28 @@ export default function FolderPage ({ children }) {
 
   const handleDefaultContextMenuClick = (event) => {
     event.preventDefault();
+    if (!hoveredElement.uuid) {
+      setContextMenuType('default')
+      setIsContextMenu(true);
+      setContextMenuPoint({
+        x: event.pageX,
+        y: event.pageY,
+      });
+    }
+  };
 
-    setContextMenuType('default')
-    setClicked(true);
-    setPoint({
+  const handleBookmarkContextMenuClick = (event, folder) => {
+    event.preventDefault();
+
+    setContextMenuType('bookmark')
+    setClickedElement(folder);
+    setIsContextMenu(true);
+    setContextMenuPoint({
       x: event.pageX,
       y: event.pageY,
     });
   };
+
 
   // Rename
   const [renaming, setRenaming] = useState(false);
@@ -114,19 +129,21 @@ export default function FolderPage ({ children }) {
   const handleClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    setClicked(false);
-    if (event.target === event.currentTarget) {
-      setClickedElement({ uuid: '' })
+    if (event.button === 0) {
+      setIsContextMenu(false);
+      if (!hoveredElement.uuid) {
+        setClickedElement({ uuid: '' })
+      }
     }
   };
 
   return (
-    <div className='w-full h-full'
+    <div className='w-full h-full grid grid-cols-[max-content_1fr] overflow-hidden'
     onClick={handleClick}
     onMouseMove={updatePoint}
     onMouseUp={disableDragging}
     onContextMenu={handleDefaultContextMenuClick}>
-      <ContextMenuContext.Provider value={{ handleFileContextMenuClick, handleFolderContextMenuClick, 
+      <ContextMenuContext.Provider value={{ handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick,
         clickedElement, setClickedElement, 
         hoveredElement, setHoveredElement, requiresMove, setRequiresMove,
         enableDragging, disableDragging, updatePoint,
@@ -140,16 +157,18 @@ export default function FolderPage ({ children }) {
           </div>
         }
 
-        {(clicked && !dragging) && <>
+        {(isContextMenu && !dragging) && <>
           {(folderContext.currentFolder.uuid !== 'trash') && <>
-            {(contextMenuType === 'default') && <DefaultContextMenu point={point} setCreatingFolder={setCreatingFolder}/>}
-            {(contextMenuType === 'file') && <FileContextMenu point={point} file={clickedElement} setRenaming={setRenaming}/>}
-            {(contextMenuType === 'folder') && <FolderContextMenu point={point} folder={clickedElement} setRenaming={setRenaming}/>}  
+            {(contextMenuType === 'default') && <DefaultContextMenu point={contextMenuPoint} setCreatingFolder={setCreatingFolder} />}
+            {(contextMenuType === 'file') && <FileContextMenu point={contextMenuPoint} file={clickedElement} setRenaming={setRenaming} />}
+            {(contextMenuType === 'folder') && <FolderContextMenu point={contextMenuPoint} folder={clickedElement} setRenaming={setRenaming} />}  
+            {(contextMenuType === 'bookmark') && <BookmarkContextMenu point={contextMenuPoint} bookmark={clickedElement} />}  
           </>}
 
           {(folderContext.currentFolder.uuid  === 'trash') && <>
-            {(contextMenuType === 'file') && <TrashFileContextMenu point={point} file={clickedElement} />}
-            {(contextMenuType === 'folder') && <TrashFolderContextMenu point={point} folder={clickedElement} />}  
+            {(contextMenuType === 'file') && <TrashFileContextMenu point={contextMenuPoint}  file={clickedElement} />}
+            {(contextMenuType === 'folder') && <TrashFolderContextMenu point={contextMenuPoint}  folder={clickedElement} />}  
+            {(contextMenuType === 'bookmark') && <BookmarkContextMenu point={contextMenuPoint}  bookmark={clickedElement} />}  
           </>}
         </>}
       </ContextMenuContext.Provider> 
