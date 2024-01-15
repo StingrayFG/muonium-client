@@ -1,7 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { setCopy, setCut, setPaste } from 'services/slice/ClipboardSlice.jsx';
+import { requestUpdate } from 'services/slice/PathSlice';
 
 import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
 import { FolderContext } from 'components/drive/main/context/FolderContext.jsx';
+
+import FileService from 'services/FileService.jsx';
 
 import FileContextMenu from 'components/drive/main/menu/FileContextMenu.jsx';
 import TrashFileContextMenu from 'components/drive/main/menu/TrashFileContextMenu.jsx';
@@ -10,12 +16,16 @@ import TrashFolderContextMenu from 'components/drive/main/menu/TrashFolderContex
 import DefaultContextMenu from 'components/drive/main/menu/DefaultContextMenu.jsx';
 import BookmarkContextMenu from 'components/drive/main/menu/BookmarkContextMenu.jsx';
 
-export default function FolderPage ({ children }) {
+export default function ContextMenuComponent ({ children }) {
   const folderContext = useContext(FolderContext);
+
+  const dispatch = useDispatch();
+  const userData = useSelector(state => state.user);
+  const clipboardData = useSelector(state => state.clipboard);
 
   // Context menu
   const [isContextMenu, setIsContextMenu] = useState(false);
-  const [clickedElement, setClickedElement] = useState({ uuid: ''});
+  const [clickedElement, setClickedElement] = useState({ uuid: '' });
   const [contextMenuPoint, setContextMenuPoint] = useState({
     x: 0,
     y: 0,
@@ -57,18 +67,20 @@ export default function FolderPage ({ children }) {
 
   const handleDefaultContextMenuClick = (event) => {
     event.preventDefault();
-    if (!hoveredElement.uuid) {
-      setContextMenuType('default')
-      setIsContextMenu(true);
-      setContextMenuPoint({
-        x: event.pageX,
-        y: event.pageY,
-      });
-    }
+    event.stopPropagation();
+
+    setContextMenuType('default')
+    setClickedElement({ uuid: '' });
+    setIsContextMenu(true);
+    setContextMenuPoint({
+      x: event.pageX,
+      y: event.pageY,
+    });
   };
 
   const handleBookmarkContextMenuClick = (event, folder) => {
     event.preventDefault();
+    event.stopPropagation();
 
     setContextMenuType('bookmark')
     setClickedElement(folder);
@@ -130,24 +142,66 @@ export default function FolderPage ({ children }) {
     event.preventDefault();
     event.stopPropagation();
     if (event.button === 0) {
-      setIsContextMenu(false);
-      if (!hoveredElement.uuid) {
+      if (!hoveredElement.uuid && !isContextMenu) {
         setClickedElement({ uuid: '' })
       }
+      setIsContextMenu(false);
     }
   };
+
+  const handleCopy = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    setIsContextMenu(false);
+
+    dispatch(setCopy({ originUuid: folderContext.currentFolder.uuid, elements: [clickedElement] }));
+  };
+
+  const handleCut = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    setIsContextMenu(false);
+
+    dispatch(setCut({ originUuid: folderContext.currentFolder.uuid, elements: [clickedElement] }));
+  };
+  
+  const handlePaste = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    setIsContextMenu(false);
+
+    if (clipboardData.mode === 'copy') {
+      console.log('copy')
+      FileService.handleCopy(userData, folderContext.currentFolder.uuid, clipboardData.elements[0])
+      .then(() => { dispatch(requestUpdate()); })
+    } else if (clipboardData.mode === 'cut') {
+      console.log('cut')
+      FileService.handleMove(userData, folderContext.currentFolder.uuid, clipboardData.elements[0])
+      .then(() => { dispatch(requestUpdate()); })
+    }
+
+    dispatch(setPaste());
+  };
+  
 
   return (
     <div className='w-full h-full grid grid-cols-[max-content_1fr] overflow-hidden'
     onClick={handleClick}
     onMouseMove={updatePoint}
     onMouseUp={disableDragging}
-    onContextMenu={handleDefaultContextMenuClick}>
+    onContextMenu={handleDefaultContextMenuClick}
+
+    onCopy={handleCopy}
+    onPaste={handlePaste}>
       <ContextMenuContext.Provider value={{ handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick,
         clickedElement, setClickedElement, 
         hoveredElement, setHoveredElement, requiresMove, setRequiresMove,
         enableDragging, disableDragging, updatePoint,
-        renaming, setRenaming, creatingFolder, setCreatingFolder }}> 
+        renaming, setRenaming, creatingFolder, setCreatingFolder,
+        handleCopy, handleCut, handlePaste}}> 
         {children}
 
         {(dragging && ((Math.abs(containerPoint.x - containerPointInitial.x) > 10) && (Math.abs(containerPoint.y - containerPointInitial.y) > 10))) && 

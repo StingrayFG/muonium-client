@@ -10,9 +10,10 @@ export default function DefaultContextMenu ({ point }) {
   const windowWidth = useRef(window.innerWidth).current;
   const windowHeight = useRef(window.innerHeight).current;
 
-  const menuHeight = 4 + 40 * 2;
+  const menuWidth = 240;
+  const menuHeight = 4 + 40 * 3 + 2 * 1;
 
-  if (point.x + 192 > windowWidth) { point.x -= 192; }
+  if (point.x + menuWidth > windowWidth) { point.x -= menuWidth; }
   if (point.y + menuHeight > windowHeight) { point.y -= menuHeight; }
 
   return (
@@ -23,7 +24,7 @@ export default function DefaultContextMenu ({ point }) {
     style={{position: 'absolute', top: point.y, left: point.x}}>
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={() => { dropzoneContext.open() }}>
+      onClick={dropzoneContext.open}>
         <img src='/icons/upload.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Upload a file</p>
       </button>    
@@ -33,6 +34,15 @@ export default function DefaultContextMenu ({ point }) {
       onClick={() => { contextMenuContext.setCreatingFolder(true) }}>
         <img src='/icons/file-plus.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>New folder</p>
+      </button>    
+
+      <div className='mx-1 border-solid border-t-2 border-zinc-800 border-top'></div>
+
+      <button className='w-full h-10 px-2 flex text-left 
+      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
+      onClick={contextMenuContext.handlePaste}>
+        <img src='/icons/clipboard-minus.svg' alt='prev' width='20' className='place-self-center'/>
+        <p className='ml-2 place-self-center'>Paste</p>
       </button>    
     </div>    
   );

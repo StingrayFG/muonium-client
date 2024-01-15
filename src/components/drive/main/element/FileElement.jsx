@@ -12,6 +12,7 @@ export default function FileElement ({ file }) {
   
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
+  const clipboardData = useSelector(state => state.clipboard);
 
   const [previousName, setPreviousName] = useState('');
   const [inputData, setInputData] = useState(file.name);
@@ -22,8 +23,7 @@ export default function FileElement ({ file }) {
 
   const setName = async (event) => {
     if (event.target.value) {
-      file.name = event.target.value;
-      await FileService.handleRename(userData, file)
+      await FileService.handleRename(userData, { uuid: file.uuid, name: event.target.value })
       .then(() => {
         contextMenuContext.setRenaming(false);
         dispatch(requestUpdate());
@@ -46,9 +46,10 @@ export default function FileElement ({ file }) {
     onMouseLeave={() => { contextMenuContext.setHoveredElement({ uuid: '' })}}
     onContextMenu={(event) => { contextMenuContext.handleFileContextMenuClick(event, file) }}>
 
-      <div className='w-36 h-48 mt-4 place-self-center
+      <div className={`w-36 h-48 mt-4 place-self-center
       bg-gradient-to-b from-neutral-300 to-neutral-400
-      border-solid border-2 border-neutral-400 rounded-md'>
+      border-solid border-2 border-neutral-400 rounded-md
+      ${(clipboardData.cutElementsUuids.includes(file.uuid)) ? 'opacity-50' : 'opacity-100'}`}>
       </div>
 
       {((contextMenuContext.renaming) && (file.uuid === contextMenuContext.clickedElement.uuid)) ? 

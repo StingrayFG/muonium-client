@@ -42,11 +42,24 @@ const FileService = {
     });  
   },
 
-  handleCopy: async (userData, file) => {
+  handleCopy: async (userData, parentUuid, file) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
-    const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, fileUuid: file.uuid };
+    const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, parentUuid, fileUuid: file.uuid };
 
     await axios.put(process.env.REACT_APP_BACKEND_URL + '/file/copy', body, {headers})
+    .then(res => {
+      return(res.data);
+    })
+    .catch(err => {
+      return(err);
+    });  
+  },
+
+  handleMove: async (userData, parentUuid, file) => {
+    const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
+    const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, parentUuid, fileUuid: file.uuid };
+
+    await axios.put(process.env.REACT_APP_BACKEND_URL + '/file/move', body, {headers})
     .then(res => {
       return(res.data);
     })
