@@ -8,6 +8,7 @@ import { ContextMenuContext } from 'components/drive/main/context/ContextMenuCon
 import { FolderContext } from 'components/drive/main/context/FolderContext.jsx';
 
 import FileService from 'services/FileService.jsx';
+import FolderService from 'services/FolderService.jsx';
 
 import FileContextMenu from 'components/drive/main/menu/FileContextMenu.jsx';
 import TrashFileContextMenu from 'components/drive/main/menu/TrashFileContextMenu.jsx';
@@ -91,6 +92,16 @@ export default function ContextMenuComponent ({ children }) {
     });
   };
 
+  const handleClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.button === 0) {
+      if (!hoveredElement.uuid && !isContextMenu) {
+        setClickedElement({ uuid: '' })
+      }
+      setIsContextMenu(false);
+    }
+  };
 
   // Rename
   const [renaming, setRenaming] = useState(false);
@@ -138,17 +149,6 @@ export default function ContextMenuComponent ({ children }) {
     }
   }
 
-  const handleClick = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (event.button === 0) {
-      if (!hoveredElement.uuid && !isContextMenu) {
-        setClickedElement({ uuid: '' })
-      }
-      setIsContextMenu(false);
-    }
-  };
-
   const handleCopy = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -164,6 +164,7 @@ export default function ContextMenuComponent ({ children }) {
     
     setIsContextMenu(false);
 
+    console.log(clickedElement)
     dispatch(setCut({ originUuid: folderContext.currentFolder.uuid, elements: [clickedElement] }));
   };
   
@@ -174,13 +175,18 @@ export default function ContextMenuComponent ({ children }) {
     setIsContextMenu(false);
 
     if (clipboardData.mode === 'copy') {
-      console.log('copy')
-      FileService.handleCopy(userData, folderContext.currentFolder.uuid, clipboardData.elements[0])
-      .then(() => { dispatch(requestUpdate()); })
+      if (clipboardData.elements[0].type === 'file') {
+        FileService.handleCopy(userData, folderContext.currentFolder.uuid, clipboardData.elements[0])
+        .then(() => { dispatch(requestUpdate()); })
+      }
     } else if (clipboardData.mode === 'cut') {
-      console.log('cut')
-      FileService.handleMove(userData, folderContext.currentFolder.uuid, clipboardData.elements[0])
-      .then(() => { dispatch(requestUpdate()); })
+      if (clipboardData.elements[0].type === 'file') { 
+        FileService.handleMove(userData, folderContext.currentFolder.uuid, clipboardData.elements[0])
+        .then(() => { dispatch(requestUpdate()); })
+      } else if (clipboardData.elements[0].type === 'folder') { 
+        FolderService.handleMove(userData, folderContext.currentFolder.uuid, clipboardData.elements[0])
+        .then(() => { dispatch(requestUpdate()); })
+      }
     }
 
     dispatch(setPaste());
@@ -195,6 +201,7 @@ export default function ContextMenuComponent ({ children }) {
     onContextMenu={handleDefaultContextMenuClick}
 
     onCopy={handleCopy}
+    onCut={handleCut}
     onPaste={handlePaste}>
       <ContextMenuContext.Provider value={{ handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick,
         clickedElement, setClickedElement, 

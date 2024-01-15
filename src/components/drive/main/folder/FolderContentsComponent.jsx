@@ -6,7 +6,7 @@ import { ContextMenuContext } from 'components/drive/main/context/ContextMenuCon
 import FileElement from 'components/drive/main/element/FileElement.jsx';
 import FolderElement from 'components/drive/main/element/FolderElement.jsx';
 
-export default function FolderPage ({ children }) {
+export default function FolderContentsComponent ({ children }) {
   const folderContext = useContext(FolderContext);
   const contextMenuContext = useContext(ContextMenuContext);
 

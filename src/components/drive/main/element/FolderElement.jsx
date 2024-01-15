@@ -15,6 +15,7 @@ export default function FolderElement ({ folder }) {
   
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
+  const clipboardData = useSelector(state => state.clipboard);
 
   if (!folder) { folder = { uuid: '', name: '', parentUuid: folderContext.currentFolder.uuid } }
 
@@ -70,12 +71,12 @@ export default function FolderElement ({ folder }) {
       if (contextMenuContext.requiresMove) {
         contextMenuContext.setRequiresMove(false);
         if (contextMenuContext.clickedElement.type === 'file') {
-          await FileService.handleMove(userData, folder.uuid, contextMenuContext.clickedElement)
+          await FileService.handleMove(userData, contextMenuContext.hoveredElement.uuid, contextMenuContext.clickedElement)
           .then(() => {
             dispatch(requestUpdate());
           })
         } else if (contextMenuContext.clickedElement.type === 'folder') {
-          FolderService.handleMove(userData, folder.uuid, contextMenuContext.clickedElement)
+          FolderService.handleMove(userData, contextMenuContext.hoveredElement.uuid, contextMenuContext.clickedElement)
           .then(() => {
             dispatch(requestUpdate());
           })
@@ -99,8 +100,10 @@ export default function FolderElement ({ folder }) {
     onMouseLeave={() => { contextMenuContext.setHoveredElement({ uuid: '' })}}
     onContextMenu={(event) => { contextMenuContext.handleFolderContextMenuClick(event, folder) }}
     onDoubleClick={handleDoubleClick}>
-      <div className='w-48 h-48 mt-4 place-self-center  relative
-      border-solid border-0 border-black rounded-lg'>
+
+      <div className={`w-48 h-48 mt-4 place-self-center  relative
+      border-solid border-0 border-black rounded-lg
+      ${(clipboardData.cutElementsUuids.includes(folder.uuid)) ? 'opacity-50' : 'opacity-100'}`}>
         <div className='w-36 h-16 right-0 absolute
         bg-gradient-to-b from-zinc-400 to-zinc-500
         border-solid border-2 border-zinc-500 rounded-md'>
