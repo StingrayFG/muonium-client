@@ -28,7 +28,7 @@ export default function FileContextMenu ({ point, file }) {
   const windowHeight = useRef(window.innerHeight).current;
 
   const menuWidth = 240;
-  const menuHeight = 4 + 40 * 4 + 2 * 2;
+  const menuHeight = 4 + 40 * 5 + 2 * 2;
   
   if (point.x + menuWidth > windowWidth) { point.x -= menuWidth; }
   if (point.y + menuHeight > windowHeight) { point.y -= menuHeight; }

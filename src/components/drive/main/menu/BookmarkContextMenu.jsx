@@ -18,9 +18,10 @@ export default function BookmarkContextMenu ({ point, bookmark }) {
   const windowWidth = useRef(window.innerWidth).current;
   const windowHeight = useRef(window.innerHeight).current;
 
-  const menuHeight = 4 + 40 * 1;
-
-  if (point.x + 192 > windowWidth) { point.x -= 192; }
+  const menuWidth = 240;
+  const menuHeight = 4 + 40 * 3 + 2 * 0;
+  
+  if (point.x + menuWidth > windowWidth) { point.x -= menuWidth; }
   if (point.y + menuHeight > windowHeight) { point.y -= menuHeight; }
 
   return (
