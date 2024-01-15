@@ -27,7 +27,6 @@ export default function SidePanel () {
         await BookmarkService.handleGet(userData)
         .then(res => {
           setBookmarks(res);
-          console.log(res);
         })
         .catch(err => {
           console.error(err);
