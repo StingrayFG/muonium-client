@@ -1,20 +1,18 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useContext } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { moveToNew, requestUpdate } from 'services/slice/PathSlice';
+import { moveToNew } from 'services/slice/PathSlice';
 
+import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
 import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
 import { FolderContext } from 'components/drive/main/context/FolderContext.jsx';
 
-import FolderService from 'services/FolderService.jsx';
-import FileService from 'services/FileService.jsx';
-
 export default function BookmarkElement ({ bookmark }) {
   const contextMenuContext = useContext(ContextMenuContext);
+  const cutCopyPasteContext = useContext(CutCopyPasteContext);
   const folderContext = useContext(FolderContext);
   
   const dispatch = useDispatch();
-  const userData = useSelector(state => state.user);
 
   if (!bookmark) { bookmark = { uuid: '', folder: { uuid: '', name: '', parentUuid: folderContext.currentFolder.uuid } } };
 
@@ -24,34 +22,14 @@ export default function BookmarkElement ({ bookmark }) {
     }
   }
 
-  useEffect(() => {
-    const moveElement = async () => {
-      if (contextMenuContext.requiresMove) {
-        contextMenuContext.setRequiresMove(false);
-        if (contextMenuContext.clickedElement.type === 'file') {
-          await FileService.handleMove(userData, bookmark.folder.uuid, contextMenuContext.clickedElement)
-          .then(() => {
-            dispatch(requestUpdate());
-          })
-        } else if (contextMenuContext.clickedElement.type === 'folder') {
-          FolderService.handleMove(userData, bookmark.folder.uuid, contextMenuContext.clickedElement)
-          .then(() => {
-            dispatch(requestUpdate());
-          })
-        }
-      }
-    }
-    moveElement();
-  })
-
   return (
     <button className={`w-full h-12 px-3 flex text-left'
-    ${(bookmark.uuid === contextMenuContext.clickedElement.uuid) ?
+    ${(bookmark.uuid === cutCopyPasteContext.clickedElement.uuid) ?
       'bg-gradient-to-b from-sky-200/30 to-sky-400/30 rounded'
       :
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15 rounded'}`}
-    onMouseEnter={() => { contextMenuContext.setHoveredElement(bookmark) }}
-    onMouseLeave={() => { contextMenuContext.setHoveredElement({ uuid: '' })}}
+    onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(bookmark) }}
+    onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' })}}
     onContextMenu={(event) => { contextMenuContext.handleBookmarkContextMenuClick(event, bookmark) }}
     onClick={handleClick}>
       <p className='ml-9 place-self-center'>{bookmark.folder.name}</p>

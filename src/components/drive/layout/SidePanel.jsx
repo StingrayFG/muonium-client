@@ -11,9 +11,11 @@ import BookmarkElement from 'components/drive/main/element/BookmarkElement.jsx';
 
 export default function SidePanel () {
   const folderContext = useContext(FolderContext);
+  const a = folderContext.currentFolder;
 
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
+  const pathData = useSelector(state => state.path);
 
   const moveToUuid = (uuid) => {
     dispatch(moveToNew({ uuid }));
@@ -23,7 +25,7 @@ export default function SidePanel () {
 
   useEffect(() => {
     const getBookmarks = async () => {
-      if (userData && folderContext.requiresContextReset) {
+      if (userData && pathData.requiresUpdate) {
         await BookmarkService.handleGet(userData)
         .then(res => {
           setBookmarks(res);
@@ -69,7 +71,6 @@ export default function SidePanel () {
           <BookmarkElement key={bookmark.uuid} bookmark={bookmark}/>
         ))}
       </>}
-
     </div>
   );
 }

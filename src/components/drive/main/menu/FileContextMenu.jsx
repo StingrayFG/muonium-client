@@ -1,6 +1,7 @@
 import { useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
 import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
 
 import { requestUpdate } from 'services/slice/PathSlice';
@@ -9,6 +10,7 @@ import FileService from 'services/FileService.jsx';
 
 export default function FileContextMenu ({ point, file }) {
   const contextMenuContext = useContext(ContextMenuContext);
+  const cutCopyPasteContext = useContext(CutCopyPasteContext);
 
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
@@ -52,14 +54,14 @@ export default function FileContextMenu ({ point, file }) {
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={contextMenuContext.handleCopy}>
+      onClick={cutCopyPasteContext.handleCopy}>
         <img src='/icons/clipboard-plus.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Copy</p>
       </button>
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={contextMenuContext.handleCut}>
+      onClick={cutCopyPasteContext.handleCut}>
         <img src='/icons/clipboard-x.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Cut</p>
       </button>

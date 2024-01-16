@@ -21,7 +21,6 @@ const FileService = {
 
     await axios.post(process.env.REACT_APP_BACKEND_URL + '/file/download', body, {headers})
     .then(res => {
-      console.log(process.env.REACT_APP_BACKEND_URL + '/file/download/' + file.uuid + '/' + res.data.downloadToken);
       window.location.href = (process.env.REACT_APP_BACKEND_URL + '/file/download/' + file.uuid + '/' + res.data.downloadToken);
     })
     .catch(err => {

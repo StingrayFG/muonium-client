@@ -3,12 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { requestUpdate } from 'services/slice/PathSlice';
 
+import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
 import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
 
 import FileService from 'services/FileService.jsx';
 
 export default function FileElement ({ file }) {
   const contextMenuContext = useContext(ContextMenuContext);
+  const cutCopyPasteContext = useContext(CutCopyPasteContext);
   
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
@@ -37,13 +39,13 @@ export default function FileElement ({ file }) {
   return (
     <div className={`w-full h-full grid place-self-center
     border-solid border-0 border-black rounded-md
-    ${(file.uuid === contextMenuContext.clickedElement.uuid) ?
+    ${(file.uuid === cutCopyPasteContext.clickedElement.uuid) ?
     'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
     :
     'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-    onMouseDown={(event) => { contextMenuContext.enableDragging(event, file) }}
-    onMouseEnter={() => { contextMenuContext.setHoveredElement(file) }}
-    onMouseLeave={() => { contextMenuContext.setHoveredElement({ uuid: '' })}}
+    onMouseDown={(event) => { cutCopyPasteContext.enableDragging(event, file) }}
+    onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(file) }}
+    onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' })}}
     onContextMenu={(event) => { contextMenuContext.handleFileContextMenuClick(event, file) }}>
 
       <div className={`w-64 h-48 mt-4 place-self-center grid
@@ -52,7 +54,7 @@ export default function FileElement ({ file }) {
         <img src='/icons/mu-file.svg' alt='prev' width='220' className='place-self-center pointer-events-none select-none'/>
       </div>
 
-      {((contextMenuContext.renaming) && (file.uuid === contextMenuContext.clickedElement.uuid)) ? 
+      {((contextMenuContext.renaming) && (file.uuid === cutCopyPasteContext.clickedElement.uuid)) ? 
       <div className='w-full h-24 mt-2 grid place-self-center'>
         <textarea className='w-full place-self-center h-full text-center outline-none resize-none
         bg-transparent 

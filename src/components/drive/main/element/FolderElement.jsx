@@ -1,16 +1,17 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { moveToNew, requestUpdate } from 'services/slice/PathSlice';
 
+import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
 import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
 import { FolderContext } from 'components/drive/main/context/FolderContext.jsx';
 
 import FolderService from 'services/FolderService.jsx';
-import FileService from 'services/FileService.jsx';
 
 export default function FolderElement ({ folder }) {
   const contextMenuContext = useContext(ContextMenuContext);
+  const cutCopyPasteContext = useContext(CutCopyPasteContext);
   const folderContext = useContext(FolderContext);
   
   const dispatch = useDispatch();
@@ -69,15 +70,15 @@ export default function FolderElement ({ folder }) {
   return (
     <div className={`w-full h-full grid place-self-center
     border-solid border-0 border-black rounded-md
-    ${((folder.uuid === contextMenuContext.clickedElement.uuid) ||
-    ((contextMenuContext.renaming) && (folder.uuid === contextMenuContext.clickedElement.uuid)) || 
+    ${((folder.uuid === cutCopyPasteContext.clickedElement.uuid) ||
+    ((contextMenuContext.renaming) && (folder.uuid === cutCopyPasteContext.clickedElement.uuid)) || 
     ((contextMenuContext.creatingFolder) && (!folder.uuid))) ?
     'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
     :
     'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-    onMouseDown={(event) => { contextMenuContext.enableDragging(event, folder) }}
-    onMouseEnter={() => { contextMenuContext.setHoveredElement(folder) }}
-    onMouseLeave={() => { contextMenuContext.setHoveredElement({ uuid: '' })}}
+    onMouseDown={(event) => { cutCopyPasteContext.enableDragging(event, folder) }}
+    onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(folder) }}
+    onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' })}}
     onContextMenu={(event) => { contextMenuContext.handleFolderContextMenuClick(event, folder) }}
     onDoubleClick={handleDoubleClick}>
 
@@ -87,7 +88,7 @@ export default function FolderElement ({ folder }) {
         <img src='/icons/mu-folder.svg' alt='prev' width='220' className='place-self-center pointer-events-none select-none'/>
       </div>
 
-      {(((contextMenuContext.renaming) && (folder.uuid === contextMenuContext.clickedElement.uuid)) || 
+      {(((contextMenuContext.renaming) && (folder.uuid === cutCopyPasteContext.clickedElement.uuid)) || 
       ((contextMenuContext.creatingFolder) && (!folder.uuid))) ? 
       <div className='w-full h-24 mt-4 grid place-self-center'>
         <textarea className='w-full h-full place-self-center text-center outline-none resize-none

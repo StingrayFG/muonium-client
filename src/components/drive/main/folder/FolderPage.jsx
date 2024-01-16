@@ -9,6 +9,7 @@ import { FolderContext } from 'components/drive/main/context/FolderContext';
 
 import SidePanel from 'components/drive/layout/SidePanel.jsx';
 import DropzoneComponent from 'components/drive/main/folder/DropzoneComponent';
+import CutCopyPasteComponent from 'components/drive/main/folder/CutCopyPasteComponent';
 import ContextMenuComponent from 'components/drive/main/folder/ContextMenuComponent';
 import FolderContentsComponent from 'components/drive/main/folder/FolderContentsComponent';
 
@@ -29,7 +30,6 @@ export default function FolderPage ({ folderUuid }) {
   // Update
   const [requiresUpdate, setRequiresUpdate] = useState(true);
   const [currentFolder, setCurrentFolder] = useState();
-  const [requiresContextReset, setRequiresContextReset] = useState(false);
 
   useEffect(() => {
     if (!pathData.currentUuid) {
@@ -61,8 +61,7 @@ export default function FolderPage ({ folderUuid }) {
         setRequiresUpdate(false);
         await FolderService.handleGetByUuid(userData, pathData.currentUuid)
         .then(res => {
-          console.log(res)
-          setRequiresContextReset(true)
+          //console.log(res)
           setCurrentFolder(res);
           dispatch(setAbsolutePath({ currentAbsolutePath: res.absolutePath }));
         })
@@ -77,14 +76,16 @@ export default function FolderPage ({ folderUuid }) {
   return (
     <div className='w-full h-full overflow-y-scroll scrollbar-none 
     bg-gradient-to-b from-zinc-600/90 to-zinc-700/90'>
-      <FolderContext.Provider value={{ currentFolder, requiresContextReset, setRequiresContextReset }}> 
+      <FolderContext.Provider value={{ currentFolder }}> 
         <DropzoneComponent>
-          <ContextMenuComponent>
-            <SidePanel />
-            <div className='w-full h-full'>
-              <FolderContentsComponent />   
-            </div>
-          </ContextMenuComponent>
+          <CutCopyPasteComponent>
+            <ContextMenuComponent>
+              <SidePanel />
+              <div className='w-full h-full'>
+                <FolderContentsComponent />   
+              </div>
+            </ContextMenuComponent>
+          </CutCopyPasteComponent>
         </DropzoneComponent>
       </FolderContext.Provider>     
     </div>
