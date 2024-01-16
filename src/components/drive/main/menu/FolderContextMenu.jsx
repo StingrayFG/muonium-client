@@ -38,7 +38,9 @@ export default function FolderContextMenu ({ point, folder }) {
     bg-gradient-to-b from-zinc-600 to-zinc-700 
     border-solid border-2 border-zinc-800 rounded-md
     text-lg font-semibold font-sans text-neutral-200' 
-    style={{position: 'absolute', top: point.y, left: point.x}}>
+    style={{position: 'absolute', top: point.y, left: point.x}}
+    onMouseEnter={() => { contextMenuContext.setHoveredOverMenu(true) }}
+    onMouseLeave={() => { contextMenuContext.setHoveredOverMenu(false) }}>
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={handleCreateBookmark}>

@@ -92,11 +92,13 @@ export default function ContextMenuComponent ({ children }) {
     });
   };
 
+  const [hoveredOverMenu, setHoveredOverMenu] = useState(false);
+  
   const handleClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
     if (event.button === 0) {
-      if (!hoveredElement.uuid && !isContextMenu) {
+      if ((!hoveredElement.uuid && !isContextMenu) || (!hoveredOverMenu && isContextMenu)) {
         setClickedElement({ uuid: '' })
       }
       setIsContextMenu(false);
@@ -206,6 +208,7 @@ export default function ContextMenuComponent ({ children }) {
       <ContextMenuContext.Provider value={{ handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick,
         clickedElement, setClickedElement, 
         hoveredElement, setHoveredElement, requiresMove, setRequiresMove,
+        hoveredOverMenu, setHoveredOverMenu,
         enableDragging, disableDragging, updatePoint,
         renaming, setRenaming, creatingFolder, setCreatingFolder,
         handleCopy, handleCut, handlePaste}}> 
