@@ -66,26 +66,6 @@ export default function FolderElement ({ folder }) {
     }
   }
 
-  useEffect(() => {
-    const moveElement = async () => {
-      if (contextMenuContext.requiresMove) {
-        contextMenuContext.setRequiresMove(false);
-        if (contextMenuContext.clickedElement.type === 'file') {
-          await FileService.handleMove(userData, contextMenuContext.hoveredElement.uuid, contextMenuContext.clickedElement)
-          .then(() => {
-            dispatch(requestUpdate());
-          })
-        } else if (contextMenuContext.clickedElement.type === 'folder') {
-          FolderService.handleMove(userData, contextMenuContext.hoveredElement.uuid, contextMenuContext.clickedElement)
-          .then(() => {
-            dispatch(requestUpdate());
-          })
-        }
-      }
-    }
-    moveElement();
-  })
-
   return (
     <div className={`w-full h-full grid place-self-center
     border-solid border-0 border-black rounded-md
@@ -101,22 +81,15 @@ export default function FolderElement ({ folder }) {
     onContextMenu={(event) => { contextMenuContext.handleFolderContextMenuClick(event, folder) }}
     onDoubleClick={handleDoubleClick}>
 
-      <div className={`w-48 h-48 mt-4 place-self-center  relative
+      <div className={`w-64 h-48 mt-4 place-self-center grid
       border-solid border-0 border-black rounded-lg
       ${(clipboardData.cutElementsUuids.includes(folder.uuid)) ? 'opacity-50' : 'opacity-100'}`}>
-        <div className='w-36 h-16 right-0 absolute
-        bg-gradient-to-b from-zinc-400 to-zinc-500
-        border-solid border-2 border-zinc-500 rounded-md'>
-        </div>
-        <div className='w-48 h-36 bottom-0 absolute
-        bg-gradient-to-b from-neutral-300 to-neutral-400
-        border-solid border-2 border-neutral-400 rounded-md'>
-        </div> 
+        <img src='/icons/mu-folder.svg' alt='prev' width='220' className='place-self-center pointer-events-none select-none'/>
       </div>
 
       {(((contextMenuContext.renaming) && (folder.uuid === contextMenuContext.clickedElement.uuid)) || 
       ((contextMenuContext.creatingFolder) && (!folder.uuid))) ? 
-      <div className='w-full h-24 mt-2 grid place-self-center'>
+      <div className='w-full h-24 mt-4 grid place-self-center'>
         <textarea className='w-full h-full place-self-center text-center outline-none resize-none
         bg-transparent 
         border-solid border-2 border-neutral-200 rounded-md

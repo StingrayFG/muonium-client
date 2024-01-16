@@ -85,6 +85,12 @@ export default function TopPanel () {
       border-solid border-b-2 border-zinc-800
       text-lg font-semibold font-sans text-neutral-200'>
         <div className='flex'>
+
+          <div className='w-16 h-12 mr-4 grid'>
+            <img src='/icons/mu-logo.svg' alt='prev' width='60' className='place-self-center'/>
+          </div>
+          
+
           <button className={`w-12 h-12 grid
           bg-gradient-to-b from-neutral-300 to-neutral-400 border-neutral-400
           ${(pathData.positionInHistory > 0) ? 

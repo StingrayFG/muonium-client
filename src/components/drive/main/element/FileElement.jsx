@@ -46,10 +46,10 @@ export default function FileElement ({ file }) {
     onMouseLeave={() => { contextMenuContext.setHoveredElement({ uuid: '' })}}
     onContextMenu={(event) => { contextMenuContext.handleFileContextMenuClick(event, file) }}>
 
-      <div className={`w-36 h-48 mt-4 place-self-center
-      bg-gradient-to-b from-neutral-300 to-neutral-400
-      border-solid border-2 border-neutral-400 rounded-md
+      <div className={`w-64 h-48 mt-4 place-self-center grid
+      border-solid border-0 border-black rounded-lg
       ${(clipboardData.cutElementsUuids.includes(file.uuid)) ? 'opacity-50' : 'opacity-100'}`}>
+        <img src='/icons/mu-file.svg' alt='prev' width='220' className='place-self-center pointer-events-none select-none'/>
       </div>
 
       {((contextMenuContext.renaming) && (file.uuid === contextMenuContext.clickedElement.uuid)) ? 
