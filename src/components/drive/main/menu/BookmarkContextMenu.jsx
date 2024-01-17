@@ -5,7 +5,7 @@ import { ContextMenuContext } from 'components/drive/main/context/ContextMenuCon
 
 import { requestUpdate } from 'services/slice/PathSlice';
 
-import BookmarkService from 'services/BookmarkService.jsx';
+import { deleteBookmark } from 'services/slice/BookmarkSlice';
 
 export default function BookmarkContextMenu ({ point, bookmark }) {
   const contextMenuContext = useContext(ContextMenuContext);
@@ -14,9 +14,8 @@ export default function BookmarkContextMenu ({ point, bookmark }) {
   const userData = useSelector(state => state.user);
 
   const handleDelete = async () => {
-    console.log(bookmark)
-    await BookmarkService.handleDelete(userData, bookmark.folder)
-    .then(() => { dispatch(requestUpdate()); })
+    console.log(bookmark.folder)
+    dispatch(deleteBookmark({ userData, folder: bookmark.folder }));
   }
 
   const windowWidth = useRef(window.innerWidth).current;

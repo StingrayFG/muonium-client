@@ -3,6 +3,7 @@ import { userSlice } from 'services/slice/UserSlice.jsx';
 import { driveSlice } from 'services/slice/DriveSlice.jsx';
 import { pathSlice } from 'services/slice/PathSlice.jsx';
 import { clipboardSlice } from 'services/slice/ClipboardSlice.jsx';
+import { bookmarkSlice } from 'services/slice/BookmarkSlice.jsx';
 
 export default configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export default configureStore({
     drive: driveSlice.reducer,
     path: pathSlice.reducer,
     clipboard: clipboardSlice.reducer,
+    bookmark: bookmarkSlice.reducer,
   },
 });

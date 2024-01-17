@@ -2,10 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { moveToNew } from 'services/slice/PathSlice';
+import { getBookmarks } from 'services/slice/BookmarkSlice';
 
 import { FolderContext } from 'components/drive/main/context/FolderContext.jsx';
-
-import BookmarkService from 'services/BookmarkService.jsx';
 
 import BookmarkElement from 'components/drive/main/element/BookmarkElement.jsx';
 
@@ -15,7 +14,7 @@ export default function SidePanel () {
 
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
-  const pathData = useSelector(state => state.path);
+  const bookmarkData = useSelector(state => state.bookmark);
 
   const moveToUuid = (uuid) => {
     dispatch(moveToNew({ uuid }));
@@ -24,18 +23,18 @@ export default function SidePanel () {
   const [bookmarks, setBookmarks] = useState();
 
   useEffect(() => {
-    const getBookmarks = async () => {
-      if (userData && pathData.requiresUpdate) {
-        await BookmarkService.handleGet(userData)
-        .then(res => {
-          setBookmarks(res);
-        })
-        .catch(err => {
-          console.error(err);
-        }); 
+    const get = async () => {
+      if (userData && bookmarkData.requiresUpdate) {
+        await dispatch(getBookmarks(userData));
       }
     }
-    getBookmarks();
+    get();
+  })
+
+  useEffect(() => {
+    if (bookmarks !== bookmarkData.bookmarks) {
+      setBookmarks(bookmarkData.bookmarks);
+    }
   })
 
   return (

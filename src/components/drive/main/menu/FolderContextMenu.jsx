@@ -4,10 +4,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
 import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
 
+import { createBookmark, deleteBookmark } from 'services/slice/BookmarkSlice';
+
 import { requestUpdate } from 'services/slice/PathSlice';
 
 import FolderService from 'services/FolderService.jsx';
-import BookmarkService from 'services/BookmarkService.jsx';
 
 export default function FolderContextMenu ({ point, folder }) {
   const contextMenuContext = useContext(ContextMenuContext);
@@ -15,6 +16,7 @@ export default function FolderContextMenu ({ point, folder }) {
 
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
+  const bookmarkData = useSelector(state => state.bookmark);
 
   const handleRemove = async () => {
     await FolderService.handleRemove(userData, folder)
@@ -22,8 +24,11 @@ export default function FolderContextMenu ({ point, folder }) {
   }
 
   const handleCreateBookmark = async () => {
-    await BookmarkService.handleCreate(userData, folder)
-    .then(() => { dispatch(requestUpdate()); })
+    dispatch(createBookmark({ userData, folder }));
+  }
+
+  const handleDeleteBookmark = async () => {
+    dispatch(deleteBookmark({ userData, folder }));
   }
   
   const windowWidth = useRef(window.innerWidth).current;
@@ -36,19 +41,28 @@ export default function FolderContextMenu ({ point, folder }) {
   if (point.y + menuHeight > windowHeight) { point.y -= menuHeight; }
   
   return (
-    <div className='w-48
+    <div className='w-60
     bg-gradient-to-b from-zinc-600 to-zinc-700 
     border-solid border-2 border-zinc-800 rounded-md
     text-lg font-semibold font-sans text-neutral-200' 
     style={{position: 'absolute', top: point.y, left: point.x}}
     onMouseEnter={() => { contextMenuContext.setHoveredOverMenu(true) }}
     onMouseLeave={() => { contextMenuContext.setHoveredOverMenu(false) }}>
-      <button className='w-full h-10 px-2 flex text-left 
-      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={handleCreateBookmark}>
-        <img src='/icons/star.svg' alt='prev' width='20' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>Add bookmark</p>
-      </button>
+      {bookmarkData.bookmarkedFoldersUuids.includes(folder.uuid) ? 
+        <button className='w-full h-10 px-2 flex text-left 
+        hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
+        onClick={handleDeleteBookmark}>
+          <img src='/icons/star-fill.svg' alt='prev' width='20' className='place-self-center'/>
+          <p className='ml-2 place-self-center'>Remove bookmark</p>
+        </button>
+        :
+        <button className='w-full h-10 px-2 flex text-left 
+        hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
+        onClick={handleCreateBookmark}>
+          <img src='/icons/star.svg' alt='prev' width='20' className='place-self-center'/>
+          <p className='ml-2 place-self-center'>Add bookmark</p>
+        </button>    
+      }
 
       <div className='mx-1 border-solid border-t-2 border-zinc-800 border-top'></div>
 
