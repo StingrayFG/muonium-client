@@ -130,7 +130,7 @@ export default function TopPanel () {
         </div>
 
         <div className='ml-auto flex'>
-        <div className='w-72 h-12 pl-4 flex text-left
+          <div className='w-72 h-12 pl-4 flex text-left pointer-events-none
           bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800         
           border-solid border-2 rounded-l-md outline-none'>
             <p className='place-self-center'>
