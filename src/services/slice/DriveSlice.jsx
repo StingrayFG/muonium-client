@@ -3,9 +3,11 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 export const getDrive = createAsyncThunk(
   'drive/get',
-  async (driveUuid, thunkAPI) => {
-    const driveData = { uuid: driveUuid };
-    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/drive/get', driveData)
+  async (userData, thunkAPI) => {
+    const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
+    const body  = { userUuid: userData.userUuid, driveUuid: userData.driveUuid };
+    
+    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/drive/get', body, {headers})
     return res.data;
   },
 );
@@ -13,10 +15,10 @@ export const getDrive = createAsyncThunk(
 export const driveSlice = createSlice({
   name: 'drive',
   initialState: {
-    uuid: '1',
-    ownerUuid: '1',
-    spaceTotal: 1,
-    spaceUsed: 1,
+    uuid: '',
+    ownerUuid: '',
+    spaceTotal: 0,
+    spaceUsed: 0,
   },
   extraReducers: (builder) => {
     builder.addCase(getDrive.fulfilled, (state, action) => {

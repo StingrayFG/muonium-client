@@ -51,7 +51,7 @@ export default function FolderPage ({ folderUuid }) {
     if (pathData.requiresUpdate) {
       setRequiresUpdate(true);
       dispatch(confirmUpdate());
-      dispatch(getDrive(userData.driveUuid))
+      dispatch(getDrive(userData));
     }
   });
 
