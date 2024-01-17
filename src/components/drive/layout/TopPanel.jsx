@@ -87,7 +87,7 @@ export default function TopPanel () {
         <div className='flex'>
 
           <div className='w-16 h-12 mr-4 grid'>
-            <img src='/icons/mu-logo.svg' alt='prev' width='60' className='place-self-center'/>
+            <img src='/icons/mu-logo.svg' alt='logo' width='60' className='place-self-center'/>
           </div>
           
 
@@ -148,7 +148,7 @@ export default function TopPanel () {
           hover:from-neutral-600 hover:to-neutral-700 hover:border-neutral-700           
           border-solid border-2 rounded-r-md outline-none'
           onClick={logOut}>
-            <img src='/icons/box-arrow-right.svg' alt='prev' width='28' className='place-self-center'/>
+            <img src='/icons/box-arrow-right.svg' alt='logout' width='28' className='place-self-center'/>
           </button >    
         </div>
         

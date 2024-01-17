@@ -27,7 +27,7 @@ export default function MultipleFileContextMenu ({ point }) {
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={cutCopyPasteContext.downloadClickedElements}>
-        <img src='/icons/download.svg' alt='prev' width='20' className='place-self-center'/>
+        <img src='/icons/download.svg' alt='download' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Download</p>
       </button>
 
@@ -36,14 +36,14 @@ export default function MultipleFileContextMenu ({ point }) {
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={cutCopyPasteContext.copyClickedElements}>
-        <img src='/icons/clipboard-plus.svg' alt='prev' width='20' className='place-self-center'/>
+        <img src='/icons/clipboard-plus.svg' alt='copy' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Copy</p>
       </button>
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={cutCopyPasteContext.cutClickedElements}>
-        <img src='/icons/clipboard-x.svg' alt='prev' width='20' className='place-self-center'/>
+        <img src='/icons/clipboard-x.svg' alt='cut' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Cut</p>
       </button>
 
@@ -52,7 +52,7 @@ export default function MultipleFileContextMenu ({ point }) {
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={cutCopyPasteContext.removeClickedElements}>
-        <img src='/icons/trash.svg' alt='prev' width='20' className='place-self-center'/>
+        <img src='/icons/trash.svg' alt='trash' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Move to trash</p>
       </button>
     </div>    

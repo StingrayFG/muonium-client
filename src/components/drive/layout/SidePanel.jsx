@@ -49,14 +49,14 @@ export default function SidePanel () {
       <button className='w-full h-12 px-3 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={() => {moveToUuid('home')}}>
-        <img src='/icons/house.svg' alt='prev' width='28' className='place-self-center'/>
+        <img src='/icons/house.svg' alt='home' width='28' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Home</p>
       </button>
 
       <button className='w-full h-12 px-3 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={() => {moveToUuid('trash')}}>
-        <img src='/icons/trash.svg' alt='prev' width='28' className='place-self-center mt-1'/>
+        <img src='/icons/trash.svg' alt='trash' width='28' className='place-self-center mt-1'/>
         <p className='ml-2 place-self-center'>Trash</p>
       </button>
 

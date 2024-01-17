@@ -43,14 +43,14 @@ export default function FolderContextMenu ({ point, folder }) {
         <button className='w-full h-10 px-2 flex text-left 
         hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
         onClick={handleDeleteBookmark}>
-          <img src='/icons/star-fill.svg' alt='prev' width='20' className='place-self-center'/>
+          <img src='/icons/star-fill.svg' alt='remove' width='20' className='place-self-center'/>
           <p className='ml-2 place-self-center'>Remove bookmark</p>
         </button>
         :
         <button className='w-full h-10 px-2 flex text-left 
         hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
         onClick={handleCreateBookmark}>
-          <img src='/icons/star.svg' alt='prev' width='20' className='place-self-center'/>
+          <img src='/icons/star.svg' alt='add' width='20' className='place-self-center'/>
           <p className='ml-2 place-self-center'>Add bookmark</p>
         </button>    
       }
@@ -60,7 +60,7 @@ export default function FolderContextMenu ({ point, folder }) {
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={cutCopyPasteContext.cutClickedElements}>
-        <img src='/icons/clipboard-x.svg' alt='prev' width='20' className='place-self-center'/>
+        <img src='/icons/clipboard-x.svg' alt='cut' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Cut</p>
       </button>
 
@@ -69,14 +69,14 @@ export default function FolderContextMenu ({ point, folder }) {
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={() => { contextMenuContext.setRenaming(true) }}>
-        <img src='/icons/pencil.svg' alt='prev' width='20' className='place-self-center'/>
+        <img src='/icons/pencil.svg' alt='rename' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Rename</p>
       </button>
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={cutCopyPasteContext.removeClickedElements}>
-        <img src='/icons/trash.svg' alt='prev' width='20' className='place-self-center'/>
+        <img src='/icons/trash.svg' alt='trash' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Move to trash</p>
       </button>
     </div>    

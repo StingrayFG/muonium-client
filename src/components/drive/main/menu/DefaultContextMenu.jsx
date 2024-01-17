@@ -29,14 +29,14 @@ export default function DefaultContextMenu ({ point }) {
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={dropzoneContext.open}>
-        <img src='/icons/upload.svg' alt='prev' width='20' className='place-self-center'/>
+        <img src='/icons/upload.svg' alt='upload' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Upload a file</p>
       </button>    
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={() => { contextMenuContext.setCreatingFolder(true) }}>
-        <img src='/icons/file-plus.svg' alt='prev' width='20' className='place-self-center'/>
+        <img src='/icons/file-plus.svg' alt='new' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>New folder</p>
       </button>    
 
@@ -45,7 +45,7 @@ export default function DefaultContextMenu ({ point }) {
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={cutCopyPasteContext.pasteClickedElements}>
-        <img src='/icons/clipboard-minus.svg' alt='prev' width='20' className='place-self-center'/>
+        <img src='/icons/clipboard-minus.svg' alt='paste' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Paste</p>
       </button>    
     </div>    

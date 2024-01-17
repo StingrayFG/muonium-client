@@ -51,7 +51,7 @@ export default function FileElement ({ file }) {
       <div className={`w-full h-48 -mb-2 place-self-start grid
       border-solid border-0 border-black rounded-lg
       ${(clipboardData.cutElementsUuids.includes(file.uuid)) ? 'opacity-50' : 'opacity-100'}`}>
-        <img src='/icons/mu-file.svg' alt='prev' width='200' className='place-self-center pointer-events-none select-none'/>
+        <img src='/icons/mu-file.svg' alt='file' width='200' className='place-self-center pointer-events-none select-none'/>
       </div>
 
       {((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(file))) ? 

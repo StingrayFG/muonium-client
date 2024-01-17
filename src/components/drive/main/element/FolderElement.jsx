@@ -84,7 +84,7 @@ export default function FolderElement ({ folder }) {
       <div className={`w-full h-48 -mb-2 place-self-center grid
       border-solid border-0 border-black rounded-lg
       ${(clipboardData.cutElementsUuids.includes(folder.uuid)) ? 'opacity-50' : 'opacity-100'}`}>
-        <img src='/icons/mu-folder.svg' alt='prev' width='200' className='place-self-center pointer-events-none select-none'/>
+        <img src='/icons/mu-folder.svg' alt='folder' width='200' className='place-self-center pointer-events-none select-none'/>
       </div>
 
       {(((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 

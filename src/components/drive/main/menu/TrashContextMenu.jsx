@@ -27,14 +27,14 @@ export default function TrashFileContextMenu ({ point }) {
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={cutCopyPasteContext.recoverClickedElements}>
-        <img src='/icons/arrow-clockwise.svg' alt='prev' width='20' className='place-self-center'/>
+        <img src='/icons/arrow-clockwise.svg' alt='recover' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Recover</p>
       </button>
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
       onClick={cutCopyPasteContext.deleteClickedElements}>
-        <img src='/icons/trash.svg' alt='prev' width='20' className='place-self-center'/>
+        <img src='/icons/trash.svg' alt='delete' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Delete</p>
       </button>
     </div>    
