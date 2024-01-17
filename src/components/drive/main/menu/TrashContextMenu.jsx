@@ -1,27 +1,11 @@
 import { useRef, useContext } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 
+import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
 import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
 
-import { requestUpdate } from 'services/slice/PathSlice';
-
-import FolderService from 'services/FolderService.jsx';
-
-export default function TrashFolderContextMenu ({ point, folder }) {
+export default function TrashFileContextMenu ({ point }) {
   const contextMenuContext = useContext(ContextMenuContext);
-
-  const dispatch = useDispatch();
-  const userData = useSelector(state => state.user);
-
-  const handleRecover = async () => {
-    await FolderService.handleRecover(userData, folder)
-    .then(() => { dispatch(requestUpdate()); })
-  }
-
-  const handleDelete = async () => {
-    await FolderService.handleDelete(userData, folder)
-    .then(() => { dispatch(requestUpdate()); })
-  }
+  const cutCopyPasteContext = useContext(CutCopyPasteContext);
 
   const windowWidth = useRef(window.innerWidth).current;
   const windowHeight = useRef(window.innerHeight).current;
@@ -42,14 +26,14 @@ export default function TrashFolderContextMenu ({ point, folder }) {
     onMouseLeave={() => { contextMenuContext.setHoveredOverMenu(false) }}>
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={handleRecover}>
+      onClick={cutCopyPasteContext.recoverClickedElements}>
         <img src='/icons/arrow-clockwise.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Recover</p>
       </button>
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={handleDelete}>
+      onClick={cutCopyPasteContext.deleteClickedElements}>
         <img src='/icons/trash.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Delete</p>
       </button>
