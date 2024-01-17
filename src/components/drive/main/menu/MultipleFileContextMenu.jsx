@@ -1,23 +1,21 @@
 import { useRef, useContext } from 'react';
 
-import { DropzoneContext } from 'components/drive/main/context/DropzoneContext';
 import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
 import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
 
-export default function DefaultContextMenu ({ point }) {
-  const dropzoneContext = useContext(DropzoneContext);
-  const cutCopyPasteContext = useContext(CutCopyPasteContext);
+export default function MultipleFileContextMenu ({ point }) {
   const contextMenuContext = useContext(ContextMenuContext);
+  const cutCopyPasteContext = useContext(CutCopyPasteContext);
 
   const windowWidth = useRef(window.innerWidth).current;
   const windowHeight = useRef(window.innerHeight).current;
 
   const menuWidth = 240;
-  const menuHeight = 4 + 40 * 3 + 2 * 1;
-
+  const menuHeight = 4 + 40 * 4 + 2 * 2;
+  
   if (point.x + menuWidth > windowWidth) { point.x -= menuWidth; }
   if (point.y + menuHeight > windowHeight) { point.y -= menuHeight; }
-
+  
   return (
     <div className='w-60
     bg-gradient-to-b from-zinc-600 to-zinc-700 
@@ -28,26 +26,35 @@ export default function DefaultContextMenu ({ point }) {
     onMouseLeave={() => { contextMenuContext.setHoveredOverMenu(false) }}>
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={dropzoneContext.open}>
-        <img src='/icons/upload.svg' alt='prev' width='20' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>Upload a file</p>
-      </button>    
-
-      <button className='w-full h-10 px-2 flex text-left 
-      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={() => { contextMenuContext.setCreatingFolder(true) }}>
-        <img src='/icons/file-plus.svg' alt='prev' width='20' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>New folder</p>
-      </button>    
+      onClick={cutCopyPasteContext.downloadClickedElements}>
+        <img src='/icons/download.svg' alt='prev' width='20' className='place-self-center'/>
+        <p className='ml-2 place-self-center'>Download</p>
+      </button>
 
       <div className='mx-1 border-solid border-t-2 border-zinc-800 border-top'></div>
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.pasteClickedElements}>
-        <img src='/icons/clipboard-minus.svg' alt='prev' width='20' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>Paste</p>
-      </button>    
+      onClick={cutCopyPasteContext.copyClickedElements}>
+        <img src='/icons/clipboard-plus.svg' alt='prev' width='20' className='place-self-center'/>
+        <p className='ml-2 place-self-center'>Copy</p>
+      </button>
+
+      <button className='w-full h-10 px-2 flex text-left 
+      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
+      onClick={cutCopyPasteContext.cutClickedElements}>
+        <img src='/icons/clipboard-x.svg' alt='prev' width='20' className='place-self-center'/>
+        <p className='ml-2 place-self-center'>Cut</p>
+      </button>
+
+      <div className='mx-1 border-solid border-t-2 border-zinc-800 border-top'></div>
+      
+      <button className='w-full h-10 px-2 flex text-left 
+      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
+      onClick={cutCopyPasteContext.removeClickedElements}>
+        <img src='/icons/trash.svg' alt='prev' width='20' className='place-self-center'/>
+        <p className='ml-2 place-self-center'>Move to trash</p>
+      </button>
     </div>    
   );
 };

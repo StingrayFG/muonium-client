@@ -3,8 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
 
-import { requestUpdate } from 'services/slice/PathSlice';
-
 import { deleteBookmark } from 'services/slice/BookmarkSlice';
 
 export default function BookmarkContextMenu ({ point, bookmark }) {
@@ -13,8 +11,8 @@ export default function BookmarkContextMenu ({ point, bookmark }) {
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
 
-  const handleDelete = async () => {
-    console.log(bookmark.folder)
+  const handleDelete = () => {
+    console.log(bookmark)
     dispatch(deleteBookmark({ userData, folder: bookmark.folder }));
   }
 
@@ -22,7 +20,7 @@ export default function BookmarkContextMenu ({ point, bookmark }) {
   const windowHeight = useRef(window.innerHeight).current;
 
   const menuWidth = 240;
-  const menuHeight = 4 + 40 * 3 + 2 * 0;
+  const menuHeight = 4 + 40 * 1 + 2 * 0;
   
   if (point.x + menuWidth > windowWidth) { point.x -= menuWidth; }
   if (point.y + menuHeight > windowHeight) { point.y -= menuHeight; }

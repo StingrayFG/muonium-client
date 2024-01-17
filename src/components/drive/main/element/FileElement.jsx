@@ -37,25 +37,25 @@ export default function FileElement ({ file }) {
   }
 
   return (
-    <div className={`w-full h-full grid place-self-center
+    <div className={`w-full h-full px-2 grid place-self-center
     border-solid border-0 border-black rounded-md
-    ${(file.uuid === cutCopyPasteContext.clickedElement.uuid) ?
+    ${(cutCopyPasteContext.clickedElements.includes(file)) ?
     'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
     :
     'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-    onMouseDown={(event) => { cutCopyPasteContext.enableDragging(event, file) }}
+    onMouseDown={(event) => { cutCopyPasteContext.handleMouseEnter(event, file) }}
     onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(file) }}
     onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' })}}
     onContextMenu={(event) => { contextMenuContext.handleFileContextMenuClick(event, file) }}>
 
-      <div className={`w-64 h-48 mt-4 place-self-center grid
+      <div className={`w-full h-48 -mb-2 place-self-start grid
       border-solid border-0 border-black rounded-lg
       ${(clipboardData.cutElementsUuids.includes(file.uuid)) ? 'opacity-50' : 'opacity-100'}`}>
-        <img src='/icons/mu-file.svg' alt='prev' width='220' className='place-self-center pointer-events-none select-none'/>
+        <img src='/icons/mu-file.svg' alt='prev' width='200' className='place-self-center pointer-events-none select-none'/>
       </div>
 
-      {((contextMenuContext.renaming) && (file.uuid === cutCopyPasteContext.clickedElement.uuid)) ? 
-      <div className='w-full h-24 mt-2 grid place-self-center'>
+      {((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(file))) ? 
+      <div className='w-full h-24 grid place-self-center'>
         <textarea className='w-full place-self-center h-full text-center outline-none resize-none
         bg-transparent 
         border-solid border-2 border-neutral-200 rounded-md
@@ -71,7 +71,7 @@ export default function FileElement ({ file }) {
         </textarea> 
       </div>
       : 
-      <div className='w-full h-24 mt-2 grid place-self-center'>
+      <div className='w-full h-24 grid place-self-center'>
         <p className='w-full place-self-center h-full text-center select-none
         border-solid border-2 border-transparent
         text-lg font-semibold font-sans text-neutral-200'>

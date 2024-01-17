@@ -20,7 +20,7 @@ export default function DropzoneComponent ({ children }) {
   const [requiresUpload, setRequiresUpload] = useState();
 
   const onDrop = useCallback(acceptedFiles => {
-    console.log(acceptedFiles);
+    //console.log(acceptedFiles);
     handleChange(acceptedFiles[0]);
   }, []);
 

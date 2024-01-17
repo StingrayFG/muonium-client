@@ -17,6 +17,7 @@ export default function BookmarkElement ({ bookmark }) {
   if (!bookmark) { bookmark = { uuid: '', folder: { uuid: '', name: '', parentUuid: folderContext.currentFolder.uuid } } };
 
   const handleClick = () => {
+    console.log(bookmark)
     if (!bookmark.folder.isRemoved) {   
       dispatch(moveToNew({ uuid: bookmark.folder.uuid }));
     }
@@ -24,7 +25,7 @@ export default function BookmarkElement ({ bookmark }) {
 
   return (
     <button className={`w-full h-12 px-3 flex text-left'
-    ${(bookmark.uuid === cutCopyPasteContext.clickedElement.uuid) ?
+    ${(cutCopyPasteContext.clickedElements.includes(bookmark)) ?
       'bg-gradient-to-b from-sky-200/30 to-sky-400/30 rounded'
       :
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15 rounded'}`}

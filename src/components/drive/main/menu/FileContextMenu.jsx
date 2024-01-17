@@ -1,30 +1,11 @@
 import { useRef, useContext } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 
 import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
 import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
 
-import { requestUpdate } from 'services/slice/PathSlice';
-
-import FileService from 'services/FileService.jsx';
-
-export default function FileContextMenu ({ point, file }) {
+export default function FileContextMenu ({ point }) {
   const contextMenuContext = useContext(ContextMenuContext);
   const cutCopyPasteContext = useContext(CutCopyPasteContext);
-
-  const dispatch = useDispatch();
-  const userData = useSelector(state => state.user);
-  const clipboardData = useSelector(state => state.clipboard);
-
-  const handleDownload = async () => {
-    await FileService.handleDownload(userData, file)
-    .then(() => { dispatch(requestUpdate()); })
-  }
-
-  const handleRemove = async () => {
-    await FileService.handleRemove(userData, file)
-    .then(() => { dispatch(requestUpdate()); })
-  }
 
   const windowWidth = useRef(window.innerWidth).current;
   const windowHeight = useRef(window.innerHeight).current;
@@ -45,7 +26,7 @@ export default function FileContextMenu ({ point, file }) {
     onMouseLeave={() => { contextMenuContext.setHoveredOverMenu(false) }}>
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={handleDownload}>
+      onClick={cutCopyPasteContext.downloadClickedElements}>
         <img src='/icons/download.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Download</p>
       </button>
@@ -54,14 +35,14 @@ export default function FileContextMenu ({ point, file }) {
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.handleCopy}>
+      onClick={cutCopyPasteContext.copyClickedElements}>
         <img src='/icons/clipboard-plus.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Copy</p>
       </button>
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.handleCut}>
+      onClick={cutCopyPasteContext.cutClickedElements}>
         <img src='/icons/clipboard-x.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Cut</p>
       </button>
@@ -77,7 +58,7 @@ export default function FileContextMenu ({ point, file }) {
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={handleRemove}>
+      onClick={cutCopyPasteContext.removeClickedElements}>
         <img src='/icons/trash.svg' alt='prev' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Move to trash</p>
       </button>
