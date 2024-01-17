@@ -30,7 +30,7 @@ export default function DropzoneComponent ({ children }) {
 
   const handleChange = (file) => {
     setFile(file);
-    if (file && (file.size < (1024 * 1024 * 100))) {
+    if (file && (file.size < (1024 * 1024 * process.env.REACT_APP_MAX_FILE_SIZE))) {
       setRequiresUpload(true);
     }
   };
