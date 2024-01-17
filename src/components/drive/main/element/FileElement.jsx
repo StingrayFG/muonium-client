@@ -8,6 +8,8 @@ import { ContextMenuContext } from 'components/drive/main/context/ContextMenuCon
 
 import FileService from 'services/FileService.jsx';
 
+import FileIconElement from 'components/drive/main/element/FileIconElement.jsx';
+
 export default function FileElement ({ file }) {
   const contextMenuContext = useContext(ContextMenuContext);
   const cutCopyPasteContext = useContext(CutCopyPasteContext);
@@ -25,7 +27,8 @@ export default function FileElement ({ file }) {
 
   const setName = async (event) => {
     if (event.target.value) {
-      await FileService.handleRename(userData, { uuid: file.uuid, name: event.target.value })
+      file.name = event.target.value
+      await FileService.handleRename(userData, file)
       .then(() => {
         contextMenuContext.setRenaming(false);
         dispatch(requestUpdate());
@@ -37,7 +40,7 @@ export default function FileElement ({ file }) {
   }
 
   return (
-    <div className={`w-full h-full px-2 grid place-self-center
+    <div className={`w-full h-full px-2 pb-2 grid place-self-center
     border-solid border-0 border-black rounded-md
     ${(cutCopyPasteContext.clickedElements.includes(file)) ?
     'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
@@ -51,7 +54,8 @@ export default function FileElement ({ file }) {
       <div className={`w-full h-48 -mb-2 place-self-start grid
       border-solid border-0 border-black rounded-lg
       ${(clipboardData.cutElementsUuids.includes(file.uuid)) ? 'opacity-50' : 'opacity-100'}`}>
-        <img src='/icons/mu-file.svg' alt='file' width='200' className='place-self-center pointer-events-none select-none'/>
+        <img src='/icons/mu-file.svg' alt='file' width='200' className='place-self-center pointer-events-none select-none' /> 
+        <FileIconElement file={file}/>
       </div>
 
       {((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(file))) ? 

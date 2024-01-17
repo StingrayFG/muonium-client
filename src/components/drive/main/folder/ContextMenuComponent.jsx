@@ -105,7 +105,7 @@ export default function ContextMenuComponent ({ children }) {
     event.preventDefault();
     event.stopPropagation();
     if (event.button === 0) {
-      if ((isContextMenu && !hoveredOverMenu && !cutCopyPasteContext.hoveredElement.uuid)) {
+      if (((isContextMenu && !hoveredOverMenu && !cutCopyPasteContext.hoveredElement.uuid)) && !cutCopyPasteContext.hoveredElement.uuid) {
         cutCopyPasteContext.clearClickedElements();
       }
       setIsContextMenu(false);

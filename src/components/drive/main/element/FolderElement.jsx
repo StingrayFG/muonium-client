@@ -28,7 +28,7 @@ export default function FolderElement ({ folder }) {
   }
 
   const setName = async (event) => {
-    if (inputData) {
+    if (event.target.value) {
       folder.name = event.target.value;
       if (contextMenuContext.creatingFolder) {
         await FolderService.handleCreate(userData, folder, folderContext.currentFolder.absolutePath)
@@ -67,7 +67,7 @@ export default function FolderElement ({ folder }) {
   }
 
   return (
-    <div className={`w-full h-full px-2 grid place-self-center
+    <div className={`w-full h-full px-2 pb-2 grid place-self-center
     border-solid border-0 border-black rounded-md
     ${((cutCopyPasteContext.clickedElements.includes(folder)) ||
     ((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
@@ -88,7 +88,7 @@ export default function FolderElement ({ folder }) {
       </div>
 
       {(((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
-      ((contextMenuContext.creatingFolder) && (!folder.uuid))) ? 
+      (contextMenuContext.creatingFolder)) ? 
       <div className='w-full h-24 grid place-self-center'>
         <textarea className='w-full h-full place-self-center text-center outline-none resize-none
         bg-transparent 
