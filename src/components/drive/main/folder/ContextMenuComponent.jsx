@@ -105,10 +105,12 @@ export default function ContextMenuComponent ({ children }) {
     event.preventDefault();
     event.stopPropagation();
     if (event.button === 0) {
-      if (((isContextMenu && !hoveredOverMenu && !cutCopyPasteContext.hoveredElement.uuid)) && !cutCopyPasteContext.hoveredElement.uuid) {
+      if (((isContextMenu && !hoveredOverMenu && !cutCopyPasteContext.hoveredElement.uuid)) || 
+      (!cutCopyPasteContext.hoveredElement.uuid && !hoveredOverMenu)) {
         cutCopyPasteContext.clearClickedElements();
       }
       setIsContextMenu(false);
+      setHoveredOverMenu(false);
     }
   };
 

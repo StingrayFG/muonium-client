@@ -1,5 +1,5 @@
 
-export default function FileIconElement ({ file }) { 
+export default function FileIconElement ({ file, type }) { 
   const ext = file.name.slice((file.name.lastIndexOf('.') - 1 >>> 0) + 2);
   
   const textExtensions = ['txt', 'cfg', 'log', 'conf'];
@@ -8,15 +8,30 @@ export default function FileIconElement ({ file }) {
   const musicExtensions = ['mp3', 'wav', 'flac'];
   const playExtensions = ['mp4', 'webm', 'avi', 'mkv', 'exe', 'bak'];
 
-  if (textExtensions.includes(ext)) {
-    return <img src='/icons/file-text.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
-  } else if (imageExtensions.includes(ext)) {
-    return <img src='/icons/file-image.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
-  } else if (archiveExtensions.includes(ext)) {
-    return <img src='/icons/file-zip.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
-  } else if (musicExtensions.includes(ext)) {
-    return <img src='/icons/file-music.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
-  } else if (playExtensions.includes(ext)) {
-    return <img src='/icons/file-play.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
-  }  
+  if (type === 'grid') {
+    if (textExtensions.includes(ext)) {
+      return <img src='/icons/files-dark/file-text.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
+    } else if (imageExtensions.includes(ext)) {
+      return <img src='/icons/files-dark/file-image.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
+    } else if (archiveExtensions.includes(ext)) {
+      return <img src='/icons/files-dark/file-zip.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
+    } else if (musicExtensions.includes(ext)) {
+      return <img src='/icons/files-dark/file-music.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
+    } else if (playExtensions.includes(ext)) {
+      return <img src='/icons/files-dark/file-play.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
+    }  
+  } else if (type === 'list') {
+    if (textExtensions.includes(ext)) {
+      return <img src='/icons/files-light/file-text.svg' alt='icon' width='40' className='place-self-center pointer-events-none select-none'/>
+    } else if (imageExtensions.includes(ext)) {
+      return <img src='/icons/files-light/file-image.svg' alt='icon' width='40' className='place-self-center pointer-events-none select-none'/>
+    } else if (archiveExtensions.includes(ext)) {
+      return <img src='/icons/files-light/file-zip.svg' alt='icon' width='40' className='place-self-center pointer-events-none select-none'/>
+    } else if (musicExtensions.includes(ext)) {
+      return <img src='/icons/files-light/file-music.svg' alt='icon' width='40' className='place-self-center pointer-events-none select-none'/>
+    } else if (playExtensions.includes(ext)) {
+      return <img src='/icons/files-light/file-play.svg' alt='icon' width='40' className='place-self-center pointer-events-none select-none'/>
+    }  
+  }
+
 }

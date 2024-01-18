@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { clearUser } from 'services/slice/UserSlice';
 import { setAbsolutePath, moveToNew, moveToNext, moveToPrevious } from 'services/slice/PathSlice';
+import { setType } from 'services/slice/SettingsSlice';
 
 import FolderService from 'services/FolderService.jsx';
 
@@ -19,6 +20,14 @@ export default function TopPanel () {
     dispatch(clearUser());
     navigate('/login');
   };
+
+  const handleGridView = () => {
+    dispatch(setType('grid'));
+  }
+
+  const handleListView = () => {
+    dispatch(setType('list'));
+  }
 
   const handleNextPath = () => {
     if (pathData.positionInHistory < pathData.pathHistory.length - 1) {
@@ -86,12 +95,27 @@ export default function TopPanel () {
       text-lg font-semibold font-sans text-neutral-200'>
         <div className='flex'>
 
-          <div className='w-16 h-12 mr-4 grid'>
+          <div className='w-16 h-12 grid'>
             <img src='/icons/mu-logo.svg' alt='logo' width='60' className='place-self-center'/>
           </div>
           
+          <button className='w-12 h-12 ml-4 grid
+          bg-gradient-to-b from-neutral-300 to-neutral-400 border-neutral-400
+          hover:from-neutral-400 hover:to-neutral-500 hover:border-neutral-500
+          border-solid border-2 rounded-l-lg'
+          onClick={handleGridView}>
+            <img src='/icons/grid-3x3-gap.svg' alt='prev' width='28' className='place-self-center'/>
+          </button>
 
-          <button className={`w-12 h-12 grid
+          <button className='w-12 h-12 grid
+          bg-gradient-to-b from-neutral-300 to-neutral-400 border-neutral-400
+          hover:from-neutral-400 hover:to-neutral-500 hover:border-neutral-500
+          border-solid border-2 rounded-r-lg'
+          onClick={handleListView}>
+            <img src='/icons/list-ul.svg' alt='next' width='28' className='place-self-center'/>          
+          </button>
+
+          <button className={`w-12 h-12 ml-4 grid
           bg-gradient-to-b from-neutral-300 to-neutral-400 border-neutral-400
           ${(pathData.positionInHistory > 0) ? 
           'hover:from-neutral-400 hover:to-neutral-500 hover:border-neutral-500' : 'pointer-events-none'}  
@@ -109,6 +133,7 @@ export default function TopPanel () {
             <img src='/icons/chevron-right.svg' alt='next' width='28' 
             className={`place-self-center ${(pathData.positionInHistory < pathData.pathHistory.length - 1) ? 'opacity-100' : 'opacity-30'}`}/>
           </button>
+
         </div>
 
         <div className='w-full h-12 px-4 ml-4 mr-4 bg-white flex text-left text-neutral-800
