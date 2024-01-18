@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { setCopy, setCut, setPaste } from 'services/slice/ClipboardSlice.jsx';
@@ -147,6 +147,8 @@ export default function ContextMenuComponent ({ children }) {
     moveElement();
   })
 
+  const windowWidth = useRef(window.innerWidth).current;
+  const windowHeight = useRef(window.innerHeight).current;
 
   const updateContainerPoint = (event) => {
     if ((Math.abs(containerPoint.x - containerPointInitial.x) > 10) && (Math.abs(containerPoint.y - containerPointInitial.y) > 10) && !draggingElement && holdingElement) {
@@ -154,8 +156,12 @@ export default function ContextMenuComponent ({ children }) {
     }
     if (holdingElement) {
       setContainerPoint({
-        x: containerPointInitial.x + (event.pageX - mousePointInitial.x),
-        y: containerPointInitial.y + (event.pageY - mousePointInitial.y),
+        x: ((containerPointInitial.x + (event.pageX - mousePointInitial.x) + draggedElementSize.y) >= windowWidth) ? 
+          windowWidth - draggedElementSize.y :
+          containerPointInitial.x + (event.pageX - mousePointInitial.x),
+        y: ((containerPointInitial.y + (event.pageY - mousePointInitial.y) + draggedElementSize.x) >= windowHeight) ? 
+          windowHeight - draggedElementSize.x:
+          containerPointInitial.y + (event.pageY - mousePointInitial.y),
       });
     }
   }
@@ -201,7 +207,7 @@ export default function ContextMenuComponent ({ children }) {
         requiresContextMenuClosure, setRequiresContextMenuClosure}}>
         {draggingElement && 
           <div className='bg-gradient-to-b from-sky-200/45 to-sky-400/45 rounded-md' 
-          style={{position: 'absolute', top: containerPoint.y, left: containerPoint.x, width: draggedElementSize.y, height:draggedElementSize.x}}>
+          style={{ position: 'absolute', top: containerPoint.y, left: containerPoint.x, width: draggedElementSize.y, height: draggedElementSize.x }}>
           </div>
         }
         {children}
