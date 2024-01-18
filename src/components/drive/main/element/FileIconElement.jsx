@@ -9,14 +9,14 @@ export default function FileIconElement ({ file }) {
   const playExtensions = ['mp4', 'webm', 'avi', 'mkv', 'exe', 'bak'];
 
   if (textExtensions.includes(ext)) {
-    return <img src='/icons/file-text.svg' alt='icon' width='60' className='place-self-center -mt-48'/>
+    return <img src='/icons/file-text.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
   } else if (imageExtensions.includes(ext)) {
-    return <img src='/icons/file-image.svg' alt='icon' width='60' className='place-self-center -mt-48'/>
+    return <img src='/icons/file-image.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
   } else if (archiveExtensions.includes(ext)) {
-    return <img src='/icons/file-zip.svg' alt='icon' width='60' className='place-self-center -mt-48'/>
+    return <img src='/icons/file-zip.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
   } else if (musicExtensions.includes(ext)) {
-    return <img src='/icons/file-music.svg' alt='icon' width='60' className='place-self-center -mt-48'/>
+    return <img src='/icons/file-music.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
   } else if (playExtensions.includes(ext)) {
-    return <img src='/icons/file-play.svg' alt='icon' width='60' className='place-self-center -mt-48'/>
+    return <img src='/icons/file-play.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
   }  
 }
