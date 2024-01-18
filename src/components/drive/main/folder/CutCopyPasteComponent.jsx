@@ -155,14 +155,21 @@ export default function ContextMenuComponent ({ children }) {
       setDraggingElement(true);
     }
     if (holdingElement) {
-      setContainerPoint({
-        x: ((containerPointInitial.x + (event.pageX - mousePointInitial.x) + draggedElementSize.y) >= windowWidth) ? 
-          windowWidth - draggedElementSize.y :
-          containerPointInitial.x + (event.pageX - mousePointInitial.x),
-        y: ((containerPointInitial.y + (event.pageY - mousePointInitial.y) + draggedElementSize.x) >= windowHeight) ? 
-          windowHeight - draggedElementSize.x:
-          containerPointInitial.y + (event.pageY - mousePointInitial.y),
-      });
+      if ((containerPointInitial.x + (event.pageX - mousePointInitial.x) + draggedElementSize.y) >= windowWidth) {
+        setContainerPoint((prev) => ({ ...prev, x: windowWidth - draggedElementSize.y }));
+      } else if ((containerPointInitial.x + (event.pageX - mousePointInitial.x)) < 0) {
+        setContainerPoint((prev) => ({ ...prev, x: 0 }));
+      } else {
+        setContainerPoint((prev) => ({ ...prev, x: containerPointInitial.x + (event.pageX - mousePointInitial.x) }));
+      }
+
+      if ((containerPointInitial.y + (event.pageY - mousePointInitial.y) + draggedElementSize.x) >= windowHeight) {
+        setContainerPoint((prev) => ({ ...prev, y: windowHeight - draggedElementSize.x }));
+      } else if ((containerPointInitial.y + (event.pageY - mousePointInitial.y)) < 0) {
+        setContainerPoint((prev) => ({ ...prev, y: 0 }));
+      } else {
+        setContainerPoint((prev) => ({ ...prev, y: containerPointInitial.y + (event.pageY - mousePointInitial.y) }));
+      }
     }
   }
 
