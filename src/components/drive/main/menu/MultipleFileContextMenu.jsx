@@ -31,7 +31,7 @@ export default function MultipleFileContextMenu ({ point }) {
         <p className='ml-2 place-self-center'>Download</p>
       </button>
 
-      <div className='mx-1 border-solid border-t-2 border-zinc-800 border-top'></div>
+      <div className='mx-1 border-solid border-t-2 border-zinc-800'></div>
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
@@ -47,7 +47,7 @@ export default function MultipleFileContextMenu ({ point }) {
         <p className='ml-2 place-self-center'>Cut</p>
       </button>
 
-      <div className='mx-1 border-solid border-t-2 border-zinc-800 border-top'></div>
+      <div className='mx-1 border-solid border-t-2 border-zinc-800'></div>
       
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
