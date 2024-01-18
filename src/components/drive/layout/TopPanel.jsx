@@ -95,7 +95,7 @@ export default function TopPanel () {
       text-lg font-semibold font-sans text-neutral-200'>
         <div className='flex'>
 
-          <div className='w-16 h-12 grid'>
+          <div className='w-16 h-12 mr-1 grid'>
             <img src='/icons/mu-logo.svg' alt='logo' width='60' className='place-self-center'/>
           </div>
           
@@ -155,23 +155,15 @@ export default function TopPanel () {
         </div>
 
         <div className='ml-auto flex'>
-          <div className='w-72 h-12 pl-4 flex text-left pointer-events-none
-          bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800         
-          border-solid border-2 rounded-l-md outline-none'>
-            <p className='place-self-center'>
-              {(driveData.spaceUsed / (1024 * 1024)).toFixed(0)} MB / {(driveData.spaceTotal / (1024 * 1024)).toFixed(0)} MB
-              {' (' + (driveData.spaceUsed / driveData.spaceTotal * 100).toFixed(0) + '% full)'}
-            </p>
-          </div>
           <div className='w-72 h-12 pl-4 flex text-left
           bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800         
-          border-solid border-2 outline-none'>
+          border-solid border-2 rounded-l-lg outline-none'>
             <p className='place-self-center'>{userData.login}</p>
           </div>
           <button className='w-12 h-12 grid
           bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800 
           hover:from-neutral-600 hover:to-neutral-700 hover:border-neutral-700           
-          border-solid border-2 rounded-r-md outline-none'
+          border-solid border-2 rounded-r-lg outline-none'
           onClick={logOut}>
             <img src='/icons/box-arrow-right.svg' alt='logout' width='28' className='place-self-center'/>
           </button >    

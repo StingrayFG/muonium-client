@@ -3,6 +3,7 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import TopPanel from 'components/drive/layout/TopPanel.jsx';
+import BottomPanel from 'components/drive/layout/BottomPanel.jsx';
 
 export default function DrivePanels () {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ export default function DrivePanels () {
         onContextMenu={(e) => { e.preventDefault(); }}>
         <TopPanel />   
         <Outlet />
+        <BottomPanel />
       </div>
     );
   } else {

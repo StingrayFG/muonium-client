@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { setCopy, setCut, setPaste } from 'services/slice/ClipboardSlice.jsx';
+import { setElements, setCopy, setCut, setPaste } from 'services/slice/ClipboardSlice.jsx';
 import { requestUpdate } from 'services/slice/PathSlice';
 import { requestUpdate as requestBookmarkUpdate } from 'services/slice/BookmarkSlice';
 
@@ -36,7 +36,7 @@ export default function ContextMenuComponent ({ children }) {
   const addClickedElement = (event, element) => {
     if (event.ctrlKey) {
       if (!clickedElements.includes(element)) {
-        clickedElements.push(element);
+        setClickedElements(clickedElements => [...clickedElements, element]);
       }   
     } else {
       setClickedElements([element]);
@@ -46,6 +46,12 @@ export default function ContextMenuComponent ({ children }) {
   const clearClickedElements = () => {
     setClickedElements([]);
   }
+
+  useEffect(() => {
+    if (clipboardData.elements != clickedElements) {
+      dispatch(setElements(clickedElements));
+    }
+  })
 
   const downloadClickedElements = async () => {
     for await (const element of clickedElements) {
@@ -191,7 +197,7 @@ export default function ContextMenuComponent ({ children }) {
     if (event.button === 0) {
       setDraggingElement(false);
       setHoldingElement(false);
-      if (hoveredElement.uuid && (!clickedElements.includes(hoveredElement)) && draggingElement) {
+      if (hoveredElement.uuid && (!clickedElements.includes(hoveredElement)) && (hoveredElement.type === 'folder') && draggingElement) {
         setRequiresMove(true);
       }
     }

@@ -4,6 +4,9 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 export const clipboardSlice = createSlice({
   name: 'drive',
   initialState: {
+    clickedElements: [],
+    filesCount: 0,
+    foldersCount: 0,
     mode: '',
     elements: [],
     cutElementsUuids: [],
@@ -11,6 +14,13 @@ export const clipboardSlice = createSlice({
     destinationParentUuid: '',
   },
   reducers: {
+    setElements:(state, action) => {
+      state.clickedElements = action.payload;
+    }, 
+    setCounts:(state, action) => {
+      state.filesCount = action.payload.filesCount;
+      state.foldersCount = action.payload.foldersCount;
+    },
     setCopy:(state, action) => {
       state.elements = action.payload.elements;
       state.originParentUuid = action.payload.originUuid;
@@ -30,4 +40,4 @@ export const clipboardSlice = createSlice({
   },
 });
 
-export const { setCopy, setCut, setPaste } = clipboardSlice.actions;
+export const { setCounts, setElements, setCopy, setCut, setPaste } = clipboardSlice.actions;

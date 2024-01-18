@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { setInitialUuid, setAbsolutePath, confirmUpdate } from 'services/slice/PathSlice';
 import { getDrive } from 'services/slice/DriveSlice';
+import { setCounts } from 'services/slice/ClipboardSlice';
 
 import { FolderContext } from 'components/drive/main/context/FolderContext';
 
@@ -62,6 +63,7 @@ export default function FolderPage ({ folderUuid }) {
         await FolderService.handleGetByUuid(userData, pathData.currentUuid)
         .then(res => {
           //console.log(res)
+          dispatch(setCounts({ filesCount: res.files.length, foldersCount: res.folders.length  }))
           setCurrentFolder(res);
           dispatch(setAbsolutePath({ currentAbsolutePath: res.absolutePath }));
         })
