@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { moveToNew, requestUpdate } from 'services/slice/PathSlice';
@@ -23,50 +23,68 @@ export default function FolderElement ({ folder }) {
 
   const [previousName, setPreviousName] = useState('');
   const [inputData, setInputData] = useState(folder.name);
+  const [requiresNameSaving, setRequiresNameSaving] = useState(false);
 
   const savePreviousName = (event) => {
     setPreviousName(event.target.value);
   }
 
-  const setName = async (event) => {
-    if (event.target.value) {
-      folder.name = event.target.value;
-      if (contextMenuContext.creatingFolder) {
-        await FolderService.handleCreate(userData, folder, folderContext.currentFolder.absolutePath)
-        .then(() => {
-          contextMenuContext.setCreatingFolder(false);
-          dispatch(requestUpdate());
-        })
-      } else {
-        await FolderService.handleRename(userData, folder)
-        .then(() => {
-          contextMenuContext.setRenaming(false);
-          dispatch(requestUpdate());
-        })
-      }
-    } else {
-      setInputData(previousName);
-      contextMenuContext.setCreatingFolder(false);
-      contextMenuContext.setRenaming(false);
-    }
-  }
-
   const handleKeyOnInput = (event) => {
     if (event.code === 'Enter') { event.target.blur(); }
     else if (event.code === 'Escape') { 
-      setInputData('');
-      contextMenuContext.setCreatingFolder(false);
-      contextMenuContext.setRenaming(false);
+      setInputData(previousName);
       event.target.blur();
     }
   }
+
+  const setName = async () => {
+    setRequiresNameSaving(true);
+    
+  }
+
+  useEffect(() => {
+    if (requiresNameSaving) {
+      setRequiresNameSaving(false);
+
+      const saveName = async () => {
+        if (inputData) {
+          if (contextMenuContext.creatingFolder) {
+            await FolderService.handleCreate(userData, { uuid: folder.uuid, name: inputData }, folderContext.currentFolder.absolutePath)
+            .then(() => {
+              contextMenuContext.setCreatingFolder(false);
+              dispatch(requestUpdate());
+            })
+            .catch(() => {
+              setInputData(previousName);
+              contextMenuContext.setRenaming(false);
+            })
+          } else {
+            await FolderService.handleRename(userData, { uuid: folder.uuid, name: inputData })
+            .then(() => {
+              contextMenuContext.setRenaming(false);
+              dispatch(requestUpdate());
+            })
+            .catch(() => {
+              setInputData(previousName);
+              contextMenuContext.setRenaming(false);
+            })
+          }
+        } else {
+          setInputData(previousName);
+          contextMenuContext.setCreatingFolder(false);
+          contextMenuContext.setRenaming(false);
+        }
+      }
+      saveName();
+    }
+  })
 
   const handleDoubleClick = () => {
     if (!folder.isRemoved) {
       dispatch(moveToNew({ uuid: folder.uuid }));
     }
   }
-
+  
   
   if (settingsData.type === 'grid') {
     return (
@@ -111,7 +129,7 @@ export default function FolderElement ({ folder }) {
           <p className='w-full h-full place-self-center text-center select-none
           border-solid border-2 border-transparent
           text-lg font-semibold font-sans text-neutral-200'>
-            {folder.name}   
+            {inputData}   
           </p>
         </div>
         }
@@ -160,7 +178,7 @@ export default function FolderElement ({ folder }) {
           <p className='w-full h-8 px-2 place-self-center text-left select-none
           border-solid border-2 border-transparent
           text-lg font-semibold font-sans text-neutral-200'>
-            {folder.name}   
+            {inputData}   
           </p>
         </div>
         }

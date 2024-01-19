@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { requestUpdate } from 'services/slice/PathSlice';
@@ -21,24 +21,48 @@ export default function FileElement ({ file }) {
 
   const [previousName, setPreviousName] = useState('');
   const [inputData, setInputData] = useState(file.name);
+  const [requiresNameSaving, setRequiresNameSaving] = useState(false);
 
   const savePreviousName = (event) => {
     setPreviousName(event.target.value);
   }
 
-  const setName = async (event) => {
-    if (event.target.value) {
-      file.name = event.target.value
-      await FileService.handleRename(userData, file)
-      .then(() => {
-        contextMenuContext.setRenaming(false);
-        dispatch(requestUpdate());
-      })
-    } else {
+  const handleKeyOnInput = (event) => {
+    if (event.code === 'Enter') { event.target.blur(); }
+    else if (event.code === 'Escape') { 
       setInputData(previousName);
-      contextMenuContext.setRenaming(false);
+      event.target.blur();
     }
   }
+
+  const setName = async () => {
+    setRequiresNameSaving(true);
+  }
+
+  useEffect(() => {
+    if (requiresNameSaving) {
+      setRequiresNameSaving(false);
+
+      const saveName = async () => {
+        if (inputData) {
+          await FileService.handleRename(userData, { uuid: file.uuid, name: inputData })
+          .then(() => {
+            dispatch(requestUpdate());
+            contextMenuContext.setRenaming(false);
+          })
+          .catch(() => {
+            setInputData(previousName);
+            contextMenuContext.setRenaming(false);
+          })
+        } else {
+          setInputData(previousName);
+          contextMenuContext.setRenaming(false);
+        }
+      }
+      saveName();
+    }
+  })
+
 
   if (settingsData.type === 'grid') {
     return (
@@ -50,7 +74,7 @@ export default function FileElement ({ file }) {
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
       onMouseDown={(event) => { cutCopyPasteContext.handleMouseEnter(event, file) }}
       onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(file) }}
-      onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' })}}
+      onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' }) }}
       onContextMenu={(event) => { contextMenuContext.handleFileContextMenuClick(event, file) }}>
   
         <div className={`w-full h-48 -mb-3 place-self-center grid
@@ -73,7 +97,7 @@ export default function FileElement ({ file }) {
           autoFocus={true}
           onFocus={savePreviousName}
           onBlur={setName}
-          onKeyDown={(event) => { if (event.code === 'Enter') { event.target.blur(); } }}>
+          onKeyDown={handleKeyOnInput}>
           </textarea> 
         </div>
         : 
@@ -81,7 +105,7 @@ export default function FileElement ({ file }) {
           <p className='w-full h-full place-self-center text-center select-none
           border-solid border-2 border-transparent
           text-lg font-semibold font-sans text-neutral-200'>
-            {file.name}   
+            {inputData}   
           </p>
         </div>
         }
@@ -97,7 +121,7 @@ export default function FileElement ({ file }) {
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
       onMouseDown={(event) => { cutCopyPasteContext.handleMouseEnter(event, file) }}
       onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(file) }}
-      onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' })}}
+      onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' }) }}
       onContextMenu={(event) => { contextMenuContext.handleFileContextMenuClick(event, file) }}>
   
         <div className={`w-16 h-16 place-self-center grid
@@ -127,7 +151,7 @@ export default function FileElement ({ file }) {
           <p className='w-full h-8 px-2 place-self-center text-left select-none
           border-solid border-2 border-transparent
           text-lg font-semibold font-sans text-neutral-200'>
-            {file.name}   
+            {inputData}   
           </p>
         </div>
         }
