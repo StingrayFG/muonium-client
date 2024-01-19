@@ -49,7 +49,7 @@ export default function FolderElement ({ folder }) {
       const saveName = async () => {
         if (inputData) {
           if (contextMenuContext.creatingFolder) {
-            await FolderService.handleCreate(userData, { uuid: folder.uuid, name: inputData }, folderContext.currentFolder.absolutePath)
+            await FolderService.handleCreate(userData, { uuid: folder.uuid, name: inputData }, folderContext.currentFolder.uuid)
             .then(() => {
               contextMenuContext.setCreatingFolder(false);
               dispatch(requestUpdate());
