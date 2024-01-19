@@ -25,14 +25,17 @@ export default function TopPanel () {
             {clipboardData.foldersCount}
             {(clipboardData.foldersCount > 1) ?  (' folders') : (' folder')}
           </>}
+          {((clipboardData.foldersCount > 0) && (clipboardData.filesCount > 0)) && <>
+            {', '}
+          </>}
           {(clipboardData.filesCount > 0) && <>
-            {', ' + clipboardData.filesCount}
+            {clipboardData.filesCount}
             {(clipboardData.filesCount > 1) ? (' files') : (' file')}
           </>}
         </p>
       </div>
 
-      <div className='my-2 border-solid border-l-2 border-zinc-800'></div>
+      {((clipboardData.foldersCount > 0) || (clipboardData.filesCount > 0)) && <div className='my-2 border-solid border-l-2 border-zinc-800'></div>}
 
       <div className='flex px-4 py-2'>
         <p className='h-8 place-self-center text-left'>
@@ -53,6 +56,8 @@ export default function TopPanel () {
           </>}
         </p>
       </div>
+
+      {((clipboardData.elements.length > 0) || (clipboardData.clickedElements.length > 0)) && <div className='my-2 border-solid border-l-2 border-zinc-800'></div>}
     </div>
   );
 }
