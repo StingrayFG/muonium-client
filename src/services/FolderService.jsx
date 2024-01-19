@@ -74,19 +74,6 @@ const FolderService = {
     });  
   },
 
-  handleMove: async (userData, parentUuid, folder) => {
-    const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
-    const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, parentUuid, folderUuid: folder.uuid };
-
-    await axios.put(process.env.REACT_APP_BACKEND_URL + '/folder/move', body, {headers})
-    .then(res => {
-      return(res.data);
-    })
-    .catch(err => {
-      return(err);
-    });  
-  },
-
   handleRemove: async (userData, folder) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
     const body = { userUuid: userData.userUuid, driveUuid: userData.driveUuid, folderUuid: folder.uuid };

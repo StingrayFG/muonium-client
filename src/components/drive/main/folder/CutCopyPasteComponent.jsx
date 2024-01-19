@@ -48,7 +48,7 @@ export default function ContextMenuComponent ({ children }) {
   }
 
   useEffect(() => {
-    if (clipboardData.elements != clickedElements) {
+    if (clipboardData.elements !== clickedElements) {
       dispatch(setElements(clickedElements));
     }
   })

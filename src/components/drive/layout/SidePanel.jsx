@@ -10,8 +10,7 @@ import BookmarkElement from 'components/drive/main/element/BookmarkElement.jsx';
 
 export default function SidePanel () {
   const folderContext = useContext(FolderContext);
-  const a = folderContext.currentFolder;
-
+  
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
   const bookmarkData = useSelector(state => state.bookmark);
