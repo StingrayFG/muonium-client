@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux';
 
-export default function TopPanel () {
+export default function BottomPanel () {
   const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
+  const selectionData = useSelector(state => state.selection);
 
   return (
     <div className='w-full h-12 flex
@@ -21,27 +22,27 @@ export default function TopPanel () {
 
       <div className='flex px-4 py-2'>
         <p className='h-8 place-self-center text-left'>
-          {(clipboardData.foldersCount > 0) && <>
-            {clipboardData.foldersCount}
-            {(clipboardData.foldersCount > 1) ?  (' folders') : (' folder')}
+          {(selectionData.foldersCount > 0) && <>
+            {selectionData.foldersCount}
+            {(selectionData.foldersCount > 1) ?  (' folders') : (' folder')}
           </>}
-          {((clipboardData.foldersCount > 0) && (clipboardData.filesCount > 0)) && <>
+          {((selectionData.foldersCount > 0) && (selectionData.filesCount > 0)) && <>
             {', '}
           </>}
-          {(clipboardData.filesCount > 0) && <>
-            {clipboardData.filesCount}
-            {(clipboardData.filesCount > 1) ? (' files') : (' file')}
+          {(selectionData.filesCount > 0) && <>
+            {selectionData.filesCount}
+            {(selectionData.filesCount > 1) ? (' files') : (' file')}
           </>}
         </p>
       </div>
 
-      {((clipboardData.foldersCount > 0) || (clipboardData.filesCount > 0)) && <div className='my-2 border-solid border-l-2 border-zinc-800'></div>}
+      {((selectionData.foldersCount > 0) || (selectionData.filesCount > 0)) && <div className='my-2 border-solid border-l-2 border-zinc-800'></div>}
 
       <div className='flex px-4 py-2'>
         <p className='h-8 place-self-center text-left'>
           {(!clipboardData.mode) && <>
-            {(clipboardData.clickedElements.length > 0) && <>
-              {(clipboardData.clickedElements.length > 1) ? (clipboardData.clickedElements.length + ' items selected') : ('1 item selected')}
+            {(selectionData.elements.length > 0) && <>
+              {(selectionData.elements.length > 1) ? (selectionData.elements.length + ' items selected') : ('1 item selected')}
             </>}
           </>}
           {(clipboardData.mode === 'copy') && <>
@@ -57,7 +58,7 @@ export default function TopPanel () {
         </p>
       </div>
 
-      {((clipboardData.elements.length > 0) || (clipboardData.clickedElements.length > 0)) && <div className='my-2 border-solid border-l-2 border-zinc-800'></div>}
+      {((clipboardData.elements.length > 0) || (selectionData.elements.length > 0)) && <div className='my-2 border-solid border-l-2 border-zinc-800'></div>}
     </div>
   );
 }

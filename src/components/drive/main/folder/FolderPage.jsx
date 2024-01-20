@@ -4,11 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { setInitialUuid, setAbsolutePath, confirmUpdate } from 'services/slice/PathSlice';
 import { getDrive } from 'services/slice/DriveSlice';
-import { setCounts } from 'services/slice/ClipboardSlice';
+import { setCounts } from 'services/slice/SelectionSlice';
 
 import { FolderContext } from 'components/drive/main/context/FolderContext';
 
 import SidePanel from 'components/drive/layout/SidePanel.jsx';
+import PropertiesPanel from 'components/drive/layout/PropertiesPanel.jsx';
 import DropzoneComponent from 'components/drive/main/folder/DropzoneComponent';
 import CutCopyPasteComponent from 'components/drive/main/folder/CutCopyPasteComponent';
 import ContextMenuComponent from 'components/drive/main/folder/ContextMenuComponent';
@@ -83,9 +84,10 @@ export default function FolderPage ({ folderUuid }) {
           <CutCopyPasteComponent>
             <ContextMenuComponent>
               <SidePanel />
-              <div className='w-full h-full'>
+              <div className='flex-1 h-full'>
                 <FolderContentsComponent />   
               </div>
+              <PropertiesPanel />
             </ContextMenuComponent>
           </CutCopyPasteComponent>
         </DropzoneComponent>

@@ -102,18 +102,18 @@ export default function TopPanel () {
           <div className='mx-4 border-solid border-l-2 border-zinc-800'></div>
 
           <button className={`w-12 h-12 grid
-          bg-gradient-to-b from-neutral-300 to-neutral-400 border-neutral-400
+          bg-gradient-to-b from-zinc-400 to-zinc-500 border-zinc-600
           ${(pathData.positionInHistory > 0) ? 
-          'hover:bg-gradient-to-b hover:from-neutral-400 hover:to-neutral-500 hover:border-neutral-500' : 'pointer-events-none'}  
+          'hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50' : 'pointer-events-none'}  
           border-solid border-2 border-r rounded-l-lg`}
           onClick={handlePreviousPath}>
             <img src='/icons/chevron-left.svg' alt='prev' width='28' 
             className={`place-self-center ${(pathData.positionInHistory > 0) ? 'opacity-100' : 'opacity-30'}`}/>
           </button>
           <button className={`w-12 h-12 grid
-          bg-gradient-to-b from-neutral-300 to-neutral-400 border-neutral-400
+          bg-gradient-to-b from-zinc-400 to-zinc-500 border-zinc-600
           ${(pathData.positionInHistory < pathData.pathHistory.length - 1) ? 
-          'hover:bg-gradient-to-b hover:from-neutral-400 hover:to-neutral-500 hover:border-neutral-500' : 'pointer-events-none'}  
+          'hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50' : 'pointer-events-none'}  
           border-solid border-2 border-l rounded-r-lg`}
           onClick={handleNextPath}>
             <img src='/icons/chevron-right.svg' alt='next' width='28' 
@@ -123,16 +123,16 @@ export default function TopPanel () {
           <div className='mx-4 border-solid border-l-2 border-zinc-800'></div>
 
           <button className='w-12 h-12 grid
-          bg-gradient-to-b from-neutral-300 to-neutral-400 border-neutral-400
-          hover:bg-gradient-to-b hover:from-neutral-400 hover:to-neutral-500 hover:border-neutral-500
-          border-solid border-2 border-r rounded-l-lg'
+          bg-gradient-to-b from-zinc-400 to-zinc-500 border-zinc-600
+          hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50
+          border-solid border-2 border-r border-zinc-800 rounded-l-lg'
           onClick={handleGridView}>
             <img src='/icons/grid.svg' alt='prev' width='28' className='place-self-center'/>
           </button>
           <button className='w-12 h-12 grid
-          bg-gradient-to-b from-neutral-300 to-neutral-400 border-neutral-400
-          hover:bg-gradient-to-b hover:from-neutral-400 hover:to-neutral-500 hover:border-neutral-500
-          border-solid border-2 border-l rounded-r-lg'
+          bg-gradient-to-b from-zinc-400 to-zinc-500 border-zinc-600
+          hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50
+          border-solid border-2 border-l border-zinc-800 rounded-r-lg'
           onClick={handleListView}>
             <img src='/icons/list-ul.svg' alt='next' width='28' className='place-self-center'/>          
           </button>
@@ -141,8 +141,8 @@ export default function TopPanel () {
 
         </div>
 
-        <div className='w-full h-12 px-4 bg-white flex text-left text-neutral-800
-          bg-gradient-to-b from-neutral-300 to-neutral-400 border-neutral-400
+        <div className='w-full h-12 px-4 bg-white flex text-left text-neutral-200
+          bg-gradient-to-b from-zinc-400 to-zinc-500 border-zinc-600
           border-solid border-2 rounded-lg'>
             <textarea className='w-full h-8 place-self-center outline-none resize-none
             bg-transparent'
@@ -162,15 +162,15 @@ export default function TopPanel () {
         <div className='mx-4 border-solid border-l-2 border-zinc-800'></div>
 
         <div className='ml-auto flex'>
-          <div className='w-72 h-12 pl-4 flex text-left
-          bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800         
-          border-solid border-2 rounded-l-lg outline-none'>
+          <div className='w-[302px] h-12 pl-4 flex text-left
+          bg-gradient-to-b from-zinc-400 to-zinc-500 border-zinc-600 
+          border-solid border-2 border-r rounded-l-lg outline-none'>
             <p className='place-self-center'>{userData.login}</p>
           </div>
           <button className='w-12 h-12 grid
-          bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800 
-          hover:from-neutral-600 hover:to-neutral-700 hover:border-neutral-700           
-          border-solid border-2 rounded-r-lg outline-none'
+          bg-gradient-to-b from-zinc-400 to-zinc-500 border-zinc-600
+          hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 
+          border-solid border-2 border-l rounded-r-lg outline-none'
           onClick={logOut}>
             <img src='/icons/box-arrow-right.svg' alt='logout' width='28' className='place-self-center'/>
           </button >    

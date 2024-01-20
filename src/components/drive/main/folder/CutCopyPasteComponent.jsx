@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { setElements, setCopy, setCut, setPaste } from 'services/slice/ClipboardSlice.jsx';
+import { setCopy, setCut, setPaste } from 'services/slice/ClipboardSlice.jsx';
+import { setElements } from 'services/slice/SelectionSlice.jsx';
 import { requestUpdate } from 'services/slice/PathSlice';
 import { requestUpdate as requestBookmarkUpdate } from 'services/slice/BookmarkSlice';
 
@@ -17,7 +18,7 @@ export default function ContextMenuComponent ({ children }) {
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
   const clipboardData = useSelector(state => state.clipboard);
-
+  const selectionData = useSelector(state => state.selection);
 
   const [clickedElements, setClickedElements] = useState([]);
   const [hoveredElement, setHoveredElement] = useState({ uuid: ''});
