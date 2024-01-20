@@ -77,7 +77,7 @@ export default function FolderPage ({ folderUuid }) {
   });
 
   return (
-    <div className='w-full h-full overflow-y-auto scrollbar scrollbar-thumb-neutral-200 scrollbar-corner-neutral-200 scrollbar-track-transparent 
+    <div className='w-full h-full overflow-hidden
     bg-gradient-to-b from-zinc-600/90 to-zinc-700/90'>
       <FolderContext.Provider value={{ currentFolder }}> 
         <DropzoneComponent>

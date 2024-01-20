@@ -37,7 +37,7 @@ export default function SidePanel () {
   })
 
   return (
-    <div className='w-96 h-full
+    <div className='w-96 max-h-full overflow-y-auto scrollbar scrollbar-thumb-zinc-400 scrollbar-corner-zinc-400 scrollbar-track-transparent
     border-solid border-r-2 border-zinc-800
     text-2xl font-semibold font-sans text-neutral-200'>
       <div className='w-full h-12 px-3 flex text-left text-zinc-400'

@@ -10,15 +10,15 @@ export default function FileIconElement ({ file, type }) {
 
   if (type === 'grid') {
     if (textExtensions.includes(ext)) {
-      return <img src='/icons/files-dark/file-text.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
+      return <img src='/icons/files-dark/file-text.svg' alt='icon' width='60' className='place-self-center absolute pointer-events-none select-none'/>
     } else if (imageExtensions.includes(ext)) {
-      return <img src='/icons/files-dark/file-image.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
+      return <img src='/icons/files-dark/file-image.svg' alt='icon' width='60' className='place-self-center absolute pointer-events-none select-none'/>
     } else if (archiveExtensions.includes(ext)) {
-      return <img src='/icons/files-dark/file-zip.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
+      return <img src='/icons/files-dark/file-zip.svg' alt='icon' width='60' className='place-self-center absolute pointer-events-none select-none'/>
     } else if (musicExtensions.includes(ext)) {
-      return <img src='/icons/files-dark/file-music.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
+      return <img src='/icons/files-dark/file-music.svg' alt='icon' width='60' className='place-self-center absolute pointer-events-none select-none'/>
     } else if (playExtensions.includes(ext)) {
-      return <img src='/icons/files-dark/file-play.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
+      return <img src='/icons/files-dark/file-play.svg' alt='icon' width='60' className='place-self-center absolute pointer-events-none select-none'/>
     } 
   } else if (type === 'list') {
     if (textExtensions.includes(ext)) {

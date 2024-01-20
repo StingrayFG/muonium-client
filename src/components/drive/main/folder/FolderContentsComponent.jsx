@@ -15,7 +15,8 @@ export default function FolderContentsComponent ({ children }) {
 
   return (
     <div className={`
-    ${settingsData.type === 'grid' && 'grid grid-cols-6 gap-4 px-4 py-4'}
+    ${settingsData.type === 'grid' && 
+    'grid grid-cols-5 gap-4 px-4 py-4 max-h-full overflow-y-auto scrollbar scrollbar-thumb-zinc-400 scrollbar-corner-zinc-400 scrollbar-track-transparent'}
     ${settingsData.type === 'list' && 'grid grid-cols-1 gap-1 px-4 py-4'}
     `}>
       {contextMenuContext.creatingFolder && (

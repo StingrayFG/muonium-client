@@ -119,7 +119,7 @@ export default function ContextMenuComponent ({ children }) {
   const [creatingFolder, setCreatingFolder] = useState(false);
 
   return (
-    <div className='w-full h-full grid grid-cols-[max-content_1fr] overflow-hidden'
+    <div className='w-full h-full flex'
     onClick={handleClick}
     onContextMenu={handleDefaultContextMenuClick}>
       <ContextMenuContext.Provider value={{ handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick,
