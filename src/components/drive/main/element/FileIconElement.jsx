@@ -19,7 +19,7 @@ export default function FileIconElement ({ file, type }) {
       return <img src='/icons/files-dark/file-music.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
     } else if (playExtensions.includes(ext)) {
       return <img src='/icons/files-dark/file-play.svg' alt='icon' width='60' className='place-self-center -mt-48 pointer-events-none select-none'/>
-    }  
+    } 
   } else if (type === 'list') {
     if (textExtensions.includes(ext)) {
       return <img src='/icons/files-light/file-text.svg' alt='icon' width='40' className='place-self-center pointer-events-none select-none'/>
@@ -31,7 +31,9 @@ export default function FileIconElement ({ file, type }) {
       return <img src='/icons/files-light/file-music.svg' alt='icon' width='40' className='place-self-center pointer-events-none select-none'/>
     } else if (playExtensions.includes(ext)) {
       return <img src='/icons/files-light/file-play.svg' alt='icon' width='40' className='place-self-center pointer-events-none select-none'/>
-    }  
+    } else {
+      return <img src='/icons/files-light/file-earmark.svg' alt='icon' width='40' className='place-self-center pointer-events-none select-none'/>
+    }
   }
 
 }
