@@ -38,8 +38,7 @@ export default function FolderElement ({ folder }) {
   }
 
   const setName = async () => {
-    setRequiresNameSaving(true);
-    
+    setRequiresNameSaving(true); 
   }
 
   useEffect(() => {
@@ -48,6 +47,7 @@ export default function FolderElement ({ folder }) {
 
       const saveName = async () => {
         if (inputData) {
+
           if (contextMenuContext.creatingFolder) {
             await FolderService.handleCreate(userData, { uuid: folder.uuid, name: inputData }, folderContext.currentFolder.uuid)
             .then(() => {
@@ -109,7 +109,7 @@ export default function FolderElement ({ folder }) {
         </div>
   
         {(((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
-        (contextMenuContext.creatingFolder)) ? 
+        ((contextMenuContext.creatingFolder) && (!folder.uuid))) ? 
         <div className='w-full h-24 grid place-self-center'>
           <textarea className='w-full h-full place-self-center text-center outline-none resize-none
           bg-transparent 

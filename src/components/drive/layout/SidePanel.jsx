@@ -40,7 +40,7 @@ export default function SidePanel () {
     <div className='w-96 h-full
     border-solid border-r-2 border-zinc-800
     text-2xl font-semibold font-sans text-neutral-200'>
-      <div className='w-full h-12 px-3 flex text-left text-neutral-400'
+      <div className='w-full h-12 px-3 flex text-left text-zinc-400'
       onClick={() => {moveToUuid('home')}}>
         <p className='place-self-center'>Places</p>
       </div>
@@ -59,7 +59,7 @@ export default function SidePanel () {
         <p className='ml-2 place-self-center'>Trash</p>
       </button>
 
-      <div className='w-full h-12 mt-4 px-3 flex text-left text-neutral-400'
+      <div className='w-full h-12 mt-4 px-3 flex text-left text-zinc-400'
       onClick={() => {moveToUuid('home')}}>
         <p className='place-self-center'>Bookmarks</p>
       </div>

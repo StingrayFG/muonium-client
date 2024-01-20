@@ -19,8 +19,8 @@ export default function FolderContentsComponent ({ children }) {
     ${settingsData.type === 'list' && 'grid grid-cols-1 gap-1 px-4 py-4'}
     `}>
       {contextMenuContext.creatingFolder && (
-        <FolderElement/>
-        )}
+        <FolderElement />
+      )}
 
       {folderContext.currentFolder && <>
         {folderContext.currentFolder.files.map((file) => (
