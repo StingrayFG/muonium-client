@@ -125,14 +125,14 @@ export default function TopPanel () {
           <button className='w-12 h-12 grid
           bg-gradient-to-b from-zinc-300 to-zinc-400 border-zinc-400
           hover:bg-gradient-to-b hover:from-sky-200/75 hover:to-sky-400/75 hover:border-sky-400/75
-          border-solid border-2 border-r border-zinc-800 rounded-l-lg'
+          border-solid border-2 border-r rounded-l-lg'
           onClick={handleGridView}>
             <img src='/icons/grid.svg' alt='prev' width='28' className='place-self-center'/>
           </button>
           <button className='w-12 h-12 grid
           bg-gradient-to-b from-zinc-300 to-zinc-400 border-zinc-400
           hover:bg-gradient-to-b hover:from-sky-200/75 hover:to-sky-400/75 hover:border-sky-400/75
-          border-solid border-2 border-l border-zinc-800 rounded-r-lg'
+          border-solid border-2 border-l rounded-r-lg'
           onClick={handleListView}>
             <img src='/icons/list-ul.svg' alt='next' width='28' className='place-self-center'/>          
           </button>
