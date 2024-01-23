@@ -25,7 +25,12 @@ export default function LoginPage() {
       if (!data.login || !data.password) {
         showMessage('Please enter correct data');
       } else if (res.type === 'user/login/rejected') {
-        showMessage('Wrong user data');
+        const code = (res.error.message.slice(res.error.message.length - 3, res.error.message.length))
+        if (code === '423') {
+          showMessage('Too many login attempts');
+        } else if (code === '404') {
+          showMessage('Something went wrong');
+        }
       } else if (res.type === 'user/login/fulfilled') {
         navigate('/drive');
       }

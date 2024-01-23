@@ -26,8 +26,15 @@ export default function SignupPage() {
         showMessage('Please enter correct data');
       } else if (data.password !== event.target.elements.password.value) {
         showMessage('Passwords do not match')
-      } else if (res.type === 'user/signup/rejected') {
-        showMessage('Username is already used')
+      } else if (res.type === 'user/login/rejected') {
+        const code = (res.error.message.slice(res.error.message.length - 3, res.error.message.length))
+        if (code === '423') {
+          showMessage('Too many login attempts');
+        } else if (code === '409') {
+          showMessage('Username is already used');
+        } else if (code === '404') {
+          showMessage('Something went wrong');
+        }
       } else if (res.type === 'user/signup/fulfilled') {
         navigate('/login');
       }

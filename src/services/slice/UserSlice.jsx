@@ -6,7 +6,7 @@ export const loginUser = createAsyncThunk(
   async ({ login, password }, thunkAPI) => {
     const userData = { login, password };
     const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/auth/login', userData)
-    return res.data;
+    return res;
   },
 );
 
@@ -15,7 +15,7 @@ export const signupUser = createAsyncThunk(
   async ({ login, password }, thunkAPI) => {
     const userData = { login, password };
     const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/auth/signup', userData)
-    return res.data;
+    return res;
   },
 );
 
@@ -30,11 +30,17 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(loginUser.fulfilled, (state, action) => {
-      localStorage.setItem('user', JSON.stringify(action.payload));  
+      localStorage.setItem('user', JSON.stringify(action.payload.data));  
+      return action.payload.data;
+    });
+    builder.addCase(loginUser.rejected, (state, action) => {
       return action.payload;
     });
-    builder.addCase(signupUser.fulfilled, (state) => {
-      return null;
+    builder.addCase(signupUser.fulfilled, (state, action) => {
+      return action.payload.data;
+    });
+    builder.addCase(signupUser.rejected, (state, action) => {
+      return action.payload;
     });
   },
 });
