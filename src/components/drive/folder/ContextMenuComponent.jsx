@@ -1,17 +1,17 @@
 import { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
-import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
-import { FolderContext } from 'components/drive/main/context/FolderContext.jsx';
+import { CutCopyPasteContext } from 'components/drive/context/CutCopyPasteContext.jsx';
+import { ContextMenuContext } from 'components/drive/context/ContextMenuContext.jsx';
+import { FolderContext } from 'components/drive/context/FolderContext.jsx';
 
-import DefaultContextMenu from 'components/drive/main/menu/DefaultContextMenu.jsx';
-import FileContextMenu from 'components/drive/main/menu/FileContextMenu.jsx';
-import FolderContextMenu from 'components/drive/main/menu/FolderContextMenu.jsx';
-import MultipleFileContextMenu from 'components/drive/main/menu/MultipleFileContextMenu.jsx';
-import MultipleFolderContextMenu from 'components/drive/main/menu/MultipleFolderContextMenu.jsx';
-import BookmarkContextMenu from 'components/drive/main/menu/BookmarkContextMenu.jsx';
-import TrashContextMenu from 'components/drive/main/menu/TrashContextMenu.jsx';
+import DefaultContextMenu from 'components/drive/menu/DefaultContextMenu.jsx';
+import FileContextMenu from 'components/drive/menu/FileContextMenu.jsx';
+import FolderContextMenu from 'components/drive/menu/FolderContextMenu.jsx';
+import MultipleFileContextMenu from 'components/drive/menu/MultipleFileContextMenu.jsx';
+import MultipleFolderContextMenu from 'components/drive/menu/MultipleFolderContextMenu.jsx';
+import BookmarkContextMenu from 'components/drive/menu/BookmarkContextMenu.jsx';
+import TrashContextMenu from 'components/drive/menu/TrashContextMenu.jsx';
 
 export default function ContextMenuComponent ({ children }) {
   const folderContext = useContext(FolderContext);

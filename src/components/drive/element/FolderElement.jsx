@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { moveToNew, requestUpdate } from 'services/slice/PathSlice';
 
-import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
-import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
-import { FolderContext } from 'components/drive/main/context/FolderContext.jsx';
+import { CutCopyPasteContext } from 'components/drive/context/CutCopyPasteContext.jsx';
+import { ContextMenuContext } from 'components/drive/context/ContextMenuContext.jsx';
+import { FolderContext } from 'components/drive/context/FolderContext.jsx';
 
 import FolderService from 'services/FolderService.jsx';
 

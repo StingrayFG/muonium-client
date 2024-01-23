@@ -1,7 +1,7 @@
 import { useRef, useContext } from 'react';
 
-import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
-import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
+import { CutCopyPasteContext } from 'components/drive/context/CutCopyPasteContext.jsx';
+import { ContextMenuContext } from 'components/drive/context/ContextMenuContext.jsx';
 
 export default function FileContextMenu ({ point }) {
   const contextMenuContext = useContext(ContextMenuContext);

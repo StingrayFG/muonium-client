@@ -6,8 +6,8 @@ import { setElements } from 'services/slice/SelectionSlice.jsx';
 import { requestUpdate } from 'services/slice/PathSlice';
 import { requestUpdate as requestBookmarkUpdate } from 'services/slice/BookmarkSlice';
 
-import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
-import { FolderContext } from 'components/drive/main/context/FolderContext.jsx';
+import { CutCopyPasteContext } from 'components/drive/context/CutCopyPasteContext.jsx';
+import { FolderContext } from 'components/drive/context/FolderContext.jsx';
 
 import FileService from 'services/FileService.jsx';
 import FolderService from 'services/FolderService.jsx';

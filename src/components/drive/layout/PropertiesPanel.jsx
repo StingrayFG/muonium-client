@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import FileIconElement from 'components/drive/main/element/FileIconElement.jsx';
+import FileIconElement from 'components/drive/element/FileIconElement.jsx';
 
 export default function PropertiesPanel () {
   const selectionData = useSelector(state => state.selection);

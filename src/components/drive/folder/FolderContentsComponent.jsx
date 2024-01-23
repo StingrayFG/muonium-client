@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
-import { FolderContext } from 'components/drive/main/context/FolderContext.jsx';
-import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
+import { FolderContext } from 'components/drive/context/FolderContext.jsx';
+import { ContextMenuContext } from 'components/drive/context/ContextMenuContext.jsx';
 
-import FileElement from 'components/drive/main/element/FileElement.jsx';
-import FolderElement from 'components/drive/main/element/FolderElement.jsx';
+import FileElement from 'components/drive/element/FileElement.jsx';
+import FolderElement from 'components/drive/element/FolderElement.jsx';
 
 export default function FolderContentsComponent ({ children }) {
   const folderContext = useContext(FolderContext);

@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import DrivePanels from 'components/drive/layout/DrivePanels.jsx';
-import FolderPage from 'components/drive/main/folder/FolderPage.jsx';
+import FolderPage from 'components/drive/folder/FolderPage.jsx';
 
 import LoginPage from 'components/auth/LoginPage.jsx';
 import SignupPage from 'components/auth/SignupPage.jsx';

@@ -3,12 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { requestUpdate } from 'services/slice/PathSlice';
 
-import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
-import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
+import { CutCopyPasteContext } from 'components/drive/context/CutCopyPasteContext.jsx';
+import { ContextMenuContext } from 'components/drive/context/ContextMenuContext.jsx';
 
 import FileService from 'services/FileService.jsx';
 
-import FileIconElement from 'components/drive/main/element/FileIconElement.jsx';
+import FileIconElement from 'components/drive/element/FileIconElement.jsx';
 
 export default function FileElement ({ file }) {
   const contextMenuContext = useContext(ContextMenuContext);

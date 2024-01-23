@@ -4,8 +4,8 @@ import { useDropzone } from 'react-dropzone';
 
 import { requestUpdate } from 'services/slice/PathSlice';
 
-import { DropzoneContext } from 'components/drive/main/context/DropzoneContext';
-import { FolderContext } from 'components/drive/main/context/FolderContext';
+import { DropzoneContext } from 'components/drive/context/DropzoneContext';
+import { FolderContext } from 'components/drive/context/FolderContext';
 
 import FileService from 'services/FileService.jsx';
 

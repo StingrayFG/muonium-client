@@ -1,8 +1,8 @@
 import { useRef, useContext } from 'react';
 
-import { DropzoneContext } from 'components/drive/main/context/DropzoneContext';
-import { CutCopyPasteContext } from 'components/drive/main/context/CutCopyPasteContext.jsx';
-import { ContextMenuContext } from 'components/drive/main/context/ContextMenuContext.jsx';
+import { DropzoneContext } from 'components/drive/context/DropzoneContext';
+import { CutCopyPasteContext } from 'components/drive/context/CutCopyPasteContext.jsx';
+import { ContextMenuContext } from 'components/drive/context/ContextMenuContext.jsx';
 
 export default function DefaultContextMenu ({ point }) {
   const dropzoneContext = useContext(DropzoneContext);

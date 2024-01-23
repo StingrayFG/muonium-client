@@ -6,14 +6,14 @@ import { setInitialUuid, setAbsolutePath, confirmUpdate } from 'services/slice/P
 import { getDrive } from 'services/slice/DriveSlice';
 import { setCounts } from 'services/slice/SelectionSlice';
 
-import { FolderContext } from 'components/drive/main/context/FolderContext';
+import { FolderContext } from 'components/drive/context/FolderContext';
 
 import SidePanel from 'components/drive/layout/SidePanel.jsx';
 import PropertiesPanel from 'components/drive/layout/PropertiesPanel.jsx';
-import DropzoneComponent from 'components/drive/main/folder/DropzoneComponent';
-import CutCopyPasteComponent from 'components/drive/main/folder/CutCopyPasteComponent';
-import ContextMenuComponent from 'components/drive/main/folder/ContextMenuComponent';
-import FolderContentsComponent from 'components/drive/main/folder/FolderContentsComponent';
+import DropzoneComponent from 'components/drive/folder/DropzoneComponent';
+import CutCopyPasteComponent from 'components/drive/folder/CutCopyPasteComponent';
+import ContextMenuComponent from 'components/drive/folder/ContextMenuComponent';
+import FolderContentsComponent from 'components/drive/folder/FolderContentsComponent';
 
 import FolderService from 'services/FolderService.jsx'
 
