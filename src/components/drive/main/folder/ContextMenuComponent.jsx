@@ -101,16 +101,20 @@ export default function ContextMenuComponent ({ children }) {
     }
   })
 
-  const handleClick = (event) => {
+  const handleMouseUp = (event) => {
     event.preventDefault();
     event.stopPropagation();
+    cutCopyPasteContext.handleMouseLeave(event);
+    
     if (event.button === 0) {
       if (((isContextMenu && !hoveredOverMenu && !cutCopyPasteContext.hoveredElement.uuid)) || 
-      (!cutCopyPasteContext.hoveredElement.uuid && !hoveredOverMenu)) {
-        cutCopyPasteContext.clearClickedElements();
+      (!cutCopyPasteContext.hoveredElement.uuid && !hoveredOverMenu && !cutCopyPasteContext.draggingElement)) {
+        cutCopyPasteContext.clearClickedElements();  
       }
-      setIsContextMenu(false);
-      setHoveredOverMenu(false);
+
+      if (isContextMenu && !hoveredOverMenu) {
+        setIsContextMenu(false);   
+      }
     }
   };
 
@@ -118,13 +122,23 @@ export default function ContextMenuComponent ({ children }) {
   const [renaming, setRenaming] = useState(false);
   const [creatingFolder, setCreatingFolder] = useState(false);
 
+  const customSetRenaming = (v) => {
+    setRenaming(v);
+    setIsContextMenu(false); 
+  }
+
+  const customSetCreatingFolder = (v) => {
+    setCreatingFolder(v);
+    setIsContextMenu(false); 
+  }
+
   return (
     <div className='w-full h-full flex'
-    onClick={handleClick}
+    onMouseUp={handleMouseUp}
     onContextMenu={handleDefaultContextMenuClick}>
       <ContextMenuContext.Provider value={{ handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick,
         hoveredOverMenu, setHoveredOverMenu,
-        renaming, setRenaming, creatingFolder, setCreatingFolder}}> 
+        renaming, setRenaming: customSetRenaming, creatingFolder, setCreatingFolder: customSetCreatingFolder, setCreatingFolder}}> 
         {children}  
 
         {(isContextMenu && !cutCopyPasteContext.draggingElement) && <>

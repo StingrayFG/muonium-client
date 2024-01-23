@@ -48,16 +48,11 @@ export default function ContextMenuComponent ({ children }) {
     setClickedElements([]);
   }
 
-  useEffect(() => {
-    if (clipboardData.elements !== clickedElements) {
-      dispatch(setElements(clickedElements));
-    }
-  })
-
   const downloadClickedElements = async () => {
     for await (const element of clickedElements) {
       await FileService.handleDownload(userData, element)
     }
+    setRequiresContextMenuClosure(true);
   }
 
   const removeClickedElements = async () => {
@@ -73,11 +68,11 @@ export default function ContextMenuComponent ({ children }) {
         })
       }
     }
+    setRequiresContextMenuClosure(true);
   }
 
   const recoverClickedElements = async () => {
     for await (const element of clickedElements) {
-      console.log(element)
       if (element.type === 'file') { 
         await FileService.handleRecover(userData, element)
         .then(() => { dispatch(requestUpdate()); })
@@ -89,6 +84,7 @@ export default function ContextMenuComponent ({ children }) {
         })
       }
     }
+    setRequiresContextMenuClosure(true);
   }
 
   const deleteClickedElements = async () => {
@@ -101,6 +97,7 @@ export default function ContextMenuComponent ({ children }) {
         .then(() => { dispatch(requestUpdate()); })
       }
     }
+    setRequiresContextMenuClosure(true);
   }
 
   const copyClickedElements = () => {
@@ -135,6 +132,11 @@ export default function ContextMenuComponent ({ children }) {
     dispatch(setPaste());
     setRequiresContextMenuClosure(true);
   };
+
+  const clearClipboardElements = async () => {
+    dispatch(setPaste());
+    dispatch(requestUpdate());
+  }
 
   useEffect(() => {
     const moveElement = async () => {
@@ -185,7 +187,11 @@ export default function ContextMenuComponent ({ children }) {
       if (!clipboardData.mode) {
         setHoldingElement(true);
         setDraggedElementSize({ x: event.currentTarget.offsetHeight, y: event.currentTarget.offsetWidth });
-        addClickedElement(event, element);
+        if (clickedElements.length > 1) {
+          addClickedElement({ ...event, ctrlKey: true }, element);
+        } else {
+          addClickedElement(event, element);
+        }
     
         setMousePointInitial({ x: event.pageX, y: event.pageY });
         setContainerPointInitial({ x: event.pageX, y: event.pageY });
@@ -209,6 +215,9 @@ export default function ContextMenuComponent ({ children }) {
     onMouseMove={updateContainerPoint}
     onMouseUp={handleMouseLeave}
 
+    tabIndex="0"
+    onKeyDown={(event) => { if (event.code === 'Escape') { clearClipboardElements() } }}
+
     onCopy={copyClickedElements}
     onCut={cutClickedElements}
     onPaste={pasteClickedElements}>
@@ -217,6 +226,7 @@ export default function ContextMenuComponent ({ children }) {
         removeClickedElements, recoverClickedElements, deleteClickedElements,
         copyClickedElements, cutClickedElements, pasteClickedElements, 
         hoveredElement, setHoveredElement,
+        draggingElement,
         handleMouseEnter, handleMouseLeave,
         requiresContextMenuClosure, setRequiresContextMenuClosure}}>
         {draggingElement && 
