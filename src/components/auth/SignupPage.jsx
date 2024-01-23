@@ -74,8 +74,8 @@ export default function SignupPage() {
               name='confirmpassword'
               type='password'/> 
             <button className='w-full h-12 pl-3 mt-12 grid text-neutral-200
-            bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800 
-            hover:from-neutral-600 hover:to-neutral-700 hover:border-neutral-700           
+            bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800
+            hover:bg-gradient-to-b hover:from-sky-200/75 hover:to-sky-400/60 hover:border-sky-400/75         
             border-solid border-2 rounded-lg outline-none'>
               <p className='place-self-center'>Sign up</p>
             </button >
