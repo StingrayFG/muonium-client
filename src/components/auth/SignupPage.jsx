@@ -20,25 +20,28 @@ export default function SignupPage() {
     event.preventDefault();
     const data = {login: event.target.elements.login.value, password: event.target.elements.password.value}
 
-    await dispatch(signupUser(data))
-    .then(res => {
-      if (!data.login || !data.password) {
-        showMessage('Please enter correct data');
-      } else if (data.password !== event.target.elements.password.value) {
-        showMessage('Passwords do not match')
-      } else if (res.type === 'user/login/rejected') {
-        const code = (res.error.message.slice(res.error.message.length - 3, res.error.message.length))
-        if (code === '423') {
-          showMessage('Too many login attempts');
-        } else if (code === '409') {
-          showMessage('Username is already used');
-        } else if (code === '404') {
-          showMessage('Something went wrong');
+    if (!data.login || !data.password) {
+      showMessage('Please enter correct data');
+    } else if (data.password !== event.target.elements.confirmpassword.value) {
+      showMessage('Passwords do not match')
+    } else {
+      await dispatch(signupUser(data))
+      .then(res => {
+        if (res.type === 'user/signup/rejected') {
+          const code = (res.error.message.slice(res.error.message.length - 3, res.error.message.length))
+          if (code === '423') {
+            showMessage('Too many signup attempts');
+          } else if (code === '409') {
+            showMessage('Username is already used');
+          } else {
+            showMessage('Something went wrong');
+          }
+        } else if (res.type === 'user/signup/fulfilled') {
+          navigate('/login');
         }
-      } else if (res.type === 'user/signup/fulfilled') {
-        navigate('/login');
-      }
-    })
+      })
+    }
+    
   };
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -58,8 +61,8 @@ export default function SignupPage() {
       bg-gradient-to-b from-neutral-900/75 to-neutral-100/75
       text-lg font-semibold font-sans text-neutral-200'>
         <div className='w-96 h-auto grid
-        bg-gradient-to-b from-zinc-500 to-zinc-600 
-        border-solid border-2 border-zinc-700 rounded-md'>
+        bg-gradient-to-b from-zinc-600/50 to-zinc-700/50 
+        border-solid border-2 border-zinc-800 rounded-md'>
           <form onSubmit={handleSubmit} className='w-full px-4 py-4 grid'> 
             <p className='h-6'>Login</p> 
             <input className='w-full h-12 pl-3 mt-2

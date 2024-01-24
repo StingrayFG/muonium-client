@@ -37,7 +37,7 @@ export const userSlice = createSlice({
       return action.payload;
     });
     builder.addCase(signupUser.fulfilled, (state, action) => {
-      return action.payload.data;
+      return null;
     });
     builder.addCase(signupUser.rejected, (state, action) => {
       return action.payload;

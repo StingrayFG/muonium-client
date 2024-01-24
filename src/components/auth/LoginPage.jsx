@@ -20,21 +20,23 @@ export default function LoginPage() {
     event.preventDefault();
     const data = {login: event.target.elements.login.value, password: event.target.elements.password.value}
 
-    await dispatch(loginUser(data))
-    .then(res => {
-      if (!data.login || !data.password) {
-        showMessage('Please enter correct data');
-      } else if (res.type === 'user/login/rejected') {
-        const code = (res.error.message.slice(res.error.message.length - 3, res.error.message.length))
-        if (code === '423') {
-          showMessage('Too many login attempts');
-        } else if (code === '404') {
-          showMessage('Something went wrong');
+    if (!data.login || !data.password) {
+      showMessage('Please enter correct data');
+    } else {
+      await dispatch(loginUser(data))
+      .then(res => {
+        if (res.type === 'user/login/rejected') {
+          const code = (res.error.message.slice(res.error.message.length - 3, res.error.message.length))
+          if (code === '423') {
+            showMessage('Too many login attempts');
+          } else if (code === '404') {
+            showMessage('Wrong login or password');
+          }
+        } else if (res.type === 'user/login/fulfilled') {
+          navigate('/drive');
         }
-      } else if (res.type === 'user/login/fulfilled') {
-        navigate('/drive');
-      }
-    })
+      })
+    }    
   };
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -54,8 +56,8 @@ export default function LoginPage() {
       bg-gradient-to-b from-neutral-900/75 to-neutral-100/75
       text-lg font-semibold font-sans text-neutral-200'>
         <div className='w-96 h-auto grid
-        bg-gradient-to-b from-zinc-500 to-zinc-600 
-        border-solid border-2 border-zinc-700 rounded-md'>
+        bg-gradient-to-b from-zinc-600/50 to-zinc-700/50 
+        border-solid border-2 border-zinc-800 rounded-md'>
           <form onSubmit={handleSubmit} className='w-full px-4 py-4 grid'>
             <p className='h-6'>Login</p>
             <input className='w-full h-12 pl-3 mt-2
