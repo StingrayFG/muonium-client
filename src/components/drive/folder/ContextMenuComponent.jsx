@@ -138,7 +138,7 @@ export default function ContextMenuComponent ({ children }) {
     onContextMenu={handleDefaultContextMenuClick}>
       <ContextMenuContext.Provider value={{ handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick,
         hoveredOverMenu, setHoveredOverMenu,
-        renaming, setRenaming: customSetRenaming, creatingFolder, setCreatingFolder: customSetCreatingFolder, setCreatingFolder}}> 
+        renaming, setRenaming: customSetRenaming, creatingFolder, setCreatingFolder: customSetCreatingFolder}}> 
         {children}  
 
         {(isContextMenu && !cutCopyPasteContext.draggingElement) && <>
