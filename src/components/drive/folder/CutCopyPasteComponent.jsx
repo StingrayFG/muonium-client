@@ -48,6 +48,12 @@ export default function ContextMenuComponent ({ children }) {
     setClickedElements([]);
   }
 
+  useEffect(() => {
+    if (selectionData.elements !== clickedElements) {
+      dispatch(setElements(clickedElements));
+    }
+  })
+
   const downloadClickedElements = async () => {
     for await (const element of clickedElements) {
       await FileService.handleDownload(userData, element)
@@ -209,7 +215,7 @@ export default function ContextMenuComponent ({ children }) {
       }
     }
   }
-  
+
   return (
     <div className='w-full h-full'
     onMouseMove={updateContainerPoint}
