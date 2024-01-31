@@ -72,7 +72,7 @@ export default function FileElement ({ file }) {
       'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
       :
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-      onMouseDown={(event) => { cutCopyPasteContext.handleMouseEnter(event, file) }}
+      onMouseDown={(event) => { cutCopyPasteContext.handleMouseDown(event, file) }}
       onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(file) }}
       onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' }) }}
       onContextMenu={(event) => { contextMenuContext.handleFileContextMenuClick(event, file) }}>
@@ -119,7 +119,7 @@ export default function FileElement ({ file }) {
       'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
       :
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-      onMouseDown={(event) => { cutCopyPasteContext.handleMouseEnter(event, file) }}
+      onMouseDown={(event) => { cutCopyPasteContext.handleMouseDown(event, file) }}
       onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(file) }}
       onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' }) }}
       onContextMenu={(event) => { contextMenuContext.handleFileContextMenuClick(event, file) }}>

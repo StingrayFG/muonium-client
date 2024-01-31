@@ -16,10 +16,12 @@ export default function FolderContextMenu ({ point, folder }) {
 
   const handleCreateBookmark = () => {
     dispatch(createBookmark({ userData, folder }));
+    cutCopyPasteContext.setRequiresContextMenuClosure(true);
   }
 
   const handleDeleteBookmark = () => {
     dispatch(deleteBookmark({ userData, folder }));
+    cutCopyPasteContext.setRequiresContextMenuClosure(true);
   }
   
   const windowWidth = useRef(window.innerWidth).current;

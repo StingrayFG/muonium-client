@@ -62,6 +62,7 @@ export default function ContextMenuComponent ({ children }) {
   }
 
   const removeClickedElements = async () => {
+    console.log(clickedElements)
     for await (const element of clickedElements) {
       if (element.type === 'file') { 
         await FileService.handleRemove(userData, element)
@@ -161,7 +162,7 @@ export default function ContextMenuComponent ({ children }) {
     }
     moveElement();
   })
-
+  
   const windowWidth = useRef(window.innerWidth).current;
   const windowHeight = useRef(window.innerHeight).current;
 
@@ -188,7 +189,7 @@ export default function ContextMenuComponent ({ children }) {
     }
   }
 
-  const handleMouseEnter = (event, element) => {
+  const handleMouseDown = (event, element) => {
     if (event.button === 0) {
       if (!clipboardData.mode) {
         setHoldingElement(true);
@@ -206,7 +207,7 @@ export default function ContextMenuComponent ({ children }) {
     }
   }
 
-  const handleMouseLeave = (event) => {
+  const handleMouseUp = (event) => {
     if (event.button === 0) {
       setDraggingElement(false);
       setHoldingElement(false);
@@ -219,7 +220,7 @@ export default function ContextMenuComponent ({ children }) {
   return (
     <div className='w-full h-full'
     onMouseMove={updateContainerPoint}
-    onMouseUp={handleMouseLeave}
+    onMouseUp={handleMouseUp}
 
     tabIndex="0"
     onKeyDown={(event) => { if (event.code === 'Escape') { clearClipboardElements() } }}
@@ -233,7 +234,7 @@ export default function ContextMenuComponent ({ children }) {
         copyClickedElements, cutClickedElements, pasteClickedElements, 
         hoveredElement, setHoveredElement,
         draggingElement,
-        handleMouseEnter, handleMouseLeave,
+        handleMouseDown, handleMouseUp,
         requiresContextMenuClosure, setRequiresContextMenuClosure}}>
         {draggingElement && 
           <div className='bg-gradient-to-b from-sky-200/45 to-sky-400/45 rounded-md' 

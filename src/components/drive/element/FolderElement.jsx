@@ -96,7 +96,7 @@ export default function FolderElement ({ folder }) {
       'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
       :
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-      onMouseDown={(event) => { cutCopyPasteContext.handleMouseEnter(event, folder) }}
+      onMouseDown={(event) => { cutCopyPasteContext.handleMouseDown(event, folder) }}
       onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(folder) }}
       onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' })}}
       onContextMenu={(event) => { contextMenuContext.handleFolderContextMenuClick(event, folder) }}
@@ -145,7 +145,7 @@ export default function FolderElement ({ folder }) {
       'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
       :
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-      onMouseDown={(event) => { cutCopyPasteContext.handleMouseEnter(event, folder) }}
+      onMouseDown={(event) => { cutCopyPasteContext.handleMouseDown(event, folder) }}
       onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(folder) }}
       onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' })}}
       onContextMenu={(event) => { contextMenuContext.handleFolderContextMenuClick(event, folder) }}

@@ -97,6 +97,7 @@ export default function ContextMenuComponent ({ children }) {
   useEffect(() => {
     if (cutCopyPasteContext.requiresContextMenuClosure) {
       setIsContextMenu(false);
+      setHoveredOverMenu(false);
       cutCopyPasteContext.setRequiresContextMenuClosure(false);
     }
   })
@@ -104,7 +105,7 @@ export default function ContextMenuComponent ({ children }) {
   const handleMouseUp = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    cutCopyPasteContext.handleMouseLeave(event);
+    cutCopyPasteContext.handleMouseUp(event);
     
     if (event.button === 0) {
       if (((isContextMenu && !hoveredOverMenu && !cutCopyPasteContext.hoveredElement.uuid)) || 

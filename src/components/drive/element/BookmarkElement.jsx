@@ -16,10 +16,12 @@ export default function BookmarkElement ({ bookmark }) {
 
   if (!bookmark) { bookmark = { uuid: '', folder: { uuid: '', name: '', parentUuid: folderContext.currentFolder.uuid } } };
 
-  const handleClick = () => {
-    console.log(bookmark)
-    if (!bookmark.folder.isRemoved) {   
-      dispatch(moveToNew({ uuid: bookmark.folder.uuid }));
+  const handleClick = (event) => {
+    if (event.button === 0) {   
+      cutCopyPasteContext.clearClickedElements();
+      if (!bookmark.folder.isRemoved) { 
+        dispatch(moveToNew({ uuid: bookmark.folder.uuid })); 
+      }
     }
   }
 
@@ -32,8 +34,8 @@ export default function BookmarkElement ({ bookmark }) {
     onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(bookmark) }}
     onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' })}}
     onContextMenu={(event) => { contextMenuContext.handleBookmarkContextMenuClick(event, bookmark) }}
-    onClick={handleClick}>
-      <p className='ml-9 place-self-center'>{bookmark.folder.name}</p>
+    onMouseDown={handleClick}>
+      <p className='ml-9 place-self-center'>{ bookmark.folder.name + (bookmark.folder.isRemoved ? ' (in trash)' : '') }</p>
     </button>
   );
 }
