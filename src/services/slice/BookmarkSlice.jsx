@@ -7,7 +7,7 @@ export const createBookmark = createAsyncThunk(
     const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
     const body = { userUuid: userData.userUuid, folderUuid: folder.uuid };
     
-    const res = axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/create', body, {headers})
+    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/create', body, {headers})
     return(res.data);  
   },
 );
@@ -51,13 +51,16 @@ export const bookmarkSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(createBookmark.fulfilled, (state) => {
-      return { requiresUpdate: true };
+      return { ...state, requiresUpdate: true };
     });
     builder.addCase(getBookmarks.fulfilled, (state, action) => {
-      return { requiresUpdate: false, bookmarks: action.payload, bookmarkedFoldersUuids: action.payload.map(b => b.folder.uuid) };
+      return { ...state, requiresUpdate: false, bookmarks: action.payload, bookmarkedFoldersUuids: action.payload.map(b => b.folder.uuid) };
+    });
+    builder.addCase(getBookmarks.pending, (state, action) => {
+      return { ...state, requiresUpdate: false };
     });
     builder.addCase(deleteBookmark.fulfilled, (state) => {
-      return { requiresUpdate: true };
+      return { ...state, requiresUpdate: true };
     });
   },
 });
