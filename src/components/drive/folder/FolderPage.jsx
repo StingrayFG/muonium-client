@@ -30,7 +30,7 @@ export default function FolderPage ({ folderUuid }) {
   }
 
   // Update
-  const [requiresUpdate, setRequiresUpdate] = useState(true);
+  const [doesRequireUpdate, setDoesRequireUpdate] = useState(true);
   const [currentFolder, setCurrentFolder] = useState();
 
   useEffect(() => {
@@ -50,8 +50,8 @@ export default function FolderPage ({ folderUuid }) {
       }
     } 
 
-    if (pathData.requiresUpdate) {
-      setRequiresUpdate(true);
+    if (pathData.doesRequireUpdate) {
+      setDoesRequireUpdate(true);
       dispatch(confirmUpdate());
       dispatch(getDrive(userData));
     }
@@ -59,8 +59,8 @@ export default function FolderPage ({ folderUuid }) {
 
   useEffect(() => {
     const getFolder = async () => {
-      if (requiresUpdate) {
-        setRequiresUpdate(false);
+      if (doesRequireUpdate) {
+        setDoesRequireUpdate(false);
         await FolderService.handleGetByUuid(userData, pathData.currentUuid)
         .then(res => {
           //console.log(res)

@@ -37,30 +37,30 @@ export const deleteBookmark = createAsyncThunk(
 export const bookmarkSlice = createSlice({
   name: 'bookmark',
   initialState: {
-    requiresUpdate: true,
+    doesRequireUpdate: true,
     bookmarks: [],
     bookmarkedFoldersUuids: [],
   },
   reducers: {
     confirmUpdate: (state) => {
-      state.requiresUpdate = false;
+      state.doesRequireUpdate = false;
     },
     requestUpdate: (state) => {
-      state.requiresUpdate = true;
+      state.doesRequireUpdate = true;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(createBookmark.fulfilled, (state) => {
-      return { ...state, requiresUpdate: true };
+      return { ...state, doesRequireUpdate: true };
     });
     builder.addCase(getBookmarks.fulfilled, (state, action) => {
-      return { ...state, requiresUpdate: false, bookmarks: action.payload, bookmarkedFoldersUuids: action.payload.map(b => b.folder.uuid) };
+      return { ...state, doesRequireUpdate: false, bookmarks: action.payload, bookmarkedFoldersUuids: action.payload.map(b => b.folder.uuid) };
     });
     builder.addCase(getBookmarks.pending, (state, action) => {
-      return { ...state, requiresUpdate: false };
+      return { ...state, doesRequireUpdate: false };
     });
     builder.addCase(deleteBookmark.fulfilled, (state) => {
-      return { ...state, requiresUpdate: true };
+      return { ...state, doesRequireUpdate: true };
     });
   },
 });

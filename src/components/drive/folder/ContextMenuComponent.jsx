@@ -19,7 +19,8 @@ export default function ContextMenuComponent ({ children }) {
 
   // Context menu
   const [isContextMenu, setIsContextMenu] = useState(false);
-  const [hoveredOverMenu, setHoveredOverMenu] = useState(false);
+  const [isHoveredOverMenu, setIsHoveredOverMenu] = useState(false);
+
   const [contextMenuType, setContextMenuType] = useState('default');
   const [contextMenuPoint, setContextMenuPoint] = useState({
     x: 0,
@@ -95,10 +96,10 @@ export default function ContextMenuComponent ({ children }) {
   };
   
   useEffect(() => {
-    if (cutCopyPasteContext.requiresContextMenuClosure) {
+    if (cutCopyPasteContext.doesRequireMenuClosure) {
       setIsContextMenu(false);
-      setHoveredOverMenu(false);
-      cutCopyPasteContext.setRequiresContextMenuClosure(false);
+      setIsHoveredOverMenu(false);
+      cutCopyPasteContext.setDoesRequireMenuClosure(false);
     }
   })
 
@@ -108,28 +109,28 @@ export default function ContextMenuComponent ({ children }) {
     cutCopyPasteContext.handleMouseUp(event);
     
     if (event.button === 0) {
-      if (((isContextMenu && !hoveredOverMenu && !cutCopyPasteContext.hoveredElement.uuid)) || 
-      (!cutCopyPasteContext.hoveredElement.uuid && !hoveredOverMenu && !cutCopyPasteContext.draggingElement)) {
+      if (((isContextMenu && !isHoveredOverMenu && !cutCopyPasteContext.hoveredElement.uuid)) || 
+      (!cutCopyPasteContext.hoveredElement.uuid && !isHoveredOverMenu && !cutCopyPasteContext.isDraggingElement)) {
         cutCopyPasteContext.clearClickedElements();  
       }
 
-      if (isContextMenu && !hoveredOverMenu) {
+      if (isContextMenu && !isHoveredOverMenu) {
         setIsContextMenu(false);   
       }
     }
   };
 
   // Rename
-  const [renaming, setRenaming] = useState(false);
-  const [creatingFolder, setCreatingFolder] = useState(false);
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [isCreatingFolder, setIsCreatingFolder] = useState(false);
 
   const customSetRenaming = (v) => {
-    setRenaming(v);
+    setIsRenaming(v);
     setIsContextMenu(false); 
   }
 
   const customSetCreatingFolder = (v) => {
-    setCreatingFolder(v);
+    setIsCreatingFolder(v);
     setIsContextMenu(false); 
   }
 
@@ -138,11 +139,11 @@ export default function ContextMenuComponent ({ children }) {
     onMouseUp={handleMouseUp}
     onContextMenu={handleDefaultContextMenuClick}>
       <ContextMenuContext.Provider value={{ handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick,
-        hoveredOverMenu, setHoveredOverMenu,
-        renaming, setRenaming: customSetRenaming, creatingFolder, setCreatingFolder: customSetCreatingFolder}}> 
+        isHoveredOverMenu, setIsHoveredOverMenu,
+        isRenaming, setIsRenaming: customSetRenaming, isCreatingFolder, setIsCreatingFolder: customSetCreatingFolder}}> 
         {children}  
 
-        {(isContextMenu && !cutCopyPasteContext.draggingElement) && <>
+        {(isContextMenu && !cutCopyPasteContext.isDraggingElement) && <>
           {(folderContext.currentFolder.uuid !== 'trash') && <>
             {(contextMenuType === 'default') && <DefaultContextMenu point={contextMenuPoint} />}
             {(contextMenuType === 'file') && <FileContextMenu point={contextMenuPoint} />}

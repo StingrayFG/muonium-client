@@ -22,13 +22,13 @@ export default function ContextMenuComponent ({ children }) {
 
   const [clickedElements, setClickedElements] = useState([]);
   const [hoveredElement, setHoveredElement] = useState({ uuid: ''});
-
-  const [holdingElement, setHoldingElement] = useState(false);
-  const [draggingElement, setDraggingElement] = useState(false);
   const [draggedElementSize, setDraggedElementSize] = useState({ x: 0, y: 0 });
 
-  const [requiresMove, setRequiresMove] = useState(false);
-  const [requiresContextMenuClosure, setRequiresContextMenuClosure] = useState(false);
+  const [isHoldingElement, setIsHoldingElement] = useState(false);
+  const [isDraggingElement, setIsDraggingElement] = useState(false);
+
+  const [doesRequireMove, setDoesRequireMove] = useState(false);
+  const [doesRequireMenuClosure, setDoesRequireMenuClosure] = useState(false);
 
   const [mousePointInitial, setMousePointInitial] = useState({ x: 0, y: 0 });
   const [containerPoint, setContainerPoint] = useState({ x: 0, y: 0 });
@@ -58,7 +58,7 @@ export default function ContextMenuComponent ({ children }) {
     for await (const element of clickedElements) {
       await FileService.handleDownload(userData, element)
     }
-    setRequiresContextMenuClosure(true);
+    setDoesRequireMenuClosure(true);
   }
 
   const removeClickedElements = async () => {
@@ -75,7 +75,7 @@ export default function ContextMenuComponent ({ children }) {
         })
       }
     }
-    setRequiresContextMenuClosure(true);
+    setDoesRequireMenuClosure(true);
   }
 
   const recoverClickedElements = async () => {
@@ -91,7 +91,7 @@ export default function ContextMenuComponent ({ children }) {
         })
       }
     }
-    setRequiresContextMenuClosure(true);
+    setDoesRequireMenuClosure(true);
   }
 
   const deleteClickedElements = async () => {
@@ -104,17 +104,17 @@ export default function ContextMenuComponent ({ children }) {
         .then(() => { dispatch(requestUpdate()); })
       }
     }
-    setRequiresContextMenuClosure(true);
+    setDoesRequireMenuClosure(true);
   }
 
   const copyClickedElements = () => {
     dispatch(setCopy({ originUuid: folderContext.currentFolder.uuid, elements: clickedElements }));
-    setRequiresContextMenuClosure(true);
+    setDoesRequireMenuClosure(true);
   };
 
   const cutClickedElements = () => {
     dispatch(setCut({ originUuid: folderContext.currentFolder.uuid, elements: clickedElements }));
-    setRequiresContextMenuClosure(true);
+    setDoesRequireMenuClosure(true);
   };
 
   const pasteClickedElements = async () => {
@@ -137,7 +137,7 @@ export default function ContextMenuComponent ({ children }) {
       }
     }
     dispatch(setPaste());
-    setRequiresContextMenuClosure(true);
+    setDoesRequireMenuClosure(true);
   };
 
   const clearClipboardElements = async () => {
@@ -147,7 +147,7 @@ export default function ContextMenuComponent ({ children }) {
 
   useEffect(() => {
     const moveElement = async () => {
-      if (requiresMove) {
+      if (doesRequireMove) {
         for await (let element of clickedElements) {
           if (element.type === 'file') {
             await FileService.handleMove(userData, hoveredElement.uuid, element)
@@ -156,7 +156,7 @@ export default function ContextMenuComponent ({ children }) {
             await FolderService.handleMove(userData, hoveredElement.uuid, element)
             .then(() => { dispatch(requestUpdate()); })
           }
-          setRequiresMove(false);
+          setDoesRequireMove(false);
         }
       }
     }
@@ -167,10 +167,10 @@ export default function ContextMenuComponent ({ children }) {
   const windowHeight = useRef(window.innerHeight).current;
 
   const updateContainerPoint = (event) => {
-    if ((Math.abs(containerPoint.x - containerPointInitial.x) > 10) && (Math.abs(containerPoint.y - containerPointInitial.y) > 10) && !draggingElement && holdingElement) {
-      setDraggingElement(true);
+    if ((Math.abs(containerPoint.x - containerPointInitial.x) > 10) && (Math.abs(containerPoint.y - containerPointInitial.y) > 10) && !isDraggingElement && isHoldingElement) {
+      setIsDraggingElement(true);
     }
-    if (holdingElement) {
+    if (isHoldingElement) {
       if ((containerPointInitial.x + (event.pageX - mousePointInitial.x) + draggedElementSize.y) >= windowWidth) {
         setContainerPoint((prev) => ({ ...prev, x: windowWidth - draggedElementSize.y }));
       } else if ((containerPointInitial.x + (event.pageX - mousePointInitial.x)) < 0) {
@@ -192,7 +192,7 @@ export default function ContextMenuComponent ({ children }) {
   const handleMouseDown = (event, element) => {
     if (event.button === 0) {
       if (!clipboardData.mode) {
-        setHoldingElement(true);
+        setIsHoldingElement(true);
         setDraggedElementSize({ x: event.currentTarget.offsetHeight, y: event.currentTarget.offsetWidth });
         if (clickedElements.length > 1) {
           addClickedElement({ ...event, ctrlKey: true }, element);
@@ -209,10 +209,10 @@ export default function ContextMenuComponent ({ children }) {
 
   const handleMouseUp = (event) => {
     if (event.button === 0) {
-      setDraggingElement(false);
-      setHoldingElement(false);
-      if (hoveredElement.uuid && (!clickedElements.includes(hoveredElement)) && (hoveredElement.type === 'folder') && draggingElement) {
-        setRequiresMove(true);
+      setIsDraggingElement(false);
+      setIsHoldingElement(false);
+      if (hoveredElement.uuid && (!clickedElements.includes(hoveredElement)) && (hoveredElement.type === 'folder') && isDraggingElement) {
+        setDoesRequireMove(true);
       }
     }
   }
@@ -233,10 +233,10 @@ export default function ContextMenuComponent ({ children }) {
         removeClickedElements, recoverClickedElements, deleteClickedElements,
         copyClickedElements, cutClickedElements, pasteClickedElements, 
         hoveredElement, setHoveredElement,
-        draggingElement,
+        isDraggingElement,
         handleMouseDown, handleMouseUp,
-        requiresContextMenuClosure, setRequiresContextMenuClosure}}>
-        {draggingElement && 
+        doesRequireMenuClosure, setDoesRequireMenuClosure}}>
+        {isDraggingElement && 
           <div className='bg-gradient-to-b from-sky-200/45 to-sky-400/45 rounded-md' 
           style={{ position: 'absolute', top: containerPoint.y, left: containerPoint.x, width: draggedElementSize.y, height: draggedElementSize.x }}>
           </div>

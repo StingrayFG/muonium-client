@@ -48,15 +48,15 @@ export default function FileElement ({ file }) {
           await FileService.handleRename(userData, { uuid: file.uuid, name: inputData })
           .then(() => {
             dispatch(requestUpdate());
-            contextMenuContext.setRenaming(false);
+            contextMenuContext.setIsRenaming(false);
           })
           .catch(() => {
             setInputData(previousName);
-            contextMenuContext.setRenaming(false);
+            contextMenuContext.setIsRenaming(false);
           })
         } else {
           setInputData(previousName);
-          contextMenuContext.setRenaming(false);
+          contextMenuContext.setIsRenaming(false);
         }
       }
       saveName();
@@ -84,7 +84,7 @@ export default function FileElement ({ file }) {
           <FileIconElement file={file} type={settingsData.type}/>
         </div>
   
-        {((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(file))) ? 
+        {((contextMenuContext.isRenaming) && (cutCopyPasteContext.clickedElements.includes(file))) ? 
         <div className='w-full h-24 grid place-self-center'>
           <textarea className='w-full place-self-center h-full text-center outline-none resize-none
           bg-transparent 
@@ -130,7 +130,7 @@ export default function FileElement ({ file }) {
           <FileIconElement file={file} type={settingsData.type}/>
         </div>
   
-        {((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(file))) ? 
+        {((contextMenuContext.isRenaming) && (cutCopyPasteContext.clickedElements.includes(file))) ? 
         <div className='w-full h-16 grid place-self-center'>
           <textarea className='w-full h-8 px-2 place-self-center text-left select-none outline-none resize-none
           bg-transparent 

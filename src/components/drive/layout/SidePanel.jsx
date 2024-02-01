@@ -23,7 +23,7 @@ export default function SidePanel () {
 
   useEffect(() => {
     const get = async () => {
-      if (userData && bookmarkData.requiresUpdate) {
+      if (userData && bookmarkData.doesRequireUpdate) {
         await dispatch(getBookmarks(userData));
       }
     }

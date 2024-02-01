@@ -48,31 +48,31 @@ export default function FolderElement ({ folder }) {
       const saveName = async () => {
         if (inputData) {
 
-          if (contextMenuContext.creatingFolder) {
+          if (contextMenuContext.isCreatingFolder) {
             await FolderService.handleCreate(userData, { uuid: folder.uuid, name: inputData }, folderContext.currentFolder.uuid)
             .then(() => {
-              contextMenuContext.setCreatingFolder(false);
+              contextMenuContext.setIsCreatingFolder(false);
               dispatch(requestUpdate());
             })
             .catch(() => {
               setInputData(previousName);
-              contextMenuContext.setRenaming(false);
+              contextMenuContext.setIsRenaming(false);
             })
           } else {
             await FolderService.handleRename(userData, { uuid: folder.uuid, name: inputData })
             .then(() => {
-              contextMenuContext.setRenaming(false);
+              contextMenuContext.setIsRenaming(false);
               dispatch(requestUpdate());
             })
             .catch(() => {
               setInputData(previousName);
-              contextMenuContext.setRenaming(false);
+              contextMenuContext.setIsRenaming(false);
             })
           }
         } else {
           setInputData(previousName);
-          contextMenuContext.setCreatingFolder(false);
-          contextMenuContext.setRenaming(false);
+          contextMenuContext.setIsCreatingFolder(false);
+          contextMenuContext.setIsRenaming(false);
         }
       }
       saveName();
@@ -91,8 +91,8 @@ export default function FolderElement ({ folder }) {
       <div className={`w-full h-full px-2 pb-2 grid place-self-center
       border-solid border-0 border-black rounded-md
       ${((cutCopyPasteContext.clickedElements.includes(folder)) ||
-      ((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
-      ((contextMenuContext.creatingFolder) && (!folder.uuid))) ?
+      ((contextMenuContext.isRenaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
+      ((contextMenuContext.isCreatingFolder) && (!folder.uuid))) ?
       'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
       :
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
@@ -108,8 +108,8 @@ export default function FolderElement ({ folder }) {
           <img src='/icons/mu-folder.svg' alt='folder' width='200' className='place-self-center pointer-events-none select-none'/>
         </div>
   
-        {(((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
-        ((contextMenuContext.creatingFolder) && (!folder.uuid))) ? 
+        {(((contextMenuContext.isRenaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
+        ((contextMenuContext.isCreatingFolder) && (!folder.uuid))) ? 
         <div className='w-full h-24 grid place-self-center'>
           <textarea className='w-full h-full place-self-center text-center outline-none resize-none
           bg-transparent 
@@ -140,8 +140,8 @@ export default function FolderElement ({ folder }) {
       <div className={`w-full h-16 pr-4 flex place-self-center
       border-solid border-0 border-black rounded-md
       ${((cutCopyPasteContext.clickedElements.includes(folder)) ||
-      ((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
-      ((contextMenuContext.creatingFolder) && (!folder.uuid))) ?
+      ((contextMenuContext.isRenaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
+      ((contextMenuContext.isCreatingFolder) && (!folder.uuid))) ?
       'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
       :
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
@@ -157,8 +157,8 @@ export default function FolderElement ({ folder }) {
           <img src='/icons/folder2.svg' alt='icon' width='40' className='place-self-center pointer-events-none select-none'/>
         </div>
   
-        {(((contextMenuContext.renaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
-        (contextMenuContext.creatingFolder)) ? 
+        {(((contextMenuContext.isRenaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
+        (contextMenuContext.isCreatingFolder)) ? 
         <div className='w-full h-16 grid place-self-center'>
           <textarea className='w-full h-8 px-2 place-self-center text-left select-none outline-none resize-none
           bg-transparent 
