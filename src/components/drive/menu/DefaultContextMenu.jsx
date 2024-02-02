@@ -35,7 +35,7 @@ export default function DefaultContextMenu ({ point }) {
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={() => { contextMenuContext.setIsCreatingFolder(true) }}>
+      onClick={() => { cutCopyPasteContext.setIsCreatingFolder(true) }}>
         <img src='/icons/file-plus.svg' alt='new' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>New folder</p>
       </button>    

@@ -54,6 +54,7 @@ export default function ContextMenuComponent ({ children }) {
     }
   })
 
+  // Basic actions
   const downloadClickedElements = async () => {
     for await (const element of clickedElements) {
       await FileService.handleDownload(userData, element)
@@ -62,7 +63,6 @@ export default function ContextMenuComponent ({ children }) {
   }
 
   const removeClickedElements = async () => {
-    console.log(clickedElements)
     for await (const element of clickedElements) {
       if (element.type === 'file') { 
         await FileService.handleRemove(userData, element)
@@ -106,7 +106,8 @@ export default function ContextMenuComponent ({ children }) {
     }
     setDoesRequireMenuClosure(true);
   }
-
+  
+  // Clipboard
   const copyClickedElements = () => {
     dispatch(setCopy({ originUuid: folderContext.currentFolder.uuid, elements: clickedElements }));
     setDoesRequireMenuClosure(true);
@@ -162,7 +163,21 @@ export default function ContextMenuComponent ({ children }) {
     }
     moveElement();
   })
-  
+
+  // Create / rename
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+
+  const customSetRenaming = (v) => {
+    setIsRenaming(v);
+    setDoesRequireMenuClosure(true);
+  }
+
+  const customSetCreatingFolder = (v) => {
+    setIsCreatingFolder(v);
+    setDoesRequireMenuClosure(true);
+  }
+
   const windowWidth = useRef(window.innerWidth).current;
   const windowHeight = useRef(window.innerHeight).current;
 
@@ -235,6 +250,7 @@ export default function ContextMenuComponent ({ children }) {
         hoveredElement, setHoveredElement,
         isDraggingElement,
         handleMouseDown, handleMouseUp,
+        isRenaming, setIsRenaming: customSetRenaming, isCreatingFolder, setIsCreatingFolder: customSetCreatingFolder,
         doesRequireMenuClosure, setDoesRequireMenuClosure}}>
         {isDraggingElement && 
           <div className='bg-gradient-to-b from-sky-200/45 to-sky-400/45 rounded-md' 
