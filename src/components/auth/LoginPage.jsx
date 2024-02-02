@@ -31,6 +31,8 @@ export default function LoginPage() {
             showMessage('Too many login attempts');
           } else if (code === '404') {
             showMessage('Wrong login or password');
+          } else {
+            showMessage('Something went wrong');
           }
         } else if (res.type === 'user/login/fulfilled') {
           navigate('/drive');
