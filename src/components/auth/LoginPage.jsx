@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { requestUpdate as requestFolderUpdate } from 'services/slice/PathSlice';
+import { requestUpdate as requestBookmarksUpdate } from 'services/slice/BookmarkSlice';
+
 import { loginUser } from 'services/slice/UserSlice';
 
 export default function LoginPage() {
@@ -35,6 +38,8 @@ export default function LoginPage() {
             showMessage('Something went wrong');
           }
         } else if (res.type === 'user/login/fulfilled') {
+          dispatch(requestFolderUpdate());
+          dispatch(requestBookmarksUpdate());
           navigate('/drive');
         }
       })
