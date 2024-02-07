@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setCopy, setCut, setPaste } from 'services/slice/ClipboardSlice.jsx';
 import { setElements } from 'services/slice/SelectionSlice.jsx';
 import { requestUpdate } from 'services/slice/PathSlice';
-import { requestUpdate as requestBookmarkUpdate } from 'services/slice/BookmarkSlice';
+import { deleteBookmark, requestUpdate as requestBookmarkUpdate } from 'services/slice/BookmarkSlice';
 
 import { CutCopyPasteContext } from 'components/drive/context/CutCopyPasteContext.jsx';
 import { FolderContext } from 'components/drive/context/FolderContext.jsx';
@@ -49,8 +49,12 @@ export default function ContextMenuComponent ({ children }) {
   }
 
   useEffect(() => {
-    if (selectionData.elements !== clickedElements) {
-      dispatch(setElements(clickedElements));
+    if ((selectionData.elements !== clickedElements)) {
+      if (clickedElements.length > 0) {
+        if (clickedElements[0].type !== 'bookmark') {
+          dispatch(setElements(clickedElements));
+        }
+      }
     }
   })
 
@@ -102,6 +106,8 @@ export default function ContextMenuComponent ({ children }) {
       } else if (element.type === 'folder') { 
         await FolderService.handleDelete(userData, element)
         .then(() => { dispatch(requestUpdate()); })
+      } else if (element.type === 'bookmark') { 
+        dispatch(deleteBookmark({ userData, folder: clickedElements[0].folder }));
       }
     }
     setDoesRequireMenuClosure(true);
