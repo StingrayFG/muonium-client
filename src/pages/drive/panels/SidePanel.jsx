@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { moveToNew } from 'services/slice/PathSlice';
-import { getBookmarks } from 'services/slice/BookmarkSlice';
+import { moveToNew } from 'state/slices/PathSlice';
+import { getBookmarks } from 'state/slices/BookmarkSlice';
 
-import { FolderContext } from 'components/drive/context/FolderContext.jsx';
+import { FolderContext } from 'contexts/FolderContext.jsx';
 
-import BookmarkElement from 'components/drive/element/BookmarkElement.jsx';
+import BookmarkElement from 'pages/drive/elements/BookmarkElement.jsx';
 
 export default function SidePanel () {
   const folderContext = useContext(FolderContext);

@@ -1,8 +1,8 @@
 import { useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { CutCopyPasteContext } from 'components/drive/context/CutCopyPasteContext.jsx';
-import { ContextMenuContext } from 'components/drive/context/ContextMenuContext.jsx';
+import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
+import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 export default function BookmarkContextMenu ({ point, bookmark }) {
   const contextMenuContext = useContext(ContextMenuContext);

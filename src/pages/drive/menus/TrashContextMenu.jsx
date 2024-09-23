@@ -1,9 +1,9 @@
 import { useRef, useContext } from 'react';
 
-import { CutCopyPasteContext } from 'components/drive/context/CutCopyPasteContext.jsx';
-import { ContextMenuContext } from 'components/drive/context/ContextMenuContext.jsx';
+import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
+import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
-export default function FolderContextMenu ({ point, folder }) {
+export default function TrashFileContextMenu ({ point }) {
   const contextMenuContext = useContext(ContextMenuContext);
   const cutCopyPasteContext = useContext(CutCopyPasteContext);
 
@@ -11,11 +11,11 @@ export default function FolderContextMenu ({ point, folder }) {
   const windowHeight = useRef(window.innerHeight).current;
 
   const menuWidth = 240;
-  const menuHeight = 4 + 40 * 2 + 2 * 1;
+  const menuHeight = 4 + 40 * 3 + 2 * 0;
   
   if (point.x + menuWidth > windowWidth) { point.x -= menuWidth; }
   if (point.y + menuHeight > windowHeight) { point.y -= menuHeight; }
-  
+
   return (
     <div className='w-60
     bg-gradient-to-b from-zinc-600 to-zinc-700 
@@ -26,18 +26,16 @@ export default function FolderContextMenu ({ point, folder }) {
     onMouseLeave={() => { contextMenuContext.setIsHoveredOverMenu(false) }}>
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.cutClickedElements}>
-        <img src='/icons/clipboard-x.svg' alt='cut' width='20' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>Cut</p>
+      onClick={cutCopyPasteContext.recoverClickedElements}>
+        <img src='/icons/arrow-clockwise.svg' alt='recover' width='20' className='place-self-center'/>
+        <p className='ml-2 place-self-center'>Recover</p>
       </button>
-
-      <div className='mx-1 border-solid border-t-2 border-zinc-800'></div>
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.removeClickedElements}>
-        <img src='/icons/trash.svg' alt='trash' width='20' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>Move to trash</p>
+      onClick={cutCopyPasteContext.deleteClickedElements}>
+        <img src='/icons/trash.svg' alt='delete' width='20' className='place-self-center'/>
+        <p className='ml-2 place-self-center'>Delete</p>
       </button>
     </div>    
   );

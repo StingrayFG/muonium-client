@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 
-import { setInitialUuid, setAbsolutePath, confirmUpdate } from 'services/slice/PathSlice';
-import { getDrive } from 'services/slice/DriveSlice';
-import { setCounts } from 'services/slice/SelectionSlice';
+import { setInitialUuid, setAbsolutePath, confirmUpdate } from 'state/slices/PathSlice';
+import { getDrive } from 'state/slices/DriveSlice';
+import { setCounts } from 'state/slices/SelectionSlice';
 
-import { FolderContext } from 'components/drive/context/FolderContext';
+import { FolderContext } from 'contexts/FolderContext';
 
-import SidePanel from 'components/drive/layout/SidePanel.jsx';
-import PropertiesPanel from 'components/drive/layout/PropertiesPanel.jsx';
-import DropzoneComponent from 'components/drive/folder/DropzoneComponent';
-import CutCopyPasteComponent from 'components/drive/folder/CutCopyPasteComponent';
-import ContextMenuComponent from 'components/drive/folder/ContextMenuComponent';
-import FolderContentsComponent from 'components/drive/folder/FolderContentsComponent';
+import SidePanel from 'pages/drive/panels/SidePanel.jsx';
+import PropertiesPanel from 'pages/drive/panels/PropertiesPanel.jsx';
+import DropzoneWrap from 'pages/drive/wraps/DropzoneWrap.jsx';
+import ClipboardWrap from 'pages/drive/wraps/ClipboardWrap.jsx';
+import ContextMenuWrap from 'pages/drive/wraps/ContextMenuWrap.jsx';
+import FolderContents from 'pages/drive/folder/FolderContents.jsx';
 
 import FolderService from 'services/FolderService.jsx'
 
@@ -80,17 +80,17 @@ export default function FolderPage ({ folderUuid }) {
     <div className='w-full h-full overflow-hidden
     bg-gradient-to-b from-zinc-600/90 to-zinc-700/90'>
       <FolderContext.Provider value={{ currentFolder }}> 
-        <DropzoneComponent>
-          <CutCopyPasteComponent>
-            <ContextMenuComponent>
+        <DropzoneWrap>
+          <ClipboardWrap>
+            <ContextMenuWrap>
               <SidePanel />
               <div className='flex-1 h-full'>
-                <FolderContentsComponent />   
+                <FolderContents />   
               </div>
               <PropertiesPanel />
-            </ContextMenuComponent>
-          </CutCopyPasteComponent>
-        </DropzoneComponent>
+            </ContextMenuWrap>
+          </ClipboardWrap>
+        </DropzoneWrap>
       </FolderContext.Provider>     
     </div>
   );

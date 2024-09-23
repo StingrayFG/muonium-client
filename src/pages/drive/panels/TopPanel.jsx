@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { clearUser } from 'services/slice/UserSlice';
-import { setAbsolutePath, moveToNew, moveToNext, moveToPrevious } from 'services/slice/PathSlice';
-import { setType } from 'services/slice/SettingsSlice';
+import { clearUser } from 'state/slices/UserSlice';
+import { setAbsolutePath, moveToNew, moveToNext, moveToPrevious } from 'state/slices/PathSlice';
+import { setType } from 'state/slices/SettingsSlice';
 
 import FolderService from 'services/FolderService.jsx';
 

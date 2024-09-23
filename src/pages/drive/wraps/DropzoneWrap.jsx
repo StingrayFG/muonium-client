@@ -2,14 +2,14 @@ import { useContext, useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 
-import { requestUpdate } from 'services/slice/PathSlice';
+import { requestUpdate } from 'state/slices/PathSlice';
 
-import { DropzoneContext } from 'components/drive/context/DropzoneContext';
-import { FolderContext } from 'components/drive/context/FolderContext';
+import { DropzoneContext } from 'contexts/DropzoneContext';
+import { FolderContext } from 'contexts/FolderContext';
 
 import FileService from 'services/FileService.jsx';
 
-export default function DropzoneComponent ({ children }) {
+export default function DropzoneWrap ({ children }) {
   const folderContext = useContext(FolderContext);
 
   const dispatch = useDispatch();

@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
-import { FolderContext } from 'components/drive/context/FolderContext.jsx';
-import { CutCopyPasteContext } from 'components/drive/context/CutCopyPasteContext.jsx';
+import { FolderContext } from 'contexts/FolderContext.jsx';
+import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
 
-import FileElement from 'components/drive/element/FileElement.jsx';
-import FolderElement from 'components/drive/element/FolderElement.jsx';
+import FileElement from 'pages/drive/elements/FileElement.jsx';
+import FolderElement from 'pages/drive/elements/FolderElement.jsx';
 
-export default function FolderContentsComponent ({ children }) {
+export default function FolderContents ({ children }) {
   const folderContext = useContext(FolderContext);
   const cutCopyPasteContext = useContext(CutCopyPasteContext);
 

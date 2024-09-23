@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import TopPanel from 'components/drive/layout/TopPanel.jsx';
-import BottomPanel from 'components/drive/layout/BottomPanel.jsx';
+import TopPanel from 'pages/drive/panels/TopPanel.jsx';
+import BottomPanel from 'pages/drive/panels/BottomPanel.jsx';
 
 export default function DrivePanels () {
   const navigate = useNavigate();

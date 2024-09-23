@@ -1,18 +1,18 @@
 import { useContext, useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { setCopy, setCut, setPaste } from 'services/slice/ClipboardSlice.jsx';
-import { setElements } from 'services/slice/SelectionSlice.jsx';
-import { requestUpdate } from 'services/slice/PathSlice';
-import { deleteBookmark, requestUpdate as requestBookmarkUpdate } from 'services/slice/BookmarkSlice';
+import { setCopy, setCut, setPaste } from 'state/slices/ClipboardSlice.jsx';
+import { setElements } from 'state/slices/SelectionSlice.jsx';
+import { requestUpdate } from 'state/slices/PathSlice';
+import { deleteBookmark, requestUpdate as requestBookmarkUpdate } from 'state/slices/BookmarkSlice';
 
-import { CutCopyPasteContext } from 'components/drive/context/CutCopyPasteContext.jsx';
-import { FolderContext } from 'components/drive/context/FolderContext.jsx';
+import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
+import { FolderContext } from 'contexts/FolderContext.jsx';
 
 import FileService from 'services/FileService.jsx';
 import FolderService from 'services/FolderService.jsx';
 
-export default function ContextMenuComponent ({ children }) {
+export default function ClipboardWrap ({ children }) {
   const folderContext = useContext(FolderContext);
 
   const dispatch = useDispatch();
