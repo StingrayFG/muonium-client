@@ -1,8 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { Box } from '@mui/material';
+
+import { useDelayedNavigate } from 'hooks/UseDelayedNavigate';
+import { useMessageHandler } from 'hooks/UseMessageHandler';
+
+import { requestUpdate as requestFolderUpdate } from 'state/slices/PathSlice';
+import { requestUpdate as requestBookmarksUpdate } from 'state/slices/BookmarkSlice';
 
 import { signupUser } from 'state/slices/UserSlice';
+
+import BackgroundOverlay from 'components/background/BackgroundOverlay';
+import MuoniumSpinner from 'components/spinner/MuoniumSpinner';
+
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -10,100 +21,132 @@ export default function SignupPage() {
 
   const userData = useSelector(state => state.user);
 
+  const [isAwaitingNavigation, NavigateWithDelay] = useDelayedNavigate();
+  const [messageData, showMessage] = useMessageHandler(1500);
+
+  const [shallMoveInputLabelsData, setShallMoveInputLabelsData] = useState({
+    login: false,
+    password: false,
+    confirmpassword: false
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
-    if (userData) {
+    if (userData && !isLoading) {
       navigate('/drive');
     }
   })
+
+  const updateInputLabel = (event) => {
+    if((!event.target.value) && (event.type === 'blur')) {
+      setShallMoveInputLabelsData({ ...shallMoveInputLabelsData, [event.target.name]: false })
+    } else {
+      setShallMoveInputLabelsData({ ...shallMoveInputLabelsData, [event.target.name]: true })
+    }
+  }
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = {login: event.target.elements.login.value, password: event.target.elements.password.value}
 
     if (!data.login || !data.password) {
-      showMessage('Please enter correct data');
+      //showMessage('Please enter correct data');
     } else if (data.password !== event.target.elements.confirmpassword.value) {
       showMessage('Passwords do not match')
     } else {
+      setIsLoading(true);
       await dispatch(signupUser(data))
       .then(res => {
         if (res.type === 'user/signup/rejected') {
+          setIsLoading(false);
           const code = (res.error.message.slice(res.error.message.length - 3, res.error.message.length))
           if (code === '423') {
             showMessage('Too many signup attempts');
           } else if (code === '409') {
             showMessage('Username is already used');
           } else {
-            showMessage('Something went wrong');
+            showMessage('Something went wrong, try again later');
           }
         } else if (res.type === 'user/signup/fulfilled') {
-          navigate('/login');
+          NavigateWithDelay('/login', 500)
         }
       })
     }
-    
   };
 
-  const delay = ms => new Promise(res => setTimeout(res, ms));
-  const [showingMessage, setShowingMessage] = useState();
-  const [message, setMessage] = useState();
+  const goToLoginPage = () => {
+    NavigateWithDelay('/login', 500)
+  }
 
-  const showMessage = async (msg) => {
-    setMessage(msg);
-    setShowingMessage(true);
-    await delay(1500);
-    setShowingMessage(false);
-  };
-  
-  if (!userData) {
-    return (
-      <div className='w-full h-screen place-content-center grid
-      bg-gradient-to-b from-neutral-900/75 to-neutral-100/75
-      text-lg font-semibold font-sans text-neutral-200'>
-        <div className='w-96 h-auto grid
-        bg-gradient-to-b from-zinc-600/50 to-zinc-700/50 
-        border-solid border-2 border-zinc-800 rounded-md'>
-          <form onSubmit={handleSubmit} className='w-full px-4 py-4 grid'> 
-            <p className='h-6'>Login</p> 
-            <input className='w-full h-12 pl-3 mt-2
-            text-neutral-800
-            bg-gradient-to-b from-neutral-300 to-neutral-400 
-            border-solid border-2 border-neutral-400 rounded-md outline-none'
+
+  return (
+    <Box className='w-full h-dvh grid place-content-center'>
+
+      <BackgroundOverlay />
+
+      <Box className={`max-w-[480px] w-full grid 
+      transition-all duration-300 animate-fadein-custom
+      ${isAwaitingNavigation? 'opacity-0' : 'opacity-100'}`}>
+
+        <Box className='mx-auto -mt-6'>
+          <MuoniumSpinner size={120} shallSpin={isLoading}/>    
+        </Box>
+        
+        <form className='w-full -mt-6 px-4 py-4 grid'
+        onSubmit={handleSubmit} 
+        onChange={updateInputLabel}
+        onFocus={updateInputLabel}
+        onBlur={updateInputLabel}>
+
+          <Box>
+            <p className={`h-6 absolute pointer-events-none 
+            transition-all duration-300 
+            ${shallMoveInputLabelsData.login ? 'mt-4 font-semibold' : 'mt-14 ml-4 opacity-50'}`}>Login</p>
+
+            <input className='w-full h-12 px-4 mt-12'
               name='login'
               type='text'/>
-            <p className='h-6 mt-4'>Password</p>
-            <input className='w-full h-12 pl-3 mt-2 text-neutral-800
-            bg-gradient-to-b from-neutral-300 to-neutral-400 
-            border-solid border-2 border-neutral-400 rounded-md outline-none'
-              name='password'
-              type='password'/>  
-            <p className='h-6 mt-4'>Repeat password</p> 
-            <input className='w-full h-12 pl-3 mt-2 text-neutral-800
-            bg-gradient-to-b from-neutral-300 to-neutral-400 
-            border-solid border-2 border-neutral-400 rounded-md outline-none'
-              name='confirmpassword'
-              type='password'/> 
-            <button className='w-full h-12 pl-3 mt-12 grid text-neutral-200
-            bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800
-            hover:bg-gradient-to-b hover:from-sky-200/75 hover:to-sky-400/60 hover:border-sky-400/75         
-            border-solid border-2 rounded-lg outline-none'>
-              <p className='place-self-center'>Sign up</p>
-            </button >
 
-            <Link className='place-self-center mt-1 mb-1
-            text-neutral-200 hover:text-neutral-400' to='/login'>
-              Already registered? Log in
+            <p className={`h-6 absolute pointer-events-none 
+            transition-all duration-300 
+            ${shallMoveInputLabelsData.password ? 'mt-4 font-semibold' : 'mt-14 ml-4 opacity-50'}`}>Password</p>
+
+            <input className='w-full h-12 px-4 mt-12'
+              name='password'
+              type='password'/>
+
+            <p className={`h-6 absolute pointer-events-none 
+            transition-all duration-300 
+            ${shallMoveInputLabelsData.confirmpassword ? 'mt-4 font-semibold' : 'mt-14 ml-4 opacity-50'}`}>Confirm password</p>
+
+            <input className='w-full h-12 px-4 mt-12'
+              name='confirmpassword'
+              type='password' />
+          </Box>
+          
+          <button className='w-full h-12 mt-12 grid text-neutral-200'>
+            <p className='place-self-center font-semibold'>Continue</p>
+          </button >
+
+          <Box className='flex place-self-center mt-2'>
+            <p>Already registered?</p>
+            <Link className='place-self-center ml-2' onClick={goToLoginPage}>
+              Login
             </Link>
-          </form>              
-        </div>
-        <p className={`place-self-center mt-2 transition-all duration-500
-        ${showingMessage ? 'opacity-100': 'opacity-0'}`}>
-          {'' + message}
-        </p>       
-      </div>  
-    ) 
-  } else {
-    return null;
-  }
+          </Box>
+
+        </form>   
+
+        <p className={`mt-4 place-self-center transition-all duration-300 text-rose-500
+        ${messageData.isShowing ? 'opacity-100': 'opacity-0'}`}>
+          {messageData.message ?  messageData.message : '_'}
+        </p>              
+      </Box>
+
+      
+    </Box>  
+  );
 }
 

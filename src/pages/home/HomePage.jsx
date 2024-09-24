@@ -2,13 +2,19 @@ import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Box } from '@mui/material';
 
-import BackgroundOverlay from 'components/bg/BackgroundOverlay';
+import { useDelayedNavigate } from 'hooks/UseDelayedNavigate';
+
+import BackgroundOverlay from 'components/background/BackgroundOverlay';
 
 import { ReactComponent as LinkBoxIcon } from 'assets/icons/box-arrow-up-right-sky.svg'
 
 
 export default function LoginPage() {
-  const navigate = useNavigate();
+  const [isAwaitingNavigation, NavigateWithDelay] = useDelayedNavigate();
+
+  const goToLoginPage = () => {
+    NavigateWithDelay('/login', 500)
+  }
 
   return (
     <Box className='w-full h-dvh grid
@@ -16,15 +22,17 @@ export default function LoginPage() {
 
       <BackgroundOverlay />
 
-      <Box className='w-fit p-4 place-self-center
-      border-solid border-2 rounded-md'>
+      <Box className={`w-fit p-4 place-self-center
+      transition-all duration-300 animate-fadein-custom
+      border-solid border-2 rounded-md
+      ${isAwaitingNavigation? 'opacity-0' : 'opacity-100'}`}>
         <p className='text-2xl font-semibold'>
           {'Welcome to Muonium'}
         </p>
 
         <p className='mt-2'>
           {'To go to login page, '}
-          <Link className='inline-flex gap-2 hover:underline' to={'login'}> 
+          <Link className='inline-flex gap-2 hover:underline' onClick={goToLoginPage}> 
             {'click here'}
             <LinkBoxIcon className='mt-1.5'/>
           </Link> 
