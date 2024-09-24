@@ -52,6 +52,7 @@ export default function LoginPage() {
       //showMessage('Please enter correct data');
     } else {
       setIsLoading(true);
+      //setTimeout(() => {setIsLoading(false)}, 500 + 500 * Math.random());
       await dispatch(loginUser(data))
       .then(res => {
         if (res.type === 'user/login/rejected') {

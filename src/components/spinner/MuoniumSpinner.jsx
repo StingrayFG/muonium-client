@@ -5,31 +5,17 @@ import { Box } from '@mui/material';
 export default function MuoniumSpinner({ size, isInfinite, shallSpin }) {
   const usedSize = size ? size : 80;
 
-  const [rotation, setRotation] = useState(0);
-  const [shallContinueSpinning, setShallContinueSpinning] = useState(false);
-
-  const resetRotation = () => {
-    if ((rotation % 360) > 180) {
-      setRotation(rotation + (360 - (rotation % 360)))
-    } else {
-      setRotation(rotation - (rotation % 360))
-    }
-  }
-
-  const setNextRotation = () => {
-    setRotation(rotation + 4.8)
-    setTimeout(() => {setShallContinueSpinning(false)}, 20);
-  }
+  const [startedRotatingAt, setStartedRotatingAt] = useState(null);
+  const [currentRotation, setCurrentRotation] = useState(null);
 
   useEffect(() => {
-    if (shallSpin && !shallContinueSpinning) {
-      setShallContinueSpinning(true);
-      setNextRotation();
-    } else if (!shallSpin && !shallContinueSpinning) {
-      resetRotation();
+    if (shallSpin) {
+      setStartedRotatingAt(Date.now());
+    } else {
+      setCurrentRotation((((Date.now() - startedRotatingAt) / 1500) * 360) % 360);
     }
-  }, [shallSpin, shallContinueSpinning]);
-  
+  }, [shallSpin])
+
 
   if (isInfinite) {
     return (
@@ -60,31 +46,39 @@ export default function MuoniumSpinner({ size, isInfinite, shallSpin }) {
     )
   } else {
     return (
-      <Box className={`transition-all duration-300`}
+      <Box className={``}
       style={{ 
         padding: usedSize / 8 + 'px', 
         width: usedSize + 'px', 
         height: usedSize + 'px', 
       }}>
 
-        <Box className={`w-full h-full mx-auto my-auto transition-all
-        ${shallSpin ? 'duration-100' : 'duration-300'}
+        <Box className={`w-full h-full mx-auto my-auto
+        ${shallSpin ? 'animate-spin' : 'animate-spin-custom'}
         border-neutral-200 rounded-full`}
-        style={{ 
-          transform: `rotate(${rotation}deg)`,
+        style={{
+          '--fromDeg': currentRotation + 'deg',
+          '--toDeg': (currentRotation > 180) ? '360deg' : '0deg',
+          animationDuration: shallSpin ? '1.5s' : (((1 - Math.abs((currentRotation - 180) / 180)) / 2) * 0.5) + 's',
           borderWidth: (usedSize / 40) + 'px'
         }}>
+
           <Box className='w-[20%] h-[20%] ml-[40%] mt-[-10%] 
-          bg-neutral-200 rounded-full' />
+          bg-neutral-200 rounded-full' >
+          </Box>
+
         </Box>
 
         <Box className={`w-[25%] h-[25%] mx-auto mt-[-62.5%] transition-all top-0 left-0
-        ${shallSpin ? 'duration-100' : 'duration-300'}
+        ${shallSpin ? 'animate-pulse-0' : 'animate-pulse-custom'}
         border-neutral-200 rounded-full`}
-        style={{ 
-          opacity: `${(Math.cos(rotation / (180 / Math.PI)) * 50) + 50}%`,
+        style={{
+          '--fromOp': Math.abs((currentRotation - 180) / 180),
+          '--toOp': 1,
+          animationDuration: shallSpin ? '1.5s' : (((1 - Math.abs((currentRotation - 180) / 180))) * 0.5) + 's',
           borderWidth: (usedSize / 40) + 'px'
-        }} />
+        }}>
+        </Box>
 
       </Box>
     )

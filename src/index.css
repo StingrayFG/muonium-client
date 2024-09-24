@@ -87,28 +87,45 @@ button:hover {
 }
 
 .animate-spin-custom {
-  animation: spin 1.5s linear infinite;
+  --fromDeg: 0deg;
+  --toDeg: 360deg;
+  animation: spin-custom linear 1s;
 }
 
-@keyframes spin {
+@keyframes spin-custom {
   from {
-    transform: rotate(0deg);
+    transform: rotate(var(--fromDeg));
   }
   to {
-    transform: rotate(360deg);
+    transform: rotate(var(--toDeg));
   }
 }
 
-.animate-pulse-custom {
-  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.animate-pulse-0 {
+  animation: pulse-0 1.5s linear infinite;
 }
 
-@keyframes pulse {
+@keyframes pulse-0 {
   0%, 100% {
     opacity: 1;
   }
   50% {
     opacity: 0;
+  }
+}
+
+.animate-pulse-custom {
+  --fromOp: 0;
+  --toOp: 1;
+  animation: pulse-custom linear 1s;
+}
+
+@keyframes pulse-custom {
+  0% {
+    opacity: var(--fromOp);
+  }
+  100% {
+    opacity: var(--toOp);
   }
 }
 
