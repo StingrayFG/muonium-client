@@ -11,7 +11,6 @@ import { requestUpdate as requestBookmarksUpdate } from 'state/slices/BookmarkSl
 
 import { loginUser } from 'state/slices/UserSlice';
 
-import BackgroundOverlay from 'components/background/BackgroundOverlay';
 import MuoniumSpinner from 'components/spinner/MuoniumSpinner';
 
 
@@ -82,8 +81,6 @@ export default function LoginPage() {
 
   return (
     <Box className='w-full h-dvh grid place-content-center'>
-
-      <BackgroundOverlay />
 
       <Box className={`max-w-[480px] w-full grid 
       transition-all duration-300 animate-fadein-custom

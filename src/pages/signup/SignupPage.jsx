@@ -6,12 +6,8 @@ import { Box } from '@mui/material';
 import { useDelayedNavigate } from 'hooks/UseDelayedNavigate';
 import { useMessageHandler } from 'hooks/UseMessageHandler';
 
-import { requestUpdate as requestFolderUpdate } from 'state/slices/PathSlice';
-import { requestUpdate as requestBookmarksUpdate } from 'state/slices/BookmarkSlice';
-
 import { signupUser } from 'state/slices/UserSlice';
 
-import BackgroundOverlay from 'components/background/BackgroundOverlay';
 import MuoniumSpinner from 'components/spinner/MuoniumSpinner';
 
 
@@ -83,8 +79,6 @@ export default function SignupPage() {
 
   return (
     <Box className='w-full h-dvh grid place-content-center'>
-
-      <BackgroundOverlay />
 
       <Box className={`max-w-[480px] w-full grid 
       transition-all duration-300 animate-fadein-custom
