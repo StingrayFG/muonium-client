@@ -27,6 +27,7 @@ export default function LoginPage() {
     login: false,
     password: false
   });
+  const [awaitingAutofill, setAwaitingAutofill] = useState(true);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,7 +35,7 @@ export default function LoginPage() {
     if (userData && !isLoading) {
       navigate('/drive');
     }
-  })
+  });
 
   const updateInputLabel = (event) => {
     if((!event.target.value) && (event.type === 'blur')) {
@@ -42,7 +43,12 @@ export default function LoginPage() {
     } else {
       setShallMoveInputLabelsData({ ...shallMoveInputLabelsData, [event.target.name]: true })
     }
-  }
+  };
+
+  useEffect(() => {
+    setTimeout(() => {setAwaitingAutofill(false)}, 300);
+  }, []);
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -76,7 +82,7 @@ export default function LoginPage() {
 
   const goToSignupPage = () => {
     NavigateWithDelay('/signup', 500)
-  }
+  };
 
 
   return (
@@ -98,7 +104,7 @@ export default function LoginPage() {
 
           <Box>
             <p className={`h-6 absolute pointer-events-none 
-            transition-all duration-300 
+            ${awaitingAutofill ? '' : 'transition-all duration-300'}
             ${shallMoveInputLabelsData.login ? 'mt-4 font-semibold' : 'mt-14 ml-4 opacity-50'}`}>Login</p>
 
             <input className='w-full h-12 px-4 mt-12'
@@ -106,7 +112,7 @@ export default function LoginPage() {
               type='text'/>
 
             <p className={`h-6 absolute pointer-events-none 
-            transition-all duration-300 
+            ${awaitingAutofill ? '' : 'transition-all duration-300'}
             ${shallMoveInputLabelsData.password ? 'mt-4 font-semibold' : 'mt-14 ml-4 opacity-50'}`}>Password</p>
 
             <input className='w-full h-12 px-4 mt-12'
