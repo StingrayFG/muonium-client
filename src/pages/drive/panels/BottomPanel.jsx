@@ -14,7 +14,7 @@ export default function BottomPanel () {
         <p className='h-8 place-self-center text-left'>
           {(driveData.spaceTotal / (1024 * 1024)).toFixed(0)} MB drive, 
           {' ' + (driveData.spaceUsed / (1024 * 1024)).toFixed(0)} MB used
-          {' (' + (driveData.spaceUsed / driveData.spaceTotal * 100).toFixed(0) + '% full)'}
+          {' (' + ((driveData.spaceUsed / (driveData.spaceTotal + 0.1) * 100).toFixed(0)) + '% full)'}
         </p>
       </div>
 
