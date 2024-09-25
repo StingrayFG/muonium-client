@@ -11,7 +11,7 @@ export default function MuoniumSpinner({ size, isInfinite, shallSpin }) {
   useEffect(() => {
     if (shallSpin) {
       setStartedRotatingAt(Date.now());
-    } else {
+    } else if (startedRotatingAt) {
       setCurrentRotation((((Date.now() - startedRotatingAt) / 1500) * 360) % 360);
     }
   }, [shallSpin])
