@@ -22,6 +22,7 @@ export default function FolderPage ({ folderUuid }) {
 
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
+  const driveData = useSelector(state => state.drive);
   const pathData = useSelector(state => state.path);
 
   const { uuid } = useParams();
@@ -32,6 +33,25 @@ export default function FolderPage ({ folderUuid }) {
   // Update
   const [doesRequireUpdate, setDoesRequireUpdate] = useState(true);
   const [currentFolder, setCurrentFolder] = useState();
+
+  useEffect(() => {
+    dispatch(getDrive(userData));
+  }, [])
+
+  const getFolder = async () => {
+    if (doesRequireUpdate) {
+      setDoesRequireUpdate(false);
+      await FolderService.handleGetByUuid(userData, driveData, { uuid: pathData.currentUuid })
+      .then(res => {
+        dispatch(setCounts({ filesCount: res.files.length, foldersCount: res.folders.length  }))
+        setCurrentFolder(res);
+        dispatch(setAbsolutePath({ currentAbsolutePath: res.absolutePath }));
+      })
+      .catch(err => {
+        //console.error(err);
+      }); 
+    }
+  }
 
   useEffect(() => {
     if (!pathData.currentUuid) {
@@ -55,26 +75,14 @@ export default function FolderPage ({ folderUuid }) {
       dispatch(confirmUpdate());
       dispatch(getDrive(userData));
     }
-  });
+  }, [pathData.currentUuid]);
 
   useEffect(() => {
-    const getFolder = async () => {
-      if (doesRequireUpdate) {
-        setDoesRequireUpdate(false);
-        await FolderService.handleGetByUuid(userData, pathData.currentUuid)
-        .then(res => {
-          //console.log(res)
-          dispatch(setCounts({ filesCount: res.files.length, foldersCount: res.folders.length  }))
-          setCurrentFolder(res);
-          dispatch(setAbsolutePath({ currentAbsolutePath: res.absolutePath }));
-        })
-        .catch(err => {
-          console.error(err);
-        }); 
-      }
+    if (driveData.uuid) {
+      getFolder();
     }
-    getFolder();
-  });
+    
+  }, [pathData.currentUuid, driveData]);
 
   return (
     <div className='w-full h-full overflow-hidden
@@ -87,7 +95,7 @@ export default function FolderPage ({ folderUuid }) {
               <div className='flex-1 h-full'>
                 <FolderContents />   
               </div>
-              <PropertiesPanel />
+              {/*<PropertiesPanel />*/}
             </ContextMenuWrap>
           </ClipboardWrap>
         </DropzoneWrap>

@@ -1,6 +1,6 @@
 {
-  "name": "muonium",
-  "version": "2.0.0 pre-alpha",
+  "name": "muonium-client",
+  "version": "2.0.0",
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",

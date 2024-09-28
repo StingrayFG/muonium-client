@@ -16,6 +16,7 @@ export default function FileElement ({ file }) {
   
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
+  const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
   const settingsData = useSelector(state => state.settings);
 
@@ -45,7 +46,7 @@ export default function FileElement ({ file }) {
 
       const saveName = async () => {
         if (inputData) {
-          await FileService.handleRename(userData, { uuid: file.uuid, name: inputData })
+          await FileService.handleRename(userData, driveData, { uuid: file.uuid, name: inputData })
           .then(() => {
             dispatch(requestUpdate());
             cutCopyPasteContext.setIsRenaming(false);

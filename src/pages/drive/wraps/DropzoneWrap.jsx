@@ -14,6 +14,7 @@ export default function DropzoneWrap ({ children }) {
 
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
+  const driveData = useSelector(state => state.drive);
 
   // Dropzone
   const [file, setFile] = useState();
@@ -37,7 +38,7 @@ export default function DropzoneWrap ({ children }) {
 
   useEffect(() => {
     if (requiresUpload) {
-      FileService.handleUpload(userData, folderContext.currentFolder.uuid, file)
+      FileService.handleUpload(userData, driveData, { parentUuid: folderContext.currentFolder.uuid }, file)
       .then(() => {
         dispatch(requestUpdate());
       })

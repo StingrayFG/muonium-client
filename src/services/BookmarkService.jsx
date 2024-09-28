@@ -1,12 +1,13 @@
 import axios from 'axios';
 
 const BookmarkService = {
-  handleCreate: async (userData, folder) => {
-    return new Promise( async function(resolve, reject) {  
+  handleCreate: async (userData, folderData) => {
+    return new Promise(async (resolve, reject) => {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
-      const body = { userUuid: userData.userUuid, folderUuid: folder.uuid };
       
-      await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/create', body, {headers})
+      const body = { userData, folderData };
+      
+      await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/create', body, { headers })
       .then(res => {
         resolve(res.data);
       })
@@ -17,11 +18,12 @@ const BookmarkService = {
   },
 
   handleGet: async (userData) => { 
-    return new Promise( async function(resolve, reject) {
+    return new Promise(async (resolve, reject) => {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
-      const body = { userUuid: userData.userUuid };
+
+      const body = { userData };
       
-      await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/get', body, {headers})
+      await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/get', body, { headers })
       .then(res => {
         resolve(res.data);
       })
@@ -31,12 +33,13 @@ const BookmarkService = {
     })
   },
 
-  handleDelete: async (userData, folder) => {
-    return new Promise( async function(resolve, reject) {
+  handleDelete: async (userData, folderData) => {
+    return new Promise(async function(resolve, reject) {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
-      const body = { userUuid: userData.userUuid, folderUuid: folder.uuid };
 
-      await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/delete', body, {headers})
+      const body = { userData, folderData };
+
+      await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/delete', body, { headers })
       .then(res => {
         resolve(res.data);
       })

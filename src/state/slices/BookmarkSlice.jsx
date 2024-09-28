@@ -3,9 +3,9 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 export const createBookmark = createAsyncThunk(
   'bookmark/create',
-  async ({ userData, folder }, thunkAPI) => {
+  async ({ userData, folderData }, thunkAPI) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
-    const body = { userUuid: userData.userUuid, folderUuid: folder.uuid };
+    const body = { userData, folderData };
     
     const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/create', body, {headers})
     return(res.data);  
@@ -16,7 +16,7 @@ export const getBookmarks = createAsyncThunk(
   'bookmark/get',
   async (userData, thunkAPI) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
-    const body = { userUuid: userData.userUuid };
+    const body = { userData };
     
     const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/get', body, {headers})
     return(res.data);  
@@ -25,9 +25,9 @@ export const getBookmarks = createAsyncThunk(
 
 export const deleteBookmark = createAsyncThunk(
   'bookmark/delete',
-  async ({ userData, folder }, thunkAPI) => {
+  async ({ userData, folderData }, thunkAPI) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
-    const body = { userUuid: userData.userUuid, folderUuid: folder.uuid };
+    const body = { userData, folderData };
     
     const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/delete', body, {headers})
     return(res.data);  
@@ -54,7 +54,8 @@ export const bookmarkSlice = createSlice({
       return { ...state, doesRequireUpdate: true };
     });
     builder.addCase(getBookmarks.fulfilled, (state, action) => {
-      return { ...state, doesRequireUpdate: false, bookmarks: action.payload, bookmarkedFoldersUuids: action.payload.map(b => b.folder.uuid) };
+      return { ...state, doesRequireUpdate: false, bookmarks: action.payload.bookmarksData, 
+        bookmarkedFoldersUuids: action.payload.bookmarksData.map(b => b.folder.uuid) };
     });
     builder.addCase(getBookmarks.pending, (state, action) => {
       return { ...state, doesRequireUpdate: false };

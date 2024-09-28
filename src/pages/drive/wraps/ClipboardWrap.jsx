@@ -17,6 +17,7 @@ export default function ClipboardWrap ({ children }) {
 
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
+  const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
   const selectionData = useSelector(state => state.selection);
 
@@ -61,7 +62,7 @@ export default function ClipboardWrap ({ children }) {
   // Basic actions
   const downloadClickedElements = async () => {
     for await (const element of clickedElements) {
-      await FileService.handleDownload(userData, element)
+      await FileService.handleDownload(userData, driveData, element)
     }
     setDoesRequireMenuClosure(true);
   }
@@ -69,10 +70,10 @@ export default function ClipboardWrap ({ children }) {
   const removeClickedElements = async () => {
     for await (const element of clickedElements) {
       if (element.type === 'file') { 
-        await FileService.handleRemove(userData, element)
+        await FileService.handleRemove(userData, driveData, element)
         .then(() => { dispatch(requestUpdate()); })
       } else if (element.type === 'folder') { 
-        await FolderService.handleRemove(userData, element)
+        await FolderService.handleRemove(userData, driveData, element)
         .then(() => { 
           dispatch(requestBookmarkUpdate());
           dispatch(requestUpdate()); 
@@ -85,10 +86,10 @@ export default function ClipboardWrap ({ children }) {
   const recoverClickedElements = async () => {
     for await (const element of clickedElements) {
       if (element.type === 'file') { 
-        await FileService.handleRecover(userData, element)
+        await FileService.handleRecover(userData, driveData, element)
         .then(() => { dispatch(requestUpdate()); })
       } else if (element.type === 'folder') { 
-        await FolderService.handleRecover(userData, element)
+        await FolderService.handleRecover(userData, driveData, element)
         .then(() => { 
           dispatch(requestBookmarkUpdate());
           dispatch(requestUpdate()); 
@@ -101,10 +102,10 @@ export default function ClipboardWrap ({ children }) {
   const deleteClickedElements = async () => {
     for await (const element of clickedElements) {
       if (element.type === 'file') { 
-        await FileService.handleDelete(userData, element)
+        await FileService.handleDelete(userData, driveData, element)
         .then(() => { dispatch(requestUpdate()); })
       } else if (element.type === 'folder') { 
-        await FolderService.handleDelete(userData, element)
+        await FolderService.handleDelete(userData, driveData, element)
         .then(() => { dispatch(requestUpdate()); })
       } else if (element.type === 'bookmark') { 
         dispatch(deleteBookmark({ userData, folder: clickedElements[0].folder }));
@@ -128,17 +129,17 @@ export default function ClipboardWrap ({ children }) {
     if (clipboardData.mode === 'copy') {
       for await (let element of clipboardData.elements) {
         if (element.type === 'file') {
-          await FileService.handleCopy(userData, folderContext.currentFolder.uuid, element)
+          await FileService.handleCopy(userData, driveData, { ...element, parentUuid: folderContext.currentFolder.uuid })
           .then(() => { dispatch(requestUpdate()); })
         }
       }
     } else if (clipboardData.mode === 'cut') {
       for await (let element of clipboardData.elements) {
         if (element.type === 'file') { 
-          await FileService.handleMove(userData, folderContext.currentFolder.uuid, element)
+          await FileService.handleMove(userData, driveData, { ...element, parentUuid: folderContext.currentFolder.uuid } )
           .then(() => { dispatch(requestUpdate()); })
         } else if (element.type === 'folder') { 
-          await FolderService.handleMove(userData, folderContext.currentFolder.uuid, element)
+          await FolderService.handleMove(userData, driveData, { ...element, parentUuid: folderContext.currentFolder.uuid } )
           .then(() => { dispatch(requestUpdate()); })
         }
       }
@@ -157,10 +158,10 @@ export default function ClipboardWrap ({ children }) {
       if (doesRequireMove) {
         for await (let element of clickedElements) {
           if (element.type === 'file') {
-            await FileService.handleMove(userData, hoveredElement.uuid, element)
+            await FileService.handleMove(userData, driveData, { ...element, parentUuid: hoveredElement.uuid })
             .then(() => { dispatch(requestUpdate()); })
           } else if (element.type === 'folder') {
-            await FolderService.handleMove(userData, hoveredElement.uuid, element)
+            await FolderService.handleMove(userData, driveData, { ...element, parentUuid: hoveredElement.uuid })
             .then(() => { dispatch(requestUpdate()); })
           }
           setDoesRequireMove(false);

@@ -16,6 +16,7 @@ export default function FolderElement ({ folder }) {
   
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
+  const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
   const settingsData = useSelector(state => state.settings);
 
@@ -49,7 +50,7 @@ export default function FolderElement ({ folder }) {
         if (inputData) {
 
           if (cutCopyPasteContext.isCreatingFolder) {
-            await FolderService.handleCreate(userData, { uuid: folder.uuid, name: inputData }, folderContext.currentFolder.uuid)
+            await FolderService.handleCreate(userData, driveData, { name: inputData, parentUuid: folderContext.currentFolder.uuid } )
             .then(() => {
               cutCopyPasteContext.setIsCreatingFolder(false);
               dispatch(requestUpdate());
@@ -58,7 +59,7 @@ export default function FolderElement ({ folder }) {
               cutCopyPasteContext.setIsCreatingFolder(false);
             })
           } else {
-            await FolderService.handleRename(userData, { uuid: folder.uuid, name: inputData })
+            await FolderService.handleRename(userData, driveData, { uuid: folder.uuid, name: inputData })
             .then(() => {
               cutCopyPasteContext.setIsRenaming(false);
               dispatch(requestUpdate());
@@ -80,6 +81,7 @@ export default function FolderElement ({ folder }) {
 
   const handleDoubleClick = () => {
     if (!folder.isRemoved) {
+      console.log(1)
       dispatch(moveToNew({ uuid: folder.uuid }));
     }
   }

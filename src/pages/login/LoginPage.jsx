@@ -120,7 +120,8 @@ export default function LoginPage() {
               type='password'/>
           </Box>
           
-          <button className='w-full h-12 mt-12 grid text-neutral-200'>
+          <button className='w-full h-12 mt-12 grid text-neutral-200
+          bg-sky-300/10 hover:bg-sky-300/20 border-0'>
             <p className='place-self-center font-semibold'>Continue</p>
           </button >
 
