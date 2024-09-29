@@ -52,13 +52,13 @@ export default function TopPanel () {
 
   const [isEditingPath, setIsEditingPath] = useState(false);
   const [previousPath, setPreviousPath] = useState('');
-  const [inputValue, setInputValue] = useState('');
+  const [pathPathInputValue, setPathInputValue] = useState('');
   
   useEffect(() => {
-    if (!inputValue) { 
-      setInputValue(pathData.currentAbsolutePath); 
-    } else if (inputValue !== pathData.currentAbsolutePath) {
-      setInputValue(pathData.currentAbsolutePath);
+    if (!pathPathInputValue) { 
+      setPathInputValue(pathData.currentAbsolutePath); 
+    } else if (pathPathInputValue !== pathData.currentAbsolutePath) {
+      setPathInputValue(pathData.currentAbsolutePath);
       setPreviousPath(pathData.currentAbsolutePath);
       setIsEditingPath(false);
     }
@@ -70,7 +70,7 @@ export default function TopPanel () {
   }
 
   const setPath = async () => {
-    let path = inputValue;
+    let path = pathPathInputValue;
     if (path[path.length - 1] === '/') { path = path.slice(0, path.length - 1); }
     await FolderService.handleGetByPath(userData, driveData, { absolutePath: path })
     .then(res => {
@@ -80,13 +80,13 @@ export default function TopPanel () {
       setIsEditingPath(false);
     })
     .catch(err => {
-      setInputValue(previousPath);
+      setPathInputValue(previousPath);
       setIsEditingPath(false);
     })
   }
 
   const handleOnPathChange = (event) => {
-    setInputValue(event.target.value)
+    setPathInputValue(event.target.value)
   }
 
   const handleOnPathFocus = (event) => {
@@ -103,25 +103,25 @@ export default function TopPanel () {
   const handleOnPathBlur = (event) => {
     if (isEditingPath) {
       setIsEditingPath(false);
-      setInputValue(previousPath);
+      setPathInputValue(previousPath);
     }
   }
 
   const handleOnPathKeyDown = (event) => {
     if (event.code === 'Enter') { 
       event.target.blur()
-      setPath(inputValue);
+      setPath(pathPathInputValue);
       setIsEditingPath(false);
     } else if (event.code === 'Escape') { 
       event.target.blur()
       setIsEditingPath(false);
-      setInputValue(previousPath);
+      setPathInputValue(previousPath);
     }
   }
   
 
   const getCurrentFolderName = () => {
-    let name = inputValue.split('/').pop();
+    let name = pathPathInputValue.split('/').pop();
     if (name === 'home') {
       name = 'Home';
     } else if (name === 'trash') {
@@ -176,7 +176,7 @@ export default function TopPanel () {
             outline-none resize-none
             bg-black/20 border-sky-300/20 focus:bg-black/20 focus:border-sky-300/20 rounded-lg`}   
             name='path'
-            value={inputValue}
+            value={pathPathInputValue}
             onChange={handleOnPathChange}
             onBlur={handleOnPathBlur}
             onFocus={handleOnPathFocus}
