@@ -1,12 +1,12 @@
 import { useRef, useContext } from 'react';
 
 import { DropzoneContext } from 'contexts/DropzoneContext';
-import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
+import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 export default function DefaultContextMenu ({ point }) {
   const dropzoneContext = useContext(DropzoneContext);
-  const cutCopyPasteContext = useContext(CutCopyPasteContext);
+  const clipboardContext = useContext(ClipboardContext);
   const contextMenuContext = useContext(ContextMenuContext);
 
   const windowWidth = useRef(window.innerWidth).current;
@@ -35,7 +35,7 @@ export default function DefaultContextMenu ({ point }) {
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={() => { cutCopyPasteContext.setIsCreatingFolder(true) }}>
+      onClick={() => { clipboardContext.setIsCreatingFolder(true) }}>
         <img src='/icons/file-plus.svg' alt='new' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>New folder</p>
       </button>    
@@ -44,7 +44,7 @@ export default function DefaultContextMenu ({ point }) {
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.pasteClickedElements}>
+      onClick={clipboardContext.pasteClickedElements}>
         <img src='/icons/clipboard-minus.svg' alt='paste' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Paste</p>
       </button>    

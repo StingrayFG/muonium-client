@@ -1,12 +1,12 @@
 import { useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
+import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 export default function BookmarkContextMenu ({ point, bookmark }) {
   const contextMenuContext = useContext(ContextMenuContext);
-  const cutCopyPasteContext = useContext(CutCopyPasteContext);
+  const clipboardContext = useContext(ClipboardContext);
 
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
@@ -30,7 +30,7 @@ export default function BookmarkContextMenu ({ point, bookmark }) {
     onMouseLeave={() => { contextMenuContext.setIsHoveredOverMenu(false) }}>
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.deleteClickedElements}>
+      onClick={clipboardContext.deleteClickedElements}>
         <img src='/icons/trash.svg' alt='delete' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Delete bookmark</p>
       </button>

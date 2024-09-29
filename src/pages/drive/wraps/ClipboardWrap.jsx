@@ -6,7 +6,7 @@ import { setElements } from 'state/slices/SelectionSlice.jsx';
 import { requestUpdate } from 'state/slices/PathSlice';
 import { deleteBookmark, requestUpdate as requestBookmarkUpdate } from 'state/slices/BookmarkSlice';
 
-import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
+import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { FolderContext } from 'contexts/FolderContext.jsx';
 
 import FileService from 'services/FileService.jsx';
@@ -108,7 +108,7 @@ export default function ClipboardWrap ({ children }) {
         await FolderService.handleDelete(userData, driveData, element)
         .then(() => { dispatch(requestUpdate()); })
       } else if (element.type === 'bookmark') { 
-        dispatch(deleteBookmark({ userData, folder: clickedElements[0].folder }));
+        dispatch(deleteBookmark({ userData, folderData: clickedElements[0].folder }));
       }
     }
     setDoesRequireMenuClosure(true);
@@ -250,7 +250,7 @@ export default function ClipboardWrap ({ children }) {
     onCopy={copyClickedElements}
     onCut={cutClickedElements}
     onPaste={pasteClickedElements}>
-      <CutCopyPasteContext.Provider value={{
+      <ClipboardContext.Provider value={{
         clickedElements, addClickedElement, clearClickedElements, downloadClickedElements, 
         removeClickedElements, recoverClickedElements, deleteClickedElements,
         copyClickedElements, cutClickedElements, pasteClickedElements, 
@@ -265,7 +265,7 @@ export default function ClipboardWrap ({ children }) {
           </div>
         }
         {children}
-      </CutCopyPasteContext.Provider>   
+      </ClipboardContext.Provider>   
     </div>
   );
 }

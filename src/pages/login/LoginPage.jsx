@@ -35,7 +35,7 @@ export default function LoginPage() {
     if (userData && !isLoading) {
       navigate('/drive');
     }
-  });
+  }, []);
 
   const updateInputLabel = (event) => {
     if((!event.target.value) && (event.type === 'blur')) {
@@ -89,8 +89,8 @@ export default function LoginPage() {
     <Box className='w-full h-dvh grid place-content-center'>
 
       <Box className={`max-w-[480px] w-full grid 
-      transition-all duration-300 animate-fadein-custom
-      ${isAwaitingNavigation? 'opacity-0' : 'opacity-100'}`}>
+      animate-fadein-custom
+      ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}>
 
         <Box className='mx-auto -mt-6 h-[120px]'>
             <MuoniumSpinner size={120} shallSpin={isLoading}/>

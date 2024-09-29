@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
+import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { FolderContext } from 'contexts/FolderContext.jsx';
 
@@ -15,7 +15,7 @@ import TrashContextMenu from 'pages/drive/menus/TrashContextMenu.jsx';
 
 export default function ContextMenuWrap ({ children }) {
   const folderContext = useContext(FolderContext);
-  const cutCopyPasteContext = useContext(CutCopyPasteContext);
+  const clipboardContext = useContext(ClipboardContext);
 
   // Context menu
   const [isContextMenu, setIsContextMenu] = useState(false);
@@ -31,11 +31,11 @@ export default function ContextMenuWrap ({ children }) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (cutCopyPasteContext.clickedElements.length < 2) {
-      cutCopyPasteContext.addClickedElement(event, file);
+    if (clipboardContext.clickedElements.length < 2) {
+      clipboardContext.addClickedElement(event, file);
       setContextMenuType('file')
     } else {
-      if (cutCopyPasteContext.clickedElements.map(e => e.type).includes('folder')) {
+      if (clipboardContext.clickedElements.map(e => e.type).includes('folder')) {
         setContextMenuType('folder_multiple')
       } else {
         setContextMenuType('file_multiple')
@@ -53,8 +53,8 @@ export default function ContextMenuWrap ({ children }) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (cutCopyPasteContext.clickedElements.length < 2) {
-      cutCopyPasteContext.addClickedElement(event, folder);
+    if (clipboardContext.clickedElements.length < 2) {
+      clipboardContext.addClickedElement(event, folder);
       setContextMenuType('folder');
     } else {
       setContextMenuType('folder_multiple');
@@ -71,7 +71,7 @@ export default function ContextMenuWrap ({ children }) {
     event.preventDefault();
     event.stopPropagation();
 
-    cutCopyPasteContext.clearClickedElements();
+    clipboardContext.clearClickedElements();
 
     setContextMenuType('default')
     setIsContextMenu(true);
@@ -85,7 +85,7 @@ export default function ContextMenuWrap ({ children }) {
     event.preventDefault();
     event.stopPropagation();
 
-    cutCopyPasteContext.addClickedElement(event, bookmark);
+    clipboardContext.addClickedElement(event, bookmark);
 
     setContextMenuType('bookmark')
     setIsContextMenu(true);
@@ -96,22 +96,22 @@ export default function ContextMenuWrap ({ children }) {
   };
   
   useEffect(() => {
-    if (cutCopyPasteContext.doesRequireMenuClosure) {
+    if (clipboardContext.doesRequireMenuClosure) {
       setIsContextMenu(false);
       setIsHoveredOverMenu(false);
-      cutCopyPasteContext.setDoesRequireMenuClosure(false);
+      clipboardContext.setDoesRequireMenuClosure(false);
     }
   })
 
   const handleMouseUp = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    cutCopyPasteContext.handleMouseUp(event);
+    clipboardContext.handleMouseUp(event);
     
     if (event.button === 0) {
-      if (((isContextMenu && !isHoveredOverMenu && !cutCopyPasteContext.hoveredElement.uuid)) || 
-      (!cutCopyPasteContext.hoveredElement.uuid && !isHoveredOverMenu && !cutCopyPasteContext.isDraggingElement)) {
-        cutCopyPasteContext.clearClickedElements();  
+      if (((isContextMenu && !isHoveredOverMenu && !clipboardContext.hoveredElement.uuid)) || 
+      (!clipboardContext.hoveredElement.uuid && !isHoveredOverMenu && !clipboardContext.isDraggingElement)) {
+        clipboardContext.clearClickedElements();  
       }
 
       if (isContextMenu && !isHoveredOverMenu) {
@@ -142,20 +142,20 @@ export default function ContextMenuWrap ({ children }) {
         isHoveredOverMenu, setIsHoveredOverMenu }}> 
         {children}  
 
-        {(isContextMenu && !cutCopyPasteContext.isDraggingElement) && <>
+        {(isContextMenu && !clipboardContext.isDraggingElement) && <>
           {(folderContext.currentFolder.uuid !== 'trash') && <>
             {(contextMenuType === 'default') && <DefaultContextMenu point={contextMenuPoint} />}
             {(contextMenuType === 'file') && <FileContextMenu point={contextMenuPoint} />}
-            {(contextMenuType === 'folder') && <FolderContextMenu point={contextMenuPoint} folder={cutCopyPasteContext.clickedElements[0]} />}  
+            {(contextMenuType === 'folder') && <FolderContextMenu point={contextMenuPoint} folder={clipboardContext.clickedElements[0]} />}  
             {(contextMenuType === 'file_multiple') && <MultipleFileContextMenu point={contextMenuPoint} />}
             {(contextMenuType === 'folder_multiple') && <MultipleFolderContextMenu point={contextMenuPoint} />}
-            {(contextMenuType === 'bookmark') && <BookmarkContextMenu point={contextMenuPoint} bookmark={cutCopyPasteContext.clickedElements[0]} />}  
+            {(contextMenuType === 'bookmark') && <BookmarkContextMenu point={contextMenuPoint} bookmark={clipboardContext.clickedElements[0]} />}  
           </>}
 
           {(folderContext.currentFolder.uuid  === 'trash') && <>
             {((contextMenuType === 'file') || (contextMenuType === 'folder') || 
             (contextMenuType === 'file_multiple') || (contextMenuType === 'folder_multiple')) && <TrashContextMenu point={contextMenuPoint}/>}
-            {(contextMenuType === 'bookmark') && <BookmarkContextMenu point={contextMenuPoint} bookmark={cutCopyPasteContext.clickedElements[0]} />}  
+            {(contextMenuType === 'bookmark') && <BookmarkContextMenu point={contextMenuPoint} bookmark={clipboardContext.clickedElements[0]} />}  
           </>}
         </>}
       </ContextMenuContext.Provider> 

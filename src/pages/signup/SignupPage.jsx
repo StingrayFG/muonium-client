@@ -33,7 +33,7 @@ export default function SignupPage() {
     if (userData && !isLoading) {
       navigate('/drive');
     }
-  });
+  }, []);
 
   const updateInputLabel = (event) => {
     if((!event.target.value) && (event.type === 'blur')) {
@@ -86,8 +86,8 @@ export default function SignupPage() {
     <Box className='w-full h-dvh grid place-content-center'>
 
       <Box className={`max-w-[480px] w-full grid 
-      transition-all duration-300 animate-fadein-custom
-      ${isAwaitingNavigation? 'opacity-0' : 'opacity-100'}`}>
+      animate-fadein-custom
+      ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}>
 
         <Box className='mx-auto -mt-6'>
           <MuoniumSpinner size={120} shallSpin={isLoading}/>    

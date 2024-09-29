@@ -6,8 +6,8 @@ export const createBookmark = createAsyncThunk(
   async ({ userData, folderData }, thunkAPI) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
     const body = { userData, folderData };
-    
-    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/create', body, {headers})
+    console.log(body)
+    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/create', body, { headers })
     return(res.data);  
   },
 );
@@ -18,7 +18,7 @@ export const getBookmarks = createAsyncThunk(
     const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
     const body = { userData };
     
-    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/get', body, {headers})
+    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/get', body, { headers })
     return(res.data);  
   },
 );
@@ -28,8 +28,8 @@ export const deleteBookmark = createAsyncThunk(
   async ({ userData, folderData }, thunkAPI) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
     const body = { userData, folderData };
-    
-    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/delete', body, {headers})
+    console.log(body)
+    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/delete', body, { headers })
     return(res.data);  
   },
 );

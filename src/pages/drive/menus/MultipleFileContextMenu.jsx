@@ -1,11 +1,11 @@
 import { useRef, useContext } from 'react';
 
-import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
+import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 export default function MultipleFileContextMenu ({ point }) {
   const contextMenuContext = useContext(ContextMenuContext);
-  const cutCopyPasteContext = useContext(CutCopyPasteContext);
+  const clipboardContext = useContext(ClipboardContext);
 
   const windowWidth = useRef(window.innerWidth).current;
   const windowHeight = useRef(window.innerHeight).current;
@@ -26,7 +26,7 @@ export default function MultipleFileContextMenu ({ point }) {
     onMouseLeave={() => { contextMenuContext.setIsHoveredOverMenu(false) }}>
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.downloadClickedElements}>
+      onClick={clipboardContext.downloadClickedElements}>
         <img src='/icons/download.svg' alt='download' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Download</p>
       </button>
@@ -35,14 +35,14 @@ export default function MultipleFileContextMenu ({ point }) {
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.copyClickedElements}>
+      onClick={clipboardContext.copyClickedElements}>
         <img src='/icons/clipboard-plus.svg' alt='copy' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Copy</p>
       </button>
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.cutClickedElements}>
+      onClick={clipboardContext.cutClickedElements}>
         <img src='/icons/clipboard-x.svg' alt='cut' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Cut</p>
       </button>
@@ -51,7 +51,7 @@ export default function MultipleFileContextMenu ({ point }) {
       
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.removeClickedElements}>
+      onClick={clipboardContext.removeClickedElements}>
         <img src='/icons/trash.svg' alt='trash' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Move to trash</p>
       </button>

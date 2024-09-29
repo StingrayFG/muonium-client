@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
+import { Box } from '@mui/material';
 
 import { setInitialUuid, setAbsolutePath, confirmUpdate } from 'state/slices/PathSlice';
 import { getDrive } from 'state/slices/DriveSlice';
@@ -19,11 +20,12 @@ import FolderService from 'services/FolderService.jsx'
 
 export default function FolderPage ({ folderUuid }) {
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
+
   const userData = useSelector(state => state.user);
   const driveData = useSelector(state => state.drive);
   const pathData = useSelector(state => state.path);
+
 
   const { uuid } = useParams();
   if (!folderUuid) { 
@@ -39,18 +41,15 @@ export default function FolderPage ({ folderUuid }) {
   }, [])
 
   const getFolder = async () => {
-    if (doesRequireUpdate) {
-      setDoesRequireUpdate(false);
-      await FolderService.handleGetByUuid(userData, driveData, { uuid: pathData.currentUuid })
-      .then(res => {
-        dispatch(setCounts({ filesCount: res.files.length, foldersCount: res.folders.length  }))
-        setCurrentFolder(res);
-        dispatch(setAbsolutePath({ currentAbsolutePath: res.absolutePath }));
-      })
-      .catch(err => {
-        //console.error(err);
-      }); 
-    }
+    await FolderService.handleGetByUuid(userData, driveData, { uuid: pathData.currentUuid })
+    .then(res => {
+      dispatch(setCounts({ filesCount: res.files.length, foldersCount: res.folders.length  }))
+      setCurrentFolder(res);
+      dispatch(setAbsolutePath({ currentAbsolutePath: res.absolutePath }));
+    })
+    .catch(err => {
+      //console.error(err);
+    }); 
   }
 
   useEffect(() => {
@@ -70,11 +69,6 @@ export default function FolderPage ({ folderUuid }) {
       }
     } 
 
-    if (pathData.doesRequireUpdate) {
-      setDoesRequireUpdate(true);
-      dispatch(confirmUpdate());
-      dispatch(getDrive(userData));
-    }
   }, [pathData.currentUuid]);
 
   useEffect(() => {
@@ -85,8 +79,7 @@ export default function FolderPage ({ folderUuid }) {
   }, [pathData.currentUuid, driveData]);
 
   return (
-    <div className='w-full h-full overflow-hidden
-    bg-gradient-to-b from-zinc-600/90 to-zinc-700/90'>
+    <Box className='w-full h-full overflow-hidden'>
       <FolderContext.Provider value={{ currentFolder }}> 
         <DropzoneWrap>
           <ClipboardWrap>
@@ -100,6 +93,6 @@ export default function FolderPage ({ folderUuid }) {
           </ClipboardWrap>
         </DropzoneWrap>
       </FolderContext.Provider>     
-    </div>
+    </Box>
   );
 }

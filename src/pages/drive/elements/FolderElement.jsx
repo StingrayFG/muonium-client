@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { moveToNew, requestUpdate } from 'state/slices/PathSlice';
 
-import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
+import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { FolderContext } from 'contexts/FolderContext.jsx';
 
@@ -11,7 +11,7 @@ import FolderService from 'services/FolderService.jsx';
 
 export default function FolderElement ({ folder }) {
   const contextMenuContext = useContext(ContextMenuContext);
-  const cutCopyPasteContext = useContext(CutCopyPasteContext);
+  const clipboardContext = useContext(ClipboardContext);
   const folderContext = useContext(FolderContext);
   
   const dispatch = useDispatch();
@@ -49,30 +49,30 @@ export default function FolderElement ({ folder }) {
       const saveName = async () => {
         if (inputData) {
 
-          if (cutCopyPasteContext.isCreatingFolder) {
+          if (clipboardContext.isCreatingFolder) {
             await FolderService.handleCreate(userData, driveData, { name: inputData, parentUuid: folderContext.currentFolder.uuid } )
             .then(() => {
-              cutCopyPasteContext.setIsCreatingFolder(false);
+              clipboardContext.setIsCreatingFolder(false);
               dispatch(requestUpdate());
             })
             .catch(() => {
-              cutCopyPasteContext.setIsCreatingFolder(false);
+              clipboardContext.setIsCreatingFolder(false);
             })
           } else {
             await FolderService.handleRename(userData, driveData, { uuid: folder.uuid, name: inputData })
             .then(() => {
-              cutCopyPasteContext.setIsRenaming(false);
+              clipboardContext.setIsRenaming(false);
               dispatch(requestUpdate());
             })
             .catch(() => {
               setInputData(previousName);
-              cutCopyPasteContext.setIsRenaming(false);
+              clipboardContext.setIsRenaming(false);
             })
           }
         } else {
           setInputData(previousName);
-          cutCopyPasteContext.setIsCreatingFolder(false);
-          cutCopyPasteContext.setIsRenaming(false);
+          clipboardContext.setIsCreatingFolder(false);
+          clipboardContext.setIsRenaming(false);
         }
       }
       saveName();
@@ -91,15 +91,15 @@ export default function FolderElement ({ folder }) {
     return (
       <div className={`w-full h-full px-2 pb-2 grid place-self-center
       border-solid border-0 border-black rounded-md
-      ${((cutCopyPasteContext.clickedElements.includes(folder)) ||
-      ((cutCopyPasteContext.isRenaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
-      ((cutCopyPasteContext.isCreatingFolder) && (!folder.uuid))) ?
+      ${((clipboardContext.clickedElements.includes(folder)) ||
+      ((clipboardContext.isRenaming) && (clipboardContext.clickedElements.includes(folder))) || 
+      ((clipboardContext.isCreatingFolder) && (!folder.uuid))) ?
       'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
       :
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-      onMouseDown={(event) => { cutCopyPasteContext.handleMouseDown(event, folder) }}
-      onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(folder) }}
-      onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' })}}
+      onMouseDown={(event) => { clipboardContext.handleMouseDown(event, folder) }}
+      onMouseEnter={() => { clipboardContext.setHoveredElement(folder) }}
+      onMouseLeave={() => { clipboardContext.setHoveredElement({ uuid: '' })}}
       onContextMenu={(event) => { contextMenuContext.handleFolderContextMenuClick(event, folder) }}
       onDoubleClick={handleDoubleClick}>
   
@@ -109,8 +109,8 @@ export default function FolderElement ({ folder }) {
           <img src='/icons/mu-folder.svg' alt='folder' width='200' className='place-self-center pointer-events-none select-none'/>
         </div>
   
-        {(((cutCopyPasteContext.isRenaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
-        ((cutCopyPasteContext.isCreatingFolder) && (!folder.uuid))) ? 
+        {(((clipboardContext.isRenaming) && (clipboardContext.clickedElements.includes(folder))) || 
+        ((clipboardContext.isCreatingFolder) && (!folder.uuid))) ? 
         <div className='w-full h-24 grid place-self-center'>
           <textarea className='w-full h-full place-self-center text-center outline-none resize-none
           bg-transparent 
@@ -140,15 +140,15 @@ export default function FolderElement ({ folder }) {
     return (
       <div className={`w-full h-16 pr-4 flex place-self-center
       border-solid border-0 border-black rounded-md
-      ${((cutCopyPasteContext.clickedElements.includes(folder)) ||
-      ((cutCopyPasteContext.isRenaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
-      ((cutCopyPasteContext.isCreatingFolder) && (!folder.uuid))) ?
+      ${((clipboardContext.clickedElements.includes(folder)) ||
+      ((clipboardContext.isRenaming) && (clipboardContext.clickedElements.includes(folder))) || 
+      ((clipboardContext.isCreatingFolder) && (!folder.uuid))) ?
       'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
       :
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-      onMouseDown={(event) => { cutCopyPasteContext.handleMouseDown(event, folder) }}
-      onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(folder) }}
-      onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' })}}
+      onMouseDown={(event) => { clipboardContext.handleMouseDown(event, folder) }}
+      onMouseEnter={() => { clipboardContext.setHoveredElement(folder) }}
+      onMouseLeave={() => { clipboardContext.setHoveredElement({ uuid: '' })}}
       onContextMenu={(event) => { contextMenuContext.handleFolderContextMenuClick(event, folder) }}
       onDoubleClick={handleDoubleClick}>
   
@@ -158,8 +158,8 @@ export default function FolderElement ({ folder }) {
           <img src='/icons/folder2.svg' alt='icon' width='40' className='place-self-center pointer-events-none select-none'/>
         </div>
   
-        {(((cutCopyPasteContext.isRenaming) && (cutCopyPasteContext.clickedElements.includes(folder))) || 
-        (cutCopyPasteContext.isCreatingFolder)) ? 
+        {(((clipboardContext.isRenaming) && (clipboardContext.clickedElements.includes(folder))) || 
+        (clipboardContext.isCreatingFolder)) ? 
         <div className='w-full h-16 grid place-self-center'>
           <textarea className='w-full h-8 px-2 place-self-center text-left select-none outline-none resize-none
           bg-transparent 

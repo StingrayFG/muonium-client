@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { requestUpdate } from 'state/slices/PathSlice';
 
-import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
+import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import FileService from 'services/FileService.jsx';
@@ -12,7 +12,7 @@ import FileIconElement from 'pages/drive/elements/FileIconElement.jsx';
 
 export default function FileElement ({ file }) {
   const contextMenuContext = useContext(ContextMenuContext);
-  const cutCopyPasteContext = useContext(CutCopyPasteContext);
+  const clipboardContext = useContext(ClipboardContext);
   
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
@@ -49,15 +49,15 @@ export default function FileElement ({ file }) {
           await FileService.handleRename(userData, driveData, { uuid: file.uuid, name: inputData })
           .then(() => {
             dispatch(requestUpdate());
-            cutCopyPasteContext.setIsRenaming(false);
+            clipboardContext.setIsRenaming(false);
           })
           .catch(() => {
             setInputData(previousName);
-            cutCopyPasteContext.setIsRenaming(false);
+            clipboardContext.setIsRenaming(false);
           })
         } else {
           setInputData(previousName);
-          cutCopyPasteContext.setIsRenaming(false);
+          clipboardContext.setIsRenaming(false);
         }
       }
       saveName();
@@ -69,13 +69,13 @@ export default function FileElement ({ file }) {
     return (
       <div className={`w-full h-full px-2 pb-2 grid place-self-center
       border-solid border-0 border-black rounded-md
-      ${(cutCopyPasteContext.clickedElements.includes(file)) ?
+      ${(clipboardContext.clickedElements.includes(file)) ?
       'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
       :
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-      onMouseDown={(event) => { cutCopyPasteContext.handleMouseDown(event, file) }}
-      onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(file) }}
-      onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' }) }}
+      onMouseDown={(event) => { clipboardContext.handleMouseDown(event, file) }}
+      onMouseEnter={() => { clipboardContext.setHoveredElement(file) }}
+      onMouseLeave={() => { clipboardContext.setHoveredElement({ uuid: '' }) }}
       onContextMenu={(event) => { contextMenuContext.handleFileContextMenuClick(event, file) }}>
   
         <div className={`w-full h-48 -mb-3 place-self-center grid
@@ -85,7 +85,7 @@ export default function FileElement ({ file }) {
           <FileIconElement file={file} type={settingsData.type}/>
         </div>
   
-        {((cutCopyPasteContext.isRenaming) && (cutCopyPasteContext.clickedElements.includes(file))) ? 
+        {((clipboardContext.isRenaming) && (clipboardContext.clickedElements.includes(file))) ? 
         <div className='w-full h-24 grid place-self-center'>
           <textarea className='w-full place-self-center h-full text-center outline-none resize-none
           bg-transparent 
@@ -116,13 +116,13 @@ export default function FileElement ({ file }) {
     return (
       <div className={`w-full h-16 pr-4 flex place-self-center
       border-solid border-0 border-black rounded-md
-      ${(cutCopyPasteContext.clickedElements.includes(file)) ?
+      ${(clipboardContext.clickedElements.includes(file)) ?
       'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
       :
       'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-      onMouseDown={(event) => { cutCopyPasteContext.handleMouseDown(event, file) }}
-      onMouseEnter={() => { cutCopyPasteContext.setHoveredElement(file) }}
-      onMouseLeave={() => { cutCopyPasteContext.setHoveredElement({ uuid: '' }) }}
+      onMouseDown={(event) => { clipboardContext.handleMouseDown(event, file) }}
+      onMouseEnter={() => { clipboardContext.setHoveredElement(file) }}
+      onMouseLeave={() => { clipboardContext.setHoveredElement({ uuid: '' }) }}
       onContextMenu={(event) => { contextMenuContext.handleFileContextMenuClick(event, file) }}>
   
         <div className={`w-16 h-16 place-self-center grid
@@ -131,7 +131,7 @@ export default function FileElement ({ file }) {
           <FileIconElement file={file} type={settingsData.type}/>
         </div>
   
-        {((cutCopyPasteContext.isRenaming) && (cutCopyPasteContext.clickedElements.includes(file))) ? 
+        {((clipboardContext.isRenaming) && (clipboardContext.clickedElements.includes(file))) ? 
         <div className='w-full h-16 grid place-self-center'>
           <textarea className='w-full h-8 px-2 place-self-center text-left select-none outline-none resize-none
           bg-transparent 

@@ -1,27 +1,27 @@
 import { useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
+import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import { createBookmark, deleteBookmark } from 'state/slices/BookmarkSlice';
 
 export default function FolderContextMenu ({ point, folder }) {
   const contextMenuContext = useContext(ContextMenuContext);
-  const cutCopyPasteContext = useContext(CutCopyPasteContext);
+  const clipboardContext = useContext(ClipboardContext);
 
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
   const bookmarkData = useSelector(state => state.bookmark);
 
   const handleCreateBookmark = () => {
-    dispatch(createBookmark({ userData, folder }));
-    cutCopyPasteContext.setDoesRequireMenuClosure(true);
+    dispatch(createBookmark({ userData, folderData: folder }));
+    clipboardContext.setDoesRequireMenuClosure(true);
   }
 
   const handleDeleteBookmark = () => {
-    dispatch(deleteBookmark({ userData, folder }));
-    cutCopyPasteContext.setDoesRequireMenuClosure(true);
+    dispatch(deleteBookmark({ userData, folderData: folder }));
+    clipboardContext.setDoesRequireMenuClosure(true);
   }
   
   const windowWidth = useRef(window.innerWidth).current;
@@ -61,7 +61,7 @@ export default function FolderContextMenu ({ point, folder }) {
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.cutClickedElements}>
+      onClick={clipboardContext.cutClickedElements}>
         <img src='/icons/clipboard-x.svg' alt='cut' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Cut</p>
       </button>
@@ -70,14 +70,14 @@ export default function FolderContextMenu ({ point, folder }) {
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={() => { cutCopyPasteContext.setIsRenaming(true) }}>
+      onClick={() => { clipboardContext.setIsRenaming(true) }}>
         <img src='/icons/pencil.svg' alt='rename' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Rename</p>
       </button>
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.removeClickedElements}>
+      onClick={clipboardContext.removeClickedElements}>
         <img src='/icons/trash.svg' alt='trash' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Move to trash</p>
       </button>

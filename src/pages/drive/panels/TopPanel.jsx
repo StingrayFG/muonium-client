@@ -1,12 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { Box } from '@mui/material';
 
 import { clearUser } from 'state/slices/UserSlice';
 import { setAbsolutePath, moveToNew, moveToNext, moveToPrevious } from 'state/slices/PathSlice';
 import { setType } from 'state/slices/SettingsSlice';
 
 import FolderService from 'services/FolderService.jsx';
+
+import { ReactComponent as ChevronLeft } from 'assets/icons/chevron-left.svg'
+import { ReactComponent as ChevronRight } from 'assets/icons/chevron-right.svg'
+import { ReactComponent as Grid } from 'assets/icons/grid.svg'
+import { ReactComponent as ListUl } from 'assets/icons/list-ul.svg'
+import { ReactComponent as BoxArrowRight } from 'assets/icons/box-arrow-right.svg'
+import { ReactComponent as FolderTwo } from 'assets/icons/folder2.svg'
+
 
 export default function TopPanel () {
   const navigate = useNavigate();
@@ -15,6 +24,7 @@ export default function TopPanel () {
   const userData = useSelector(state => state.user);
   const driveData = useSelector(state => state.drive);
   const pathData = useSelector(state => state.path);
+  const settingsData = useSelector(state => state.settings);
 
   const logOut = () => {
     dispatch(clearUser());
@@ -41,141 +51,163 @@ export default function TopPanel () {
     }
   }
 
-  const [editingPath, setEditingPath] = useState(false);
+
+  const [isEditingPath, setIsEditingPath] = useState(false);
   const [previousPath, setPreviousPath] = useState('');
-  const [inputData, setInputData] = useState();
+  const [inputValue, setInputValue] = useState('');
   
   useEffect(() => {
-    if (!inputData) { setInputData(pathData.currentAbsolutePath); }
-  })
-
-  useEffect(() => {
-    if (!editingPath && (inputData !== pathData.currentAbsolutePath)) {
-      setInputData(pathData.currentAbsolutePath);
+    if (!inputValue) { 
+      setInputValue(pathData.currentAbsolutePath); 
+    } else if (inputValue !== pathData.currentAbsolutePath) {
+      setInputValue(pathData.currentAbsolutePath);
       setPreviousPath(pathData.currentAbsolutePath);
+      setIsEditingPath(false);
     }
-  })
+  }, [pathData.currentAbsolutePath])
 
   const savePreviousPath = (event) => {
     setPreviousPath(event.target.value);
-    setEditingPath(true);
+    setIsEditingPath(true);
   }
 
-  const setPath = async (event) => {
-    let path = event.target.value;
+  const setPath = async () => {
+    let path = inputValue;
     if (path[path.length - 1] === '/') { path = path.slice(0, path.length - 1); }
-    await FolderService.handleGetByPath(userData, path)
+    await FolderService.handleGetByPath(userData, driveData, { absolutePath: path })
     .then(res => {
+      console.log(res)
       dispatch(moveToNew({ uuid: res.uuid }));
       dispatch(setAbsolutePath({ currentAbsolutePath: path }));
-      setEditingPath(false);
+      setIsEditingPath(false);
     })
     .catch(err => {
-      setInputData(previousPath);
-      showMessage('Incorrect path');
-      setEditingPath(false);
+      setInputValue(previousPath);
+      setIsEditingPath(false);
     })
   }
 
-  const delay = ms => new Promise(res => setTimeout(res, ms));
-  const [showingMessage, setShowingMessage] = useState();
-  const [message, setMessage] = useState();
+  const handleOnPathChange = (event) => {
+    setInputValue(event.target.value)
+  }
 
-  const showMessage = async (msg) => {
-    setMessage(msg);
-    setShowingMessage(true);
-    await delay(1500);
-    setShowingMessage(false);
-  };
+  const handleOnPathFocus = (event) => {
+    if (!isEditingPath) {
+      event.currentTarget.setSelectionRange(
+        event.currentTarget.value.length,
+        event.currentTarget.value.length
+      )
+      savePreviousPath(event);
+      setIsEditingPath(true);
+    }
+  }
+
+  const handleOnPathBlur = (event) => {
+    if (isEditingPath) {
+      setIsEditingPath(false);
+      setInputValue(previousPath);
+    }
+  }
+
+  const handleOnPathKeyDown = (event) => {
+    if (event.code === 'Enter') { 
+      event.target.blur()
+      setPath(inputValue);
+      setIsEditingPath(false);
+    } else if (event.code === 'Escape') { 
+      event.target.blur()
+      setIsEditingPath(false);
+      setInputValue(previousPath);
+    }
+  }
+  
+
+  const getCurrentFolderName = () => {
+    let name = inputValue.split('/').pop();
+    if (name === 'home') {
+      name = 'Home';
+    } else if (name === 'trash') {
+      name = 'Trash';
+    }
+    return name;
+  }
+
 
   return (
-    <div className='w-full h-20 px-4 py-4 flex
-      bg-gradient-to-b from-zinc-600 to-zinc-700
-      border-solid border-b-2 border-zinc-800
-      text-lg font-semibold font-sans text-neutral-200'>
-        <div className='flex'>
+    <Box className='w-full px-2 py-2 flex 
+    border-sky-300/20 border-b'>
 
-          <div className='w-[86px] h-12 mr-1 grid'>
-            <img src='/icons/mu-logo.svg' alt='logo' width='72' className='place-self-center -mt-1'/>
-          </div>
-
-          <div className='mx-4 border-solid border-l-2 border-zinc-800'></div>
-
-          <button className={`w-12 h-12 grid
-          bg-gradient-to-b from-zinc-300 to-zinc-400 border-zinc-400
-          ${(pathData.positionInHistory > 0) ? 
-          'hover:bg-gradient-to-b hover:from-sky-200/75 hover:to-sky-400/75 hover:border-sky-600/75' : 'pointer-events-none'}  
-          border-solid border-2 border-r rounded-l-lg`}
+        <Box className='flex'>
+          <button className={`w-8 h-8 grid
+          ${(pathData.positionInHistory > 0) ? '' : 'button-inactive'}`}
           onClick={handlePreviousPath}>
-            <img src='/icons/chevron-left.svg' alt='prev' width='28' 
-            className={`place-self-center ${(pathData.positionInHistory > 0) ? 'opacity-100' : 'opacity-30'}`}/>
+            <ChevronLeft className={`place-self-center h-5 w-5
+            ${(pathData.positionInHistory > 0) ? 'opacity-100' : 'opacity-40'}`}/>
           </button>
-          <button className={`w-12 h-12 grid
-          bg-gradient-to-b from-zinc-300 to-zinc-400 border-zinc-400
-          ${(pathData.positionInHistory < pathData.pathHistory.length - 1) ? 
-          'hover:bg-gradient-to-b hover:from-sky-200/75 hover:to-sky-400/75 hover:border-sky-600/75' : 'pointer-events-none'}  
-          border-solid border-2 border-l rounded-r-lg`}
+
+          <button className={`w-8 h-8 ml-1 grid
+          ${(pathData.positionInHistory < (pathData.pathHistory.length - 1)) ? '' : 'button-inactive'}`}
           onClick={handleNextPath}>
-            <img src='/icons/chevron-right.svg' alt='next' width='28' 
-            className={`place-self-center ${(pathData.positionInHistory < pathData.pathHistory.length - 1) ? 'opacity-100' : 'opacity-30'}`}/>
+            <ChevronRight className={`place-self-center h-5 w-5
+            ${(pathData.positionInHistory < (pathData.pathHistory.length - 1)) ? 'opacity-100' : 'opacity-40'}`}/>
           </button>
 
-          <div className='mx-4 border-solid border-l-2 border-zinc-800'></div>
+          <Box className='separator-vertical' />
 
-          <button className='w-12 h-12 grid
-          bg-gradient-to-b from-zinc-300 to-zinc-400 border-zinc-400
-          hover:bg-gradient-to-b hover:from-sky-200/75 hover:to-sky-400/75 hover:border-sky-600/75
-          border-solid border-2 border-r rounded-l-lg'
+          <button className={`w-8 h-8 grid
+          ${(settingsData.type === 'grid') && 'bg-white/10'}`}
           onClick={handleGridView}>
-            <img src='/icons/grid.svg' alt='prev' width='28' className='place-self-center'/>
+            <Grid className={`place-self-center h-5 w-5`} />
           </button>
-          <button className='w-12 h-12 grid
-          bg-gradient-to-b from-zinc-300 to-zinc-400 border-zinc-400
-          hover:bg-gradient-to-b hover:from-sky-200/75 hover:to-sky-400/75 hover:border-sky-600/75
-          border-solid border-2 border-l rounded-r-lg'
+          <button className={`w-8 h-8 grid ml-1
+          ${(settingsData.type === 'list') && 'bg-white/10'}`}
           onClick={handleListView}>
-            <img src='/icons/list-ul.svg' alt='next' width='28' className='place-self-center'/>          
+            <ListUl className={`place-self-center h-5 w-5`} />      
           </button>
 
-          <div className='mx-4 border-solid border-l-2 border-zinc-800'></div>
+          <Box className='separator-vertical' />
+        </Box> 
 
-        </div>
+        <Box className='w-full h-8 relative'>
 
-        <div className='w-full h-12 px-4 bg-white flex text-left text-neutral-800
-          bg-gradient-to-b from-zinc-300 to-zinc-400 border-zinc-400
-          border-solid border-2 rounded-lg'>
-            <textarea className='w-full h-8 place-self-center outline-none resize-none
-            bg-transparent'
+          <Box className={`w-full h-8 flex absolute
+          transition-all duration-300
+          ${isEditingPath ? 'opacity-100' : 'opacity-0' }`}>
+            <FolderTwo className='mt-2 ml-2 h-4 w-4' />
+            <input className={`w-full -ml-6 pl-7 pr-2 place-self-center
+            outline-none resize-none
+            bg-black/20 border-sky-300/20 focus:bg-black/20 focus:border-sky-300/20 rounded-lg`}   
             name='path'
-            value={inputData}
-            onChange={e => setInputData(e.target.value)}
-            onBlur={setPath}
-            onFocus={savePreviousPath}
-            onKeyDown={(event) => { if (event.code === 'Enter') { event.target.blur(); } }}>
-            </textarea> 
-            <p className={`w-64 text-right place-self-center transition-all duration-500
-            ${showingMessage ? 'opacity-100': 'opacity-0'}`}>
-            {'' + message}  
+            value={inputValue}
+            onChange={handleOnPathChange}
+            onBlur={handleOnPathBlur}
+            onFocus={handleOnPathFocus}
+            onKeyDown={handleOnPathKeyDown} />
+          </Box>
+
+          <Box className={`w-full h-8 px-2 flex 
+          transition-all duration-300
+          ${isEditingPath ? 'opacity-0' : 'opacity-100' }`}>
+            <ChevronRight className='mt-2 h-4 w-4' />
+            <p className='h-8 ml-1'>
+              {getCurrentFolderName()}
             </p>
-        </div>
+          </Box>
+ 
+        </Box>
 
-        <div className='mx-4 border-solid border-l-2 border-zinc-800'></div>
+        <Box className='separator-vertical' />
 
-        <div className='ml-auto flex'>
-          <div className='w-[302px] h-12 pl-4 flex text-left
-          bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800
-          border-solid border-2 border-r rounded-l-lg outline-none'>
+        <Box className='ml-auto flex pl-2'>
+          <Box className='mr-2'>
             <p className='place-self-center'>{userData.login}</p>
-          </div>
-          <button className='w-12 h-12 grid
-          bg-gradient-to-b from-neutral-700 to-neutral-800 border-neutral-800
-          hover:bg-gradient-to-b hover:from-sky-200/75 hover:to-sky-400/60 hover:border-sky-600/75
-          border-solid border-2 border-l rounded-r-lg outline-none'
+          </Box>
+          <button className='w-8 h-8 grid'
           onClick={logOut}>
-            <img src='/icons/box-arrow-right.svg' alt='logout' width='28' className='place-self-center'/>
+            <BoxArrowRight className='place-self-center h-5 w-5' />
           </button >    
-        </div>
+        </Box>
         
-    </div>
+    </Box>
   );
 }

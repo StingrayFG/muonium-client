@@ -1,11 +1,11 @@
 import { useRef, useContext } from 'react';
 
-import { CutCopyPasteContext } from 'contexts/CutCopyPasteContext.jsx';
+import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 export default function TrashFileContextMenu ({ point }) {
   const contextMenuContext = useContext(ContextMenuContext);
-  const cutCopyPasteContext = useContext(CutCopyPasteContext);
+  const clipboardContext = useContext(ClipboardContext);
 
   const windowWidth = useRef(window.innerWidth).current;
   const windowHeight = useRef(window.innerHeight).current;
@@ -26,14 +26,14 @@ export default function TrashFileContextMenu ({ point }) {
     onMouseLeave={() => { contextMenuContext.setIsHoveredOverMenu(false) }}>
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.recoverClickedElements}>
+      onClick={clipboardContext.recoverClickedElements}>
         <img src='/icons/arrow-clockwise.svg' alt='recover' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Recover</p>
       </button>
 
       <button className='w-full h-10 px-2 flex text-left 
       hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={cutCopyPasteContext.deleteClickedElements}>
+      onClick={clipboardContext.deleteClickedElements}>
         <img src='/icons/trash.svg' alt='delete' width='20' className='place-self-center'/>
         <p className='ml-2 place-self-center'>Delete</p>
       </button>

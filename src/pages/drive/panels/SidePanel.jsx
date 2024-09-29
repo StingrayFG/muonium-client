@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Box } from '@mui/material';
 
 import { moveToNew } from 'state/slices/PathSlice';
 import { getBookmarks } from 'state/slices/BookmarkSlice';
@@ -37,38 +38,31 @@ export default function SidePanel () {
   })
 
   return (
-    <div className='w-96 max-h-full overflow-y-auto scrollbar scrollbar-thumb-zinc-300 scrollbar-corner-zinc-300 scrollbar-track-transparent
-    border-solid border-r-2 border-zinc-800
-    text-2xl font-semibold font-sans text-neutral-200'>
-      <div className='w-full h-12 px-3 flex text-left text-zinc-400 select-none pointer-events-none'
+    <Box className='w-64 max-h-full overflow-y-auto scrollbar scrollbar-thumb-zinc-300 scrollbar-corner-zinc-300 scrollbar-track-transparent
+    border-r border-sky-300/20'>
+      <Box className='w-full h-8 px-2 flex 
+      opacity-50
+      select-none pointer-events-none'
       onClick={() => {moveToUuid('home')}}>
         <p className='place-self-center'>Places</p>
-      </div>
+      </Box>
 
-      <button className='w-full h-12 px-3 flex text-left 
-      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={() => {moveToUuid('home')}}>
-        <img src='/icons/house.svg' alt='home' width='28' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>Home</p>
-      </button>
+      <BookmarkElement bookmark={{ folder: { uuid: 'home', name:'Home' } }}/>
 
-      <button className='w-full h-12 px-3 flex text-left 
-      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={() => {moveToUuid('trash')}}>
-        <img src='/icons/trash.svg' alt='trash' width='28' className='place-self-center mt-1'/>
-        <p className='ml-2 place-self-center'>Trash</p>
-      </button>
+      <BookmarkElement bookmark={{ folder: { uuid: 'trash', name:'Trash' } }}/>
 
-      <div className='w-full h-12 mt-4 px-3 flex text-left text-zinc-400 select-none pointer-events-none'
+      <Box className='w-full h-8 px-2 flex 
+      opacity-50
+      select-none pointer-events-none'
       onClick={() => {moveToUuid('home')}}>
         <p className='place-self-center'>Bookmarks</p>
-      </div>
+      </Box>
 
       {bookmarks && <>
         {bookmarks.map((bookmark) => (
           <BookmarkElement key={bookmark.uuid} bookmark={bookmark}/>
         ))}
       </>}
-    </div>
+    </Box>
   );
 }
