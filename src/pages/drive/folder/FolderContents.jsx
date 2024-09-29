@@ -23,7 +23,7 @@ export default function FolderContents ({ children }) {
         <FolderElement />
       )}
 
-      {folderContext.currentFolder && <>
+      {folderContext.currentFolder.uuid && <>
         {folderContext.currentFolder.files.map((file) => (
           <FileElement key={file.uuid} file={file}/>
         ))}

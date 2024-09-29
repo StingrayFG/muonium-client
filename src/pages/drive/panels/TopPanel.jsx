@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { clearUser } from 'state/slices/UserSlice';
 import { setAbsolutePath, moveToNew, moveToNext, moveToPrevious } from 'state/slices/PathSlice';
 import { setType } from 'state/slices/SettingsSlice';
+
+import { FolderContext } from 'contexts/FolderContext.jsx';
 
 import FolderService from 'services/FolderService.jsx';
 
@@ -26,10 +27,7 @@ export default function TopPanel () {
   const pathData = useSelector(state => state.path);
   const settingsData = useSelector(state => state.settings);
 
-  const logOut = () => {
-    dispatch(clearUser());
-    navigate('/login');
-  };
+  const folderContext = useContext(FolderContext);
 
   const handleGridView = () => {
     dispatch(setType('grid'));
@@ -203,7 +201,7 @@ export default function TopPanel () {
             <p className='place-self-center'>{userData.login}</p>
           </Box>
           <button className='w-8 h-8 grid'
-          onClick={logOut}>
+          onClick={folderContext.handleLogout}>
             <BoxArrowRight className='place-self-center h-5 w-5' />
           </button >    
         </Box>
