@@ -20,14 +20,12 @@ export default function LoginPage() {
     <Box className='w-full h-dvh grid
     transition-all duration-300'>
 
-      <BackgroundOverlay />
-
       <Box className={`w-fit p-4 place-self-center
       transition-all duration-300 animate-fadein-custom
       border-solid border-2 rounded-md
       ${isAwaitingNavigation? 'opacity-0' : 'opacity-100'}`}>
         <p className='text-2xl font-semibold'>
-          {'Welcome to Muonium'}
+          {'Welcome to muonium'}
         </p>
 
         <p className='mt-2'>
@@ -45,7 +43,6 @@ export default function LoginPage() {
             <LinkBoxIcon className='mt-1.5'/>
           </a>      
         </p> 
-
       </Box>
 
     </Box>  
