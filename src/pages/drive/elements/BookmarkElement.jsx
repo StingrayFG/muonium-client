@@ -98,16 +98,20 @@ export default function BookmarkElement ({ bookmark }) {
   // RENDER
   if (bookmark) {
     return (
-      <button className={`w-full h-8 px-2 flex text-left
+      <button className={`w-full h-8 px-2 flex 
       ${getButtonStyle()}`}
       onMouseDown={handleOnMouseDown}
       onMouseEnter={handleOnMouseEnter}
       onMouseLeave={handleOnMouseLeave}
       onContextMenu={handleOnContextMenu}>
 
-        {getIcon()}
+        <Box className='shrink-0'>
+          {getIcon()}
+        </Box>
+        
 
-        <p className='ml-2 place-self-center'>
+        <p className='ml-2 place-self-center
+        text-left text-ellipsis overflow-hidden'>
           { bookmark.folder.name + (bookmark.folder.isRemoved ? ' (in trash)' : '') }
         </p>
 
