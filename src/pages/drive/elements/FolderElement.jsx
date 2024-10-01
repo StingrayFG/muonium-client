@@ -1,7 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Box } from '@mui/material';
+import TextareaAutosize from 'react-textarea-autosize';
 
-import { moveToNew, requestUpdate } from 'state/slices/PathSlice';
+import { moveToNew } from 'state/slices/PathSlice';
 
 import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
@@ -9,182 +11,240 @@ import { FolderContext } from 'contexts/FolderContext.jsx';
 
 import FolderService from 'services/FolderService.jsx';
 
-export default function FolderElement ({ folder }) {
-  const contextMenuContext = useContext(ContextMenuContext);
-  const clipboardContext = useContext(ClipboardContext);
-  const folderContext = useContext(FolderContext);
-  
+import { ReactComponent as Folder } from 'assets/icons/folder.svg'
+
+
+export default function FolderElement ({ folder, index, reorderFolders }) {
   const dispatch = useDispatch();
+
   const userData = useSelector(state => state.user);
   const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
   const settingsData = useSelector(state => state.settings);
 
-  if (!folder) { folder = { uuid: '', name: '', parentUuid: folderContext.currentFolder.uuid } }
+  const nameRef = useRef({});
+  const elementRef = useRef({});
+
+  const contextMenuContext = useContext(ContextMenuContext);
+  const clipboardContext = useContext(ClipboardContext);
+  const folderContext = useContext(FolderContext);
+
+  if (!folder) { 
+    folder = { 
+      uuid: '', 
+      name: '', 
+      parentUuid: folderContext.currentFolder.uuid 
+    } 
+  }
 
   const [previousName, setPreviousName] = useState('');
-  const [inputData, setInputData] = useState(folder.name);
-  const [requiresNameSaving, setRequiresNameSaving] = useState(false);
+  const [nameInputValue, setNameInputValue] = useState(folder.name);
+  const [isNamingDelayed, setIsNamingDelayed] = useState(false);
 
-  const savePreviousName = (event) => {
+
+  // HANDLERS
+  const handleOnNameFocus = (event) => {
+    setIsNamingDelayed(true);
     setPreviousName(event.target.value);
+    event.currentTarget.setSelectionRange(
+      event.currentTarget.value.length,
+      event.currentTarget.value.length
+    )
   }
 
-  const handleKeyOnInput = (event) => {
-    if (event.code === 'Enter') { event.target.blur(); }
-    else if (event.code === 'Escape') { 
-      setInputData(previousName);
+  const handleOnNameBlur = async () => {
+    if (nameInputValue && (nameInputValue != previousName)) {
+      if (clipboardContext.isCreatingFolder) {
+        await FolderService.handleCreate(userData, driveData, { ...folder, name: nameInputValue })
+        .then(() => {
+          //dispatch(requestUpdate());
+          reorderFolders(folder, index);
+          clipboardContext.setIsCreatingFolder(false);
+          setTimeout(() => setIsNamingDelayed(false), 300);
+        })
+        .catch(() => {
+          clipboardContext.setIsCreatingFolder(false);
+          setTimeout(() => setIsNamingDelayed(false), 300);
+        })
+      } else {
+        await FolderService.handleRename(userData, driveData, { ...folder, name: nameInputValue })
+        .then(() => {
+          //dispatch(requestUpdate());
+          reorderFolders(folder, index);
+          clipboardContext.setIsRenaming(false);
+          setTimeout(() => setIsNamingDelayed(false), 300);
+        })
+        .catch(() => {
+          setNameInputValue(previousName);
+          clipboardContext.setIsRenaming(false);
+          setTimeout(() => setIsNamingDelayed(false), 300);
+        })
+      }
+    } else {
+      setNameInputValue(previousName);
+      clipboardContext.setIsCreatingFolder(false);
+      clipboardContext.setIsRenaming(false);
+      setTimeout(() => setIsNamingDelayed(false), 300);
+    }
+  }
+
+  const handleOnNameChange = (event) => {
+    setNameInputValue(event.target.value)
+  }
+
+  const handleNameOnKeyDown = (event) => {
+    if (event.code === 'Enter') { 
+      event.target.blur(); 
+    } else if (event.code === 'Escape') { 
+      setNameInputValue(previousName);
       event.target.blur();
     }
+
+    //event.target.style.height = nameRef.current.offsetHeight + 'px';
   }
 
-  const setName = async () => {
-    setRequiresNameSaving(true); 
+  const handleOnMouseDown = (event) => {
+    clipboardContext.handleMouseDown(event, folder);
   }
 
-  useEffect(() => {
-    if (requiresNameSaving) {
-      setRequiresNameSaving(false);
+  const handleOnMouseEnter = (event) => {
+    clipboardContext.setHoveredElement(folder);
+  }
+  
+  const handleOnMouseLeave = (event) => {
+    clipboardContext.setHoveredElement({ uuid: '' });
+  }
+  
+  const handleOnContextMenu = (event) => {
+    contextMenuContext.handleFolderContextMenuClick(event, folder);
+  }
 
-      const saveName = async () => {
-        if (inputData) {
-
-          if (clipboardContext.isCreatingFolder) {
-            await FolderService.handleCreate(userData, driveData, { name: inputData, parentUuid: folderContext.currentFolder.uuid } )
-            .then(() => {
-              clipboardContext.setIsCreatingFolder(false);
-              dispatch(requestUpdate());
-            })
-            .catch(() => {
-              clipboardContext.setIsCreatingFolder(false);
-            })
-          } else {
-            await FolderService.handleRename(userData, driveData, { uuid: folder.uuid, name: inputData })
-            .then(() => {
-              clipboardContext.setIsRenaming(false);
-              dispatch(requestUpdate());
-            })
-            .catch(() => {
-              setInputData(previousName);
-              clipboardContext.setIsRenaming(false);
-            })
-          }
-        } else {
-          setInputData(previousName);
-          clipboardContext.setIsCreatingFolder(false);
-          clipboardContext.setIsRenaming(false);
-        }
-      }
-      saveName();
-    }
-  })
-
-  const handleDoubleClick = () => {
+  const handleOnDoubleClick = () => {
     if (!folder.isRemoved) {
-      console.log(1)
       dispatch(moveToNew({ uuid: folder.uuid }));
     }
   }
   
+  // STYLES
+  const getIsClicked = () => {
+    if (clipboardContext.clickedElements.includes(folder)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  const getIsHovered = () => {
+    if (clipboardContext.hoveredElement) {
+      return clipboardContext.hoveredElement.uuid === folder.uuid;
+    } else {
+      return false;
+    }
+  }
+
+  const getIsCut = () => {
+    return clipboardData.cutElementsUuids.includes(folder.uuid);
+  }
+
+  const getIsNamingDelayed = () => {
+    if ((clipboardContext.isRenaming && clipboardContext.clickedElements.includes(folder)) || 
+    (clipboardContext.isCreatingFolder && (!folder.uuid))) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   
+  const getNameStyle = () => {
+    let res = '';
+    if (getIsNamingDelayed()) {
+      res = 'bg-sky-400/20';
+    } else {
+      if (getIsClicked()) {
+        res = 'bg-sky-400/20';
+      } else {
+        if (getIsHovered()) {
+          res = 'bg-sky-400/10';
+        }
+      } 
+    }
+    return res;
+  }
+
+  const getIconStyle = () => {
+    let res = '';
+    if (getIsClicked()) {
+      res = 'opacity-80'
+    } else {
+      if (getIsHovered()) {
+        res = 'opacity-60'
+      } else {
+        res = 'opacity-40'
+      }
+    }
+    return res;
+  }
+
+
+  // RENDER
   if (settingsData.type === 'grid') {
     return (
-      <div className={`w-full h-full px-2 pb-2 grid place-self-center
-      border-solid border-0 border-black rounded-md
-      ${((clipboardContext.clickedElements.includes(folder)) ||
-      ((clipboardContext.isRenaming) && (clipboardContext.clickedElements.includes(folder))) || 
-      ((clipboardContext.isCreatingFolder) && (!folder.uuid))) ?
-      'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
-      :
-      'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-      onMouseDown={(event) => { clipboardContext.handleMouseDown(event, folder) }}
-      onMouseEnter={() => { clipboardContext.setHoveredElement(folder) }}
-      onMouseLeave={() => { clipboardContext.setHoveredElement({ uuid: '' })}}
-      onContextMenu={(event) => { contextMenuContext.handleFolderContextMenuClick(event, folder) }}
-      onDoubleClick={handleDoubleClick}>
+      <Box className={`w-full h-full p-2 place-self-center border-box
+      transition-all duration-300
+      border-solid border-0 border-black rounded-md`}
+      onMouseDown={handleOnMouseDown}
+      onMouseEnter={handleOnMouseEnter}
+      onMouseLeave={handleOnMouseLeave}
+      onContextMenu={handleOnContextMenu}
+      onDoubleClick={handleOnDoubleClick}
+      ref={elementRef}>
   
-        <div className={`w-full h-48 -mb-3 place-self-center grid
-        border-solid border-0 border-black rounded-lg
-        ${(clipboardData.cutElementsUuids.includes(folder.uuid)) ? 'opacity-50' : 'opacity-100'}`}>
-          <img src='/icons/mu-folder.svg' alt='folder' width='200' className='place-self-center pointer-events-none select-none'/>
-        </div>
+        <Box className={`w-full
+        ${getIsCut() ? 'opacity-50' : 'opacity-100'}`}>
+          <Folder className={`w-full h-fit place-self-center 
+          transition-all duration-300
+          pointer-events-none select-none 
+          ${getIconStyle()}`}/>
+        </Box>
   
-        {(((clipboardContext.isRenaming) && (clipboardContext.clickedElements.includes(folder))) || 
-        ((clipboardContext.isCreatingFolder) && (!folder.uuid))) ? 
-        <div className='w-full h-24 grid place-self-center'>
-          <textarea className='w-full h-full place-self-center text-center outline-none resize-none
-          bg-transparent 
-          border-solid border-2 border-neutral-200 rounded-md
-          text-lg font-semibold font-sans text-neutral-200'
-          name='name'
-          value={inputData}
-          onChange={e => setInputData(e.target.value)}
-          autoFocus={true}
-          onFocus={savePreviousName}
-          onBlur={setName}
-          onKeyDown={handleKeyOnInput}>
-          </textarea> 
-        </div>
-        : 
-        <div className='w-full h-24 grid place-self-center'>
-          <p className='w-full h-full place-self-center text-center select-none
-          border-solid border-2 border-transparent
-          text-lg font-semibold font-sans text-neutral-200'>
-            {inputData}   
+
+        <Box className='w-full mt-2 place-self-center overflow-visible'>
+          <p className={`w-fit max-w-full h-full mx-auto px-1 place-self-center select-none 
+          transition-all duration-300
+          rounded-[0.3rem] overflow-hidden max-w-32
+          leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis
+          ${getNameStyle()}
+          ${isNamingDelayed ? 'bg-transparent' : ''}
+          ${getIsNamingDelayed() ? 'opacity-0' : 'opacity-100'}`}
+          ref={nameRef}>
+            {nameInputValue}   
           </p>
-        </div>
-        }
-      </div>
+
+          {(getIsNamingDelayed() || isNamingDelayed) &&
+            <TextareaAutosize className={`w-full h-full px-1 absolute
+            transition-opacity duration-300 animate-fadein-custom
+            bg-sky-400/20 
+            leading-6 text-center
+            ${getIsNamingDelayed() ? 'opacity-100' : 'opacity-0'}`}
+            style={{
+              top: (nameRef.current.offsetTop) + 'px',
+              left: (elementRef.current.offsetLeft + 8) + 'px',
+              maxWidth: (elementRef.current.offsetWidth - 16) + 'px',
+              height: nameRef.current.offsetHeight + 'px'
+            }}
+            name='name'
+            spellCheck={false}
+            autoFocus
+            value={nameInputValue}
+            onChange={handleOnNameChange}
+            onFocus={handleOnNameFocus}
+            onBlur={handleOnNameBlur}
+            onKeyDown={handleNameOnKeyDown} />
+          }
+        </Box>
+
+      </Box>
     );
-  } else if (settingsData.type === 'list') {
-    return (
-      <div className={`w-full h-16 pr-4 flex place-self-center
-      border-solid border-0 border-black rounded-md
-      ${((clipboardContext.clickedElements.includes(folder)) ||
-      ((clipboardContext.isRenaming) && (clipboardContext.clickedElements.includes(folder))) || 
-      ((clipboardContext.isCreatingFolder) && (!folder.uuid))) ?
-      'bg-gradient-to-b from-sky-200/30 to-sky-400/30'
-      :
-      'hover:bg-gradient-to-b hover:from-sky-200/15 hover:to-sky-400/15'}`}
-      onMouseDown={(event) => { clipboardContext.handleMouseDown(event, folder) }}
-      onMouseEnter={() => { clipboardContext.setHoveredElement(folder) }}
-      onMouseLeave={() => { clipboardContext.setHoveredElement({ uuid: '' })}}
-      onContextMenu={(event) => { contextMenuContext.handleFolderContextMenuClick(event, folder) }}
-      onDoubleClick={handleDoubleClick}>
-  
-        <div className={`w-16 h-16 place-self-center grid
-        border-solid border-0 border-black rounded-lg
-        ${(clipboardData.cutElementsUuids.includes(folder.uuid)) ? 'opacity-50' : 'opacity-100'}`}>
-          <img src='/icons/folder2.svg' alt='icon' width='40' className='place-self-center pointer-events-none select-none'/>
-        </div>
-  
-        {(((clipboardContext.isRenaming) && (clipboardContext.clickedElements.includes(folder))) || 
-        (clipboardContext.isCreatingFolder)) ? 
-        <div className='w-full h-16 grid place-self-center'>
-          <textarea className='w-full h-8 px-2 place-self-center text-left select-none outline-none resize-none
-          bg-transparent 
-          border-solid border-2 border-neutral-200 rounded-md
-          text-lg font-semibold font-sans text-neutral-200'
-          name='name'
-          value={inputData}
-          onChange={e => setInputData(e.target.value)}
-          autoFocus={true}
-          onFocus={savePreviousName}
-          onBlur={setName}
-          onKeyDown={handleKeyOnInput}>
-          </textarea> 
-        </div>
-        : 
-        <div className='w-full h-16 grid place-self-center'>
-          <p className='w-full h-8 px-2 place-self-center text-left select-none
-          border-solid border-2 border-transparent
-          text-lg font-semibold font-sans text-neutral-200'>
-            {inputData}   
-          </p>
-        </div>
-        }
-      </div>
-    );
-  }
+  } 
     
 }
