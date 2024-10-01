@@ -39,7 +39,8 @@ export default function SidePanel () {
   })
 
   return (
-    <Box className='w-64 max-h-full overflow-y-auto scrollbar scrollbar-thumb-zinc-300 scrollbar-corner-zinc-300 scrollbar-track-transparent
+    <Box className='w-64 max-h-full overflow-y-auto 
+    scrollbar scrollbar-sky-300/20 scrollbar-corner-sky-300/20 scrollbar-track-transparent
     border-r border-sky-300/20'>
       <Box className='w-full h-8 px-2 flex 
       opacity-50
