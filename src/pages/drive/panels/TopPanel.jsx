@@ -153,12 +153,12 @@ export default function TopPanel () {
           <Box className='separator-vertical' />
 
           <button className={`w-8 h-8 grid
-          ${(settingsData.type === 'grid') && 'bg-white/10'}`}
+          ${(settingsData.type === 'grid') && 'button-selected'}`}
           onClick={handleGridView}>
             <Grid className={`place-self-center h-5 w-5`} />
           </button>
           <button className={`w-8 h-8 grid ml-1
-          ${(settingsData.type === 'list') && 'bg-white/10'}`}
+          ${(settingsData.type === 'list') && 'button-selected'}`}
           onClick={handleListView}>
             <ListUl className={`place-self-center h-5 w-5`} />      
           </button>
