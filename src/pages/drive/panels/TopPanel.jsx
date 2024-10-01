@@ -185,7 +185,7 @@ export default function TopPanel () {
 
           <Box className={`w-full h-8 px-2 flex 
           transition-all duration-300
-          ${isEditingPath ? 'opacity-0' : 'opacity-100' }`}>
+          ${isEditingPath ? 'opacity-0 pointer-events-none' : 'opacity-100' }`}>
             <ChevronRight className='mt-2 h-4 w-4' />
             <p className='h-8 ml-1'>
               {getCurrentFolderName()}
