@@ -22,6 +22,7 @@ import ContextMenuWrap from 'pages/drive/wraps/ContextMenuWrap.jsx';
 import FolderContents from 'pages/drive/folder/FolderContents.jsx';
 
 import FolderService from 'services/FolderService.jsx'
+import ModalWrap from './wraps/ModalWrap';
 
 
 export default function DrivePanels ({ folderUuid }) {
@@ -85,7 +86,6 @@ export default function DrivePanels ({ folderUuid }) {
         navigate('/drive/folder/' + pathData.currentUuid); 
       }
     } 
-
   }, [pathData.currentUuid]);
 
   useEffect(() => {
@@ -94,9 +94,24 @@ export default function DrivePanels ({ folderUuid }) {
     }
   }, [pathData.currentUuid, driveData]);
 
-  // Hide default context menu
+
   const handleOnContextMenu = (event) => {
-    event.preventDefault()
+    event.preventDefault();
+  }
+
+  const reorderFolders = (editedFolder) => {
+    let reorderedFolders = currentFolder.folders;
+
+    reorderedFolders = reorderedFolders.filter((folder) => {
+      return (folder.uuid !== editedFolder.uuid)
+    })
+    
+    const insertTo = (reorderedFolders.findIndex((folder) => {
+      return (editedFolder.name < folder.name)
+    }))
+    reorderedFolders.splice(insertTo, 0, editedFolder);
+
+    setCurrentFolder({ ...currentFolder, folders: reorderedFolders })
   }
 
 
@@ -106,24 +121,27 @@ export default function DrivePanels ({ folderUuid }) {
       animate-fadein-custom
       ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}
         onContextMenu={handleOnContextMenu}>
-        <FolderContext.Provider value={{ currentFolder, handleLogout }}> 
-          <TopPanel />   
+        <FolderContext.Provider value={{ currentFolder, setCurrentFolder, reorderFolders, handleLogout }}> 
+          <ModalWrap>
+            
+            <TopPanel />   
 
-          <Box className='w-full h-full overflow-hidden'>
+            <Box className='w-full h-full overflow-hidden'>
               <DropzoneWrap>
                 <ClipboardWrap>
                   <ContextMenuWrap>
                     <SidePanel />
-                    <div className='flex-1 h-full'>
+                    <Box className='flex-1 h-full'>
                       <FolderContents />   
-                    </div>
-                    {/*<PropertiesPanel />*/}
+                    </Box> 
                   </ContextMenuWrap>
-                </ClipboardWrap>
+                </ClipboardWrap>   
               </DropzoneWrap>
-          </Box>
+            </Box>
 
-          <BottomPanel />
+            <BottomPanel />
+
+          </ModalWrap>
         </FolderContext.Provider>   
       </Box>
     );

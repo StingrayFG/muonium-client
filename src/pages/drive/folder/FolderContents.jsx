@@ -23,9 +23,7 @@ export default function FolderContents ({ children }) {
     setColumnsCount(Math.floor(width / defaultSize));
   }
 
-  const reorderFolders = (folder, index) => {
 
-  }
  
   useEffect(() => {
     window.addEventListener('resize', () => handleResize(window.innerWidth));
@@ -50,8 +48,8 @@ export default function FolderContents ({ children }) {
         {folderContext.currentFolder.files.map((file) => (
           <FileElement key={file.uuid} file={file}/>
         ))}
-        {folderContext.currentFolder.folders.map((folder, index) => (
-          <FolderElement key={folder.uuid} folder={folder} index={index} reorderFolders={reorderFolders}/>
+        {folderContext.currentFolder.folders.map((folder) => (
+          <FolderElement key={folder.uuid} folder={folder} />
         ))}
         </>}
     </div>    

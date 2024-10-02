@@ -8,13 +8,16 @@ import { moveToNew } from 'state/slices/PathSlice';
 import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { FolderContext } from 'contexts/FolderContext.jsx';
+import { ModalContext } from 'contexts/ModalContext.jsx';
 
 import FolderService from 'services/FolderService.jsx';
+
+import RenameModal from 'pages/drive/modals/RenameModal';
 
 import { ReactComponent as Folder } from 'assets/icons/folder.svg'
 
 
-export default function FolderElement ({ folder, index, reorderFolders }) {
+export default function FolderElement ({ folder }) {
   const dispatch = useDispatch();
 
   const userData = useSelector(state => state.user);
@@ -28,6 +31,7 @@ export default function FolderElement ({ folder, index, reorderFolders }) {
   const contextMenuContext = useContext(ContextMenuContext);
   const clipboardContext = useContext(ClipboardContext);
   const folderContext = useContext(FolderContext);
+  const modalContext = useContext(ModalContext);
 
   if (!folder) { 
     folder = { 
@@ -58,7 +62,7 @@ export default function FolderElement ({ folder, index, reorderFolders }) {
         await FolderService.handleCreate(userData, driveData, { ...folder, name: nameInputValue })
         .then(() => {
           //dispatch(requestUpdate());
-          reorderFolders(folder, index);
+          folderContext.reorderFolders({ ...folder, name: nameInputValue });
           clipboardContext.setIsCreatingFolder(false);
           setTimeout(() => setIsNamingDelayed(false), 300);
         })
@@ -70,7 +74,7 @@ export default function FolderElement ({ folder, index, reorderFolders }) {
         await FolderService.handleRename(userData, driveData, { ...folder, name: nameInputValue })
         .then(() => {
           //dispatch(requestUpdate());
-          reorderFolders(folder, index);
+          folderContext.reorderFolders({ ...folder, name: nameInputValue });
           clipboardContext.setIsRenaming(false);
           setTimeout(() => setIsNamingDelayed(false), 300);
         })
@@ -224,7 +228,7 @@ export default function FolderElement ({ folder, index, reorderFolders }) {
           {(getIsNaming() || isNamingDelayed) &&
             <TextareaAutosize className={`w-full h-full px-1 absolute
             transition-opacity 
-            bg-transparent
+            bg-transparent rounded-[0.3rem]
             leading-6 text-center
             ${isNamingDelayed && getIsNaming() ? 'opacity-100 duration-200' : 'opacity-0 duration-300'}`}
             style={{
