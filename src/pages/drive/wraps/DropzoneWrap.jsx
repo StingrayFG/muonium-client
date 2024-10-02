@@ -42,6 +42,9 @@ export default function DropzoneWrap ({ children }) {
       .then(() => {
         dispatch(requestUpdate());
       })
+      .catch(() => {
+        
+      })
       setRequiresUpload(false);
     }
   });
