@@ -9,7 +9,7 @@ export function useDelayedNavigate () {
 
   const NavigateWithDelay = (route, delay) => {
     setIsAwaitingNavigation(true);
-    setTimeout(() => {navigate(route)}, delay);
+    setTimeout(() => navigate(route), delay);
   }
 
   return [isAwaitingNavigation, NavigateWithDelay];

@@ -44,7 +44,7 @@ export default function SignupPage() {
   };
 
   useEffect(() => {
-    setTimeout(() => {setAwaitingAutofill(false)}, 300);
+    setTimeout(() => setAwaitingAutofill(false), 300);
   }, []);
 
 

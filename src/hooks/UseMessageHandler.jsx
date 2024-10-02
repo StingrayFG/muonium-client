@@ -19,7 +19,7 @@ export function useMessageHandler (presetPeriod = 1500) {
       lastShown: Date.now()
     });
     setLastUsedPeriod(period ? period : presetPeriod);
-    setTimeout(() => {hideMessage()}, period ? period : presetPeriod);
+    setTimeout(() => hideMessage(), period ? period : presetPeriod);
   }
 
   const hideMessage = () => {

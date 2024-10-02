@@ -46,7 +46,7 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
-    setTimeout(() => {setAwaitingAutofill(false)}, 300);
+    setTimeout(() => setAwaitingAutofill(false), 300);
   }, []);
 
 
