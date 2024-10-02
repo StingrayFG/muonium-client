@@ -44,7 +44,7 @@ export default function FolderElement ({ folder, index, reorderFolders }) {
 
   // HANDLERS
   const handleOnNameFocus = (event) => {
-    setIsNamingDelayed(true);
+    setTimeout(() => setIsNamingDelayed(true), 10);
     setPreviousName(event.target.value);
     event.currentTarget.setSelectionRange(
       event.currentTarget.value.length,
@@ -146,7 +146,7 @@ export default function FolderElement ({ folder, index, reorderFolders }) {
     return clipboardData.cutElementsUuids.includes(folder.uuid);
   }
 
-  const getIsNamingDelayed = () => {
+  const getIsNaming = () => {
     if ((clipboardContext.isRenaming && clipboardContext.clickedElements.includes(folder)) || 
     (clipboardContext.isCreatingFolder && (!folder.uuid))) {
       return true;
@@ -157,7 +157,7 @@ export default function FolderElement ({ folder, index, reorderFolders }) {
   
   const getNameStyle = () => {
     let res = '';
-    if (getIsNamingDelayed()) {
+    if (getIsNaming()) {
       res = 'bg-sky-400/20';
     } else {
       if (getIsClicked()) {
@@ -185,7 +185,7 @@ export default function FolderElement ({ folder, index, reorderFolders }) {
     return res;
   }
 
-
+  
   // RENDER
   if (settingsData.type === 'grid') {
     return (
@@ -209,23 +209,24 @@ export default function FolderElement ({ folder, index, reorderFolders }) {
   
 
         <Box className='w-full mt-2 place-self-center overflow-visible'>
-          <p className={`w-fit max-w-full h-full mx-auto px-1 place-self-center select-none 
+          <p className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
+          select-none pointer-events-none
           transition-all duration-300
           rounded-[0.3rem] overflow-hidden max-w-32
           leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis
           ${getNameStyle()}
-          ${isNamingDelayed ? 'bg-transparent' : ''}
-          ${getIsNamingDelayed() ? 'opacity-0' : 'opacity-100'}`}
+          ${(isNamingDelayed && getIsNaming()) ? 'bg-transparent' : ''}
+          ${getIsNaming() ? 'opacity-0' : 'opacity-100'}`}
           ref={nameRef}>
             {nameInputValue}   
           </p>
 
-          {(getIsNamingDelayed() || isNamingDelayed) &&
+          {(getIsNaming() || isNamingDelayed) &&
             <TextareaAutosize className={`w-full h-full px-1 absolute
-            transition-opacity duration-300 animate-fadein-custom
-            bg-sky-400/20 
+            transition-opacity 
+            bg-transparent
             leading-6 text-center
-            ${getIsNamingDelayed() ? 'opacity-100' : 'opacity-0'}`}
+            ${isNamingDelayed && getIsNaming() ? 'opacity-100 duration-200' : 'opacity-0 duration-300'}`}
             style={{
               top: (nameRef.current.offsetTop) + 'px',
               left: (elementRef.current.offsetLeft + 8) + 'px',
@@ -235,6 +236,7 @@ export default function FolderElement ({ folder, index, reorderFolders }) {
             name='name'
             spellCheck={false}
             autoFocus
+            minRows={1}
             value={nameInputValue}
             onChange={handleOnNameChange}
             onFocus={handleOnNameFocus}

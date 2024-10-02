@@ -15,7 +15,7 @@ export default function FolderContents ({ children }) {
   const settingsData = useSelector(state => state.settings);
 
 
-  const defaultSize = 270;
+  const defaultSize = 200;
   const windowRef = useRef(window.innerWidth);
   const [columnsCount, setColumnsCount] = useState(Math.floor(windowRef.current/ defaultSize));
 

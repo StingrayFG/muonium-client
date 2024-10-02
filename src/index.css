@@ -194,7 +194,9 @@ textarea:focus {
   -webkit-box-orient: vertical;
 }
 
-
+::selection {
+  background-color: rgba(56, 189, 248, 0.4); /*sky-400*/
+}
 
 .animate-spin-custom {
   --fromDeg: 0deg;

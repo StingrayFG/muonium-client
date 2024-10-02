@@ -107,10 +107,12 @@ export default function ContextMenuWrap ({ children }) {
     event.preventDefault();
     event.stopPropagation();
     clipboardContext.handleMouseUp(event);
-    
+  };
+
+  const handleMouseDown = (event) => {
     if (event.button === 0) {
-      if (((isContextMenu && !isHoveredOverMenu && !clipboardContext.hoveredElement.uuid)) || 
-      (!clipboardContext.hoveredElement.uuid && !isHoveredOverMenu && !clipboardContext.isDraggingElement)) {
+      if ((isContextMenu && !isHoveredOverMenu && !clipboardContext.hoveredElement.uuid) || 
+      (!clipboardContext.isDraggingElement && !isHoveredOverMenu && !clipboardContext.hoveredElement.uuid)) {
         clipboardContext.clearClickedElements();  
       }
 
@@ -137,6 +139,7 @@ export default function ContextMenuWrap ({ children }) {
   return (
     <div className='w-full h-full flex'
     onMouseUp={handleMouseUp}
+    onMouseDown={handleMouseDown}
     onContextMenu={handleDefaultContextMenuClick}>
       <ContextMenuContext.Provider value={{ handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick,
         isHoveredOverMenu, setIsHoveredOverMenu }}> 
