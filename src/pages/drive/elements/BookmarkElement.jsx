@@ -108,7 +108,6 @@ export default function BookmarkElement ({ bookmark }) {
         <Box className='shrink-0'>
           {getIcon()}
         </Box>
-        
 
         <p className='ml-2 place-self-center
         text-left text-ellipsis overflow-hidden'>

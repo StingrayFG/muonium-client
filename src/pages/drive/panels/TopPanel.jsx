@@ -137,14 +137,14 @@ export default function TopPanel () {
 
         <Box className='flex'>
           <button className={`w-8 h-8 grid
-          ${(pathData.positionInHistory > 0) ? '' : 'button-inactive'}`}
+          ${(pathData.positionInHistory > 0) ? 'button-small' : 'button-small-inactive'}`}
           onClick={handlePreviousPath}>
             <ChevronLeft className={`place-self-center h-5 w-5
             ${(pathData.positionInHistory > 0) ? 'opacity-100' : 'opacity-40'}`}/>
           </button>
 
           <button className={`w-8 h-8 ml-1 grid
-          ${(pathData.positionInHistory < (pathData.pathHistory.length - 1)) ? '' : 'button-inactive'}`}
+          ${(pathData.positionInHistory < (pathData.pathHistory.length - 1)) ? 'button-small' : 'button-small-inactive'}`}
           onClick={handleNextPath}>
             <ChevronRight className={`place-self-center h-5 w-5
             ${(pathData.positionInHistory < (pathData.pathHistory.length - 1)) ? 'opacity-100' : 'opacity-40'}`}/>
@@ -152,13 +152,13 @@ export default function TopPanel () {
 
           <Box className='separator-vertical' />
 
-          <button className={`w-8 h-8 grid
-          ${(settingsData.type === 'grid') && 'button-selected'}`}
+          <button className={`w-8 h-8 grid 
+          ${(settingsData.type === 'grid') ? 'button-small-selected' : 'button-small'}`}
           onClick={handleGridView}>
             <Grid className={`place-self-center h-5 w-5`} />
           </button>
           <button className={`w-8 h-8 grid ml-1
-          ${(settingsData.type === 'list') && 'button-selected'}`}
+          ${(settingsData.type === 'list') ? 'button-small-selected' : 'button-small'}`}
           onClick={handleListView}>
             <ListUl className={`place-self-center h-5 w-5`} />      
           </button>
@@ -196,11 +196,11 @@ export default function TopPanel () {
 
         <Box className='separator-vertical' />
 
-        <Box className='ml-auto flex pl-2'>
-          <Box className='mr-2'>
+        <Box className='ml-auto flex'>
+          <Box className='mr-4 ml-2'>
             <p className='place-self-center'>{userData.login}</p>
           </Box>
-          <button className='w-8 h-8 grid'
+          <button className='w-16 h-8 grid'
           onClick={folderContext.handleLogout}>
             <BoxArrowRight className='place-self-center h-5 w-5' />
           </button >    

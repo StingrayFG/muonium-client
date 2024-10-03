@@ -20,43 +20,122 @@ export default function SignupPage() {
   const [isAwaitingNavigation, NavigateWithDelay] = useDelayedNavigate();
   const [messageData, showMessage] = useMessageHandler(1500);
 
-  const [shallMoveInputLabelsData, setShallMoveInputLabelsData] = useState({
+  const [shallMoveInputLabels, setShallMoveInputLabels] = useState({
     login: false,
     password: false,
     confirmpassword: false
+  });
+
+  const [formData, setFormData] = useState({
+    login: { value: '', shallMoveLabel: false, isCorrect: true },
+    password: { value: '', shallMoveLabel: false, isCorrect: true },
+    confirmpassword: { value: '', shallMoveLabel: false, isCorrect: true }
   });
   const [awaitingAutofill, setAwaitingAutofill] = useState(true);
 
   const [isLoading, setIsLoading] = useState(false);
 
+
+  // NAVIGATION
   useEffect(() => {
     if (userData && !isLoading) {
       navigate('/drive');
     }
   }, []);
 
-  const updateInputLabel = (event) => {
-    if((!event.target.value) && (event.type === 'blur')) {
-      setShallMoveInputLabelsData({ ...shallMoveInputLabelsData, [event.target.name]: false })
-    } else {
-      setShallMoveInputLabelsData({ ...shallMoveInputLabelsData, [event.target.name]: true })
-    }
+  const goToLoginPage = () => {
+    NavigateWithDelay('/login', 500)
   };
 
+
+  // FORM
   useEffect(() => {
     setTimeout(() => setAwaitingAutofill(false), 300);
   }, []);
 
 
+  const updateInputLabel = (event) => {
+    if((!event.target.value) && (event.type === 'blur')) {
+      setFormData({ 
+        ...formData, 
+        [event.target.name]: {
+          value: event.target.value,
+          shallMoveLabel: false,
+          isCorrect: true
+        } 
+      })
+    } else if (event.target.name === 'login') {
+      if (event.target.value.length < 4) {
+        setFormData({ 
+          ...formData, 
+          [event.target.name]: {
+            value: event.target.value,
+            shallMoveLabel: true,
+            isCorrect: false,
+          }
+        })
+      } else {
+        setFormData({  
+          ...formData, 
+          [event.target.name]: {
+            value: event.target.value,
+            shallMoveLabel: true,
+            isCorrect: true,
+          }
+        })      
+      }
+    } else if (event.target.name === 'password') {
+      if (event.target.value.length < 8) {
+        setFormData({ 
+          ...formData, 
+          [event.target.name]: {
+            value: event.target.value,
+            shallMoveLabel: true,
+            isCorrect: false,
+          },
+          confirmpassword: {
+            ...formData.confirmpassword,
+            isCorrect: event.target.value === formData.confirmpassword.value,
+          } 
+        })
+      } else {
+        setFormData({ 
+          ...formData, 
+          [event.target.name]: {
+            value: event.target.value,
+            shallMoveLabel: true,
+            isCorrect: true,
+          },
+          confirmpassword: {
+            ...formData.confirmpassword,
+            isCorrect: event.target.value === formData.confirmpassword.value,
+          } 
+        })
+      }
+    } else if (event.target.name === 'confirmpassword') {
+      setFormData({ 
+        ...formData, 
+        [event.target.name]: {
+          value: event.target.value,
+          shallMoveLabel: true,
+          isCorrect: event.target.value === formData.password.value,
+          message: 'Does not match'
+        } 
+      })
+    }
+  };
+
+  const getIsFormCorrect = () => {
+    return ((formData.login.isCorrect === true) && 
+    (formData.password.isCorrect === true) && 
+    (formData.confirmpassword.isCorrect === true));
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = {login: event.target.elements.login.value, password: event.target.elements.password.value}
 
-    if (!data.login || !data.password) {
-      //showMessage('Please enter correct data');
-    } else if (data.password !== event.target.elements.confirmpassword.value) {
-      showMessage('Passwords do not match')
-    } else {
+    if (getIsFormCorrect()) {
       setIsLoading(true);
       await dispatch(signupUser(data))
       .then(res => {
@@ -77,63 +156,79 @@ export default function SignupPage() {
     }
   };
 
-  const goToLoginPage = () => {
-    NavigateWithDelay('/login', 500)
-  };
 
-
+  // RENDER
   return (
     <Box className='w-full h-dvh grid place-content-center'>
 
-      <Box className={`max-w-[480px] w-full grid 
+      <Box className={`max-w-[360px] w-full px-4 h-full grid place-items-center overflow-hidden
       animate-fadein-custom
       ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}>
 
-        <Box className='mx-auto -mt-6'>
-          <MuoniumSpinner size={120} shallSpin={isLoading}/>    
-        </Box>
+        <MuoniumSpinner size={100} shallSpin={isLoading}/>    
         
-        <form className='w-full -mt-6 px-4 py-4 grid'
+        <form className='w-full -mt-2 grid relative'
         onSubmit={handleSubmit} 
         onChange={updateInputLabel}
         onFocus={updateInputLabel}
         onBlur={updateInputLabel}>
 
           <Box>
-            <p className={`h-6 absolute pointer-events-none 
+            <p className={`absolute pointer-events-none
             ${awaitingAutofill ? '' : 'transition-all duration-300'}
-            ${shallMoveInputLabelsData.login ? 'mt-4 font-semibold' : 'mt-14 ml-4 opacity-50'}`}>Login</p>
+            ${formData.login.shallMoveLabel ? 'font-semibold' : 'mt-8 ml-2 opacity-50'}`}>{'Login'}</p>
 
-            <input className='w-full h-12 px-4 mt-12'
+            <p className={`absolute pointer-events-none right-0
+            transition-all duration-300
+            text-rose-500
+            ${formData.login.isCorrect ? 'opacity-0' : 'opacity-100'}`}>{'At least 4 characters'}</p>
+
+            <input className='w-full px-2 mt-8'
               name='login'
               type='text'/>
 
-            <p className={`h-6 absolute pointer-events-none 
-            ${awaitingAutofill ? '' : 'transition-all duration-300'}
-            ${shallMoveInputLabelsData.password ? 'mt-4 font-semibold' : 'mt-14 ml-4 opacity-50'}`}>Password</p>
 
-            <input className='w-full h-12 px-4 mt-12'
+            <p className={`absolute pointer-events-none 
+            ${awaitingAutofill ? '' : 'transition-all duration-300'}
+            ${formData.password.shallMoveLabel ? 'font-semibold' : 'mt-8 ml-2 opacity-50'}`}>{'Password'}</p>
+
+            <p className={`absolute pointer-events-none right-0
+            transition-all duration-300
+            text-rose-500
+            ${formData.password.isCorrect ? 'opacity-0' : 'opacity-100'}`}>{'At least 8 characters'}</p>
+
+            <input className='w-full px-2 mt-8'
               name='password'
               type='password'/>
 
-            <p className={`h-6 absolute pointer-events-none 
-            ${awaitingAutofill ? '' : 'transition-all duration-300'}
-            ${shallMoveInputLabelsData.confirmpassword ? 'mt-4 font-semibold' : 'mt-14 ml-4 opacity-50'}`}>Confirm password</p>
 
-            <input className='w-full h-12 px-4 mt-12'
+            <p className={`absolute pointer-events-none 
+            ${awaitingAutofill ? '' : 'transition-all duration-300'}
+            ${formData.confirmpassword.shallMoveLabel ? 'font-semibold' : 'mt-8 ml-2 opacity-50'}`}>{'Confirm password'}</p>
+
+            <p className={`absolute pointer-events-none right-0
+            transition-all duration-300
+            text-rose-500
+            ${formData.confirmpassword.isCorrect ? 'opacity-0' : 'opacity-100'}`}>{'Does not match'}</p>
+
+            <input className='w-full px-2 mt-8'
               name='confirmpassword'
               type='password' />
           </Box>
           
-          <button className='w-full h-12 mt-12 grid text-neutral-200
-          bg-sky-300/10 hover:bg-sky-300/20 border-0'>
-            <p className='place-self-center font-semibold'>Continue</p>
+          <button className={`w-full h-8 mt-8 text-neutral-200
+          ${getIsFormCorrect() ? '' : 'button-inactive' }`}>
+            <p className={`transition-all duration-300
+            font-semibold
+            ${getIsFormCorrect() ? 'opacity-100' : 'opacity-40' }`}>
+              {'Continue'}
+            </p>
           </button >
 
           <Box className='flex place-self-center mt-2'>
-            <p>Already registered?</p>
+            <p>{'Already registered?'}</p>
             <Link className='place-self-center ml-2' onClick={goToLoginPage}>
-              Login
+              {'Login'}
             </Link>
           </Box>
 
@@ -144,7 +239,6 @@ export default function SignupPage() {
           {messageData.message ?  messageData.message : '_'}
         </p>              
       </Box>
-
       
     </Box>  
   );

@@ -23,32 +23,89 @@ export default function LoginPage() {
   const [isAwaitingNavigation, NavigateWithDelay] = useDelayedNavigate();
   const [messageData, showMessage] = useMessageHandler(1500);
 
-  const [shallMoveInputLabelsData, setShallMoveInputLabelsData] = useState({
-    login: false,
-    password: false
+  const [formData, setFormData] = useState({
+    login: { value: '', shallMoveLabel: false, isCorrect: false },
+    password: { value: '', shallMoveLabel: false, isCorrect: false }
   });
   const [awaitingAutofill, setAwaitingAutofill] = useState(true);
 
   const [isLoading, setIsLoading] = useState(false);
 
+
+  // NAVIGATION
   useEffect(() => {
     if (userData && !isLoading) {
       navigate('/drive');
     }
   }, []);
-
-  const updateInputLabel = (event) => {
-    if((!event.target.value) && (event.type === 'blur')) {
-      setShallMoveInputLabelsData({ ...shallMoveInputLabelsData, [event.target.name]: false })
-    } else {
-      setShallMoveInputLabelsData({ ...shallMoveInputLabelsData, [event.target.name]: true })
-    }
+  
+  const goToSignupPage = () => {
+    NavigateWithDelay('/signup', 500)
   };
 
+
+  // FORM
   useEffect(() => {
     setTimeout(() => setAwaitingAutofill(false), 300);
   }, []);
 
+  const updateInputLabel = (event) => {
+    if((!event.target.value) && (event.type === 'blur')) {
+      setFormData({ 
+        ...formData, 
+        [event.target.name]: {
+          value: event.target.value,
+          shallMoveLabel: false,
+          isCorrect: true
+        } 
+      })
+    } else if (event.target.name === 'login') {
+      if (event.target.value.length < 4) {
+        setFormData({ 
+          ...formData, 
+          [event.target.name]: {
+            value: event.target.value,
+            shallMoveLabel: true,
+            isCorrect: false,
+          }
+        })
+      } else {
+        setFormData({  
+          ...formData, 
+          [event.target.name]: {
+            value: event.target.value,
+            shallMoveLabel: true,
+            isCorrect: true,
+          }
+        })      
+      }
+    } else if (event.target.name === 'password') {
+      if (event.target.value.length < 8) {
+        setFormData({ 
+          ...formData, 
+          [event.target.name]: {
+            value: event.target.value,
+            shallMoveLabel: true,
+            isCorrect: false,
+          },
+        })
+      } else {
+        setFormData({ 
+          ...formData, 
+          [event.target.name]: {
+            value: event.target.value,
+            shallMoveLabel: true,
+            isCorrect: true,
+          },
+        })
+      }
+    }
+  };
+
+  const getIsFormCorrect = () => {
+    return ((formData.login.isCorrect === true) && 
+    (formData.password.isCorrect === true));
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -57,7 +114,6 @@ export default function LoginPage() {
       //showMessage('Please enter correct data');
     } else {
       setIsLoading(true);
-      //setTimeout(() => {setIsLoading(false)}, 500 + 500 * Math.random());
       await dispatch(loginUser(data))
       .then(res => {
         if (res.type === 'user/login/rejected') {
@@ -80,55 +136,56 @@ export default function LoginPage() {
     }    
   };
 
-  const goToSignupPage = () => {
-    NavigateWithDelay('/signup', 500)
-  };
 
-
+  // RENDER
   return (
     <Box className='w-full h-dvh grid place-content-center'>
 
-      <Box className={`max-w-[480px] w-full grid 
+      <Box className={`max-w-[360px] w-full px-4 h-full grid place-items-center overflow-hidden
       animate-fadein-custom
       ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}>
 
-        <Box className='mx-auto -mt-6 h-[120px]'>
-            <MuoniumSpinner size={120} shallSpin={isLoading}/>
-        </Box>
+        <MuoniumSpinner size={100} shallSpin={isLoading}/>
         
-        <form className='w-full -mt-6 px-4 py-4 grid'
+        <form className='w-full -mt-2 grid relative'
         onSubmit={handleSubmit} 
         onChange={updateInputLabel}
         onFocus={updateInputLabel}
         onBlur={updateInputLabel}>
 
           <Box>
-            <p className={`h-6 absolute pointer-events-none 
+            <p className={`absolute pointer-events-none
             ${awaitingAutofill ? '' : 'transition-all duration-300'}
-            ${shallMoveInputLabelsData.login ? 'mt-4 font-semibold' : 'mt-14 ml-4 opacity-50'}`}>Login</p>
+            ${formData.login.shallMoveLabel ? 'font-semibold' : 'mt-8 ml-2 opacity-50'}`}>{'Login'}</p>
 
-            <input className='w-full h-12 px-4 mt-12'
+            <input className='w-full px-2 mt-8'
               name='login'
               type='text'/>
 
-            <p className={`h-6 absolute pointer-events-none 
-            ${awaitingAutofill ? '' : 'transition-all duration-300'}
-            ${shallMoveInputLabelsData.password ? 'mt-4 font-semibold' : 'mt-14 ml-4 opacity-50'}`}>Password</p>
 
-            <input className='w-full h-12 px-4 mt-12'
+            <p className={`absolute pointer-events-none 
+            ${awaitingAutofill ? '' : 'transition-all duration-300'}
+            ${formData.password.shallMoveLabel ? 'font-semibold' : 'mt-8 ml-2 opacity-50'}`}>{'Password'}</p>
+
+            <input className='w-full px-2 mt-8'
               name='password'
               type='password'/>
+
           </Box>
           
-          <button className='w-full h-12 mt-12 grid text-neutral-200
-          bg-sky-300/10 hover:bg-sky-300/20 border-0'>
-            <p className='place-self-center font-semibold'>Continue</p>
+          <button className={`w-full h-8 mt-8 text-neutral-200
+          ${getIsFormCorrect() ? '' : 'button-inactive' }`}>
+            <p className={`transition-all duration-300
+            font-semibold
+            ${getIsFormCorrect() ? 'opacity-100' : 'opacity-40' }`}>
+              {'Continue'}
+            </p>
           </button >
 
           <Box className='flex place-self-center mt-2'>
-            <p>New here?</p>
+            <p>{'New here?'}</p>
             <Link className='place-self-center ml-2' onClick={goToSignupPage}>
-              Create an account
+              {'Create an account'}
             </Link>
           </Box>
 
