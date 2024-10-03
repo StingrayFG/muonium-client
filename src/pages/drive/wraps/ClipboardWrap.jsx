@@ -233,7 +233,7 @@ export default function ClipboardWrap ({ children }) {
     if (event.button === 0) {
       setIsDraggingElement(false);
       setIsHoldingElement(false);
-      if (hoveredElement.uuid && (!clickedElements.includes(hoveredElement)) && (hoveredElement.type === 'folder') && isDraggingElement) {
+      if (hoveredElement.uuid && (!clickedElements.includes(hoveredElement)) && (hoveredElement.type === 'folder') && isDraggingElement && !isRenaming && !isCreatingFolder) {
         setDoesRequireMove(true);
       }
     }

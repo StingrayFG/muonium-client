@@ -23,8 +23,6 @@ export default function FolderContents ({ children }) {
     setColumnsCount(Math.floor(width / defaultSize));
   }
 
-
- 
   useEffect(() => {
     window.addEventListener('resize', () => handleResize(window.innerWidth));
     return () => window.removeEventListener('resize', handleResize);
@@ -34,7 +32,7 @@ export default function FolderContents ({ children }) {
   return (
     <div className={`scrollbar scrollbar-sky-300/20 scrollbar-corner-sky-300/20 scrollbar-track-transparent
     ${settingsData.type === 'grid' && 
-    'w-full max-h-full grid gap-2 p-2 overflow-y-auto'}
+    'w-full max-h-full grid overflow-y-auto'}
     ${settingsData.type === 'list' && 'grid p-2 gap-2 '}`}
     style={{
       gridTemplateColumns: `repeat(${columnsCount}, minmax(0, 1fr))`
