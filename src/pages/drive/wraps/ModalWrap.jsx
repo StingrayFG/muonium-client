@@ -11,8 +11,14 @@ export default function ModalWrap ({ children }) {
 
 
   const [awaitingOpenModal, setAwaitingOpenModal] = useState({});
-  const openModal = (newComponent, newClosesOnClick = false, newHasCloseButton = false) => {
-    setAwaitingOpenModal({ isOpen: true, component: newComponent, closesOnClick: newClosesOnClick, hasCloseButton: newHasCloseButton })
+  const openModal = (component, options={}) => {
+    if (modalStates.length === 0) {
+      setAwaitingOpenModal({ 
+        isOpen: true, 
+        component, 
+        doesCloseOnClickOutside: options.doesCloseOnClickOutside ? options.doesCloseOnClickOutside : false, 
+        hasCloseButton: options.hasCloseButton ? options.hasCloseButton : false });
+    }
   }
   useEffect(() => {
     if (Object.keys(awaitingOpenModal).length > 0) {
@@ -23,8 +29,12 @@ export default function ModalWrap ({ children }) {
 
 
   const [awaitingOpenNextModal, setAwaitingOpenNextModal] = useState({});
-  const openNextModal = (newComponent, newClosesOnClick = false, newHasCloseButton = false) => {
-    setAwaitingOpenNextModal({ isOpen: true, component: newComponent, closesOnClick: newClosesOnClick, hasCloseButton: newHasCloseButton });
+  const openNextModal = (component, options={}) => {
+    setAwaitingOpenNextModal({ 
+      isOpen: true, 
+      component, 
+      doesCloseOnClickOutside: options.doesCloseOnClickOutside ? options.doesCloseOnClickOutside : false, 
+      hasCloseButton: options.hasCloseButton ? options.hasCloseButton : false });
   }
   useEffect(() => {
     if (Object.keys(awaitingOpenNextModal).length > 0) {
@@ -73,7 +83,7 @@ export default function ModalWrap ({ children }) {
         setModalStates([...modalStates.slice(0, -1), { ...modalStates[modalStates.length - 1], isOpen: false }]);
         setTimeout(() => {
           setModalStates(modalStates.slice(0, -1))     
-        }, 300);
+        }, 250);
       } else {
         setModalStates([{...modalStates[0], isOpen: false}])
         setTimeout(() => {
@@ -91,8 +101,8 @@ export default function ModalWrap ({ children }) {
     }
   }
 
-  const closeOnClick = (event) => {
-    if ((getTopModal().closesOnClick) && (event.currentTarget === event.target)) {
+  const closeOnClickOutside = (event) => {
+    if ((getTopModal().doesCloseOnClickOutside) && (event.currentTarget === event.target)) {
       closeNextModal();
     }
   }
@@ -113,21 +123,25 @@ export default function ModalWrap ({ children }) {
     }
   }
 
+  const getIsVisible = (modal, index) => {
+    return ((index === modalStates.length - 1) && modal.isOpen) || (modalStates.length === 1);
+  }
+
+  
   return (
     <ModalContext.Provider value={{ openModal, openNextModal, closeModal, closeNextModal }}>
 
-      <Box className={`z-20 w-full h-dvh grid overflow-hidden fixed
+      <Box className={`z-20 w-full h-dvh grid place-items-center overflow-hidden fixed
       transition-opacity duration-500
-      bg-black/80
+      bg-black/90
       ${getBottomModal().isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-      onClick={closeOnClick}>
+      onClick={closeOnClickOutside}>
         {(modalStates.length > 0) && <>
           {modalStates.map((modal, index) => (
-            <Box className={`w-full max-h-full place-self-center grid absolute
+            <Box className={`absolute grid
             transition-all duration-500
-            ${((index === modalStates.length - 1) && modal.isOpen) ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
-            key={'modal-' + index}
-            onClick={closeOnClick}>
+            ${getIsVisible(modal, index) ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
+            key={'modal-' + index}>
               {modal.component && modal.component}
             </Box>)
           )}
@@ -135,9 +149,12 @@ export default function ModalWrap ({ children }) {
 
         {getTopModal().hasCloseButton && 
           <button className='h-12 w-12 absolute top-0 right-0 grid place-content-center
-          hover:opacity-50'
+          hover:opacity-50 hover:bg-transparent bg-transparent'
           onClick={closeOnButton}>
-            <XLg className='w-5 h-5'/>
+            <Box className='h-8 w-8 m-2 grid
+            rounded-full bg-black/40'>
+              <XLg className='w-5 h-5 place-self-center'/>
+            </Box>      
           </button>
         }
       </Box>

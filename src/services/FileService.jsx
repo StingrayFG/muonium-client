@@ -18,6 +18,21 @@ const FileService = {
     }) 
   },    
 
+  handleGetImageLink: async (userData, driveData, fileData) => {
+    return new Promise( async function(resolve, reject) {  
+      const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
+      const body = { userData, driveData, fileData };
+
+      await axios.post(process.env.REACT_APP_BACKEND_URL + '/file/download', body, { headers })
+      .then(res => {
+        resolve(process.env.REACT_APP_BACKEND_URL + '/file/download/' + fileData.uuid + '/' + res.data.downloadToken);
+      })
+      .catch(err => {
+        reject(err);
+      }); 
+    }) 
+  },
+
   handleDownload: async (userData, driveData, fileData) => {
     return new Promise( async function(resolve, reject) {  
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
