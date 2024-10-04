@@ -2,18 +2,13 @@ import React, { useState, useContext } from 'react';
 import { Box } from '@mui/material';
 import TextareaAutosize from 'react-textarea-autosize';
 
+import { ModalContext } from 'contexts/ModalContext';
+
 
 export default function RenameModal ({ name, setName, stopNaming, usedNames }) {
-  const [nameInputValue, setNameInputValue] = useState(name);
+  const modalContext = useContext(ModalContext);
 
-  const handleOnKeyDown = (event) => {
-    if (event.code === 'Enter') { 
-      event.preventDefault();
-      setName();
-    } else if (event.code === 'Escape') { 
-      stopNaming();
-    }
-  }
+  const [nameInputValue, setNameInputValue] = useState(name);
 
   const handleOnNameChange = (event) => {
     setNameInputValue(event.target.value)
@@ -34,11 +29,21 @@ export default function RenameModal ({ name, setName, stopNaming, usedNames }) {
 
   const handleCancel = () => {
     stopNaming();
+    modalContext.closeNextModal();
+  }
+
+  const handleOnKeyDown = (event) => {
+    if (event.code === 'Enter') { 
+      event.preventDefault();
+      handleConfirm();
+    } else if (event.code === 'Escape') { 
+      handleCancel();
+    }
   }
 
 
   return(
-    <Box className='w-full max-w-[360px] px-4 place-self-center'
+    <Box className='w-full max-w-[360px] px-4'
     onKeyDown={handleOnKeyDown}>
       <p className='font-semibold'>
         {'Enter the new name'}

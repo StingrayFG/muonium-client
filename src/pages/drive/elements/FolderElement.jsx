@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
-import TextareaAutosize from 'react-textarea-autosize';
 
 import { moveToNew } from 'state/slices/PathSlice';
 
@@ -86,7 +85,6 @@ export default function FolderElement ({ folder }) {
   }, [getIsCreating(), getIsRenaming()])
 
   const stopNaming = () => {
-    modalContext.closeModal();
     clipboardContext.setIsCreatingFolder(false);
     clipboardContext.setIsRenaming(false);
   }
