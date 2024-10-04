@@ -18,6 +18,8 @@ body {
 
 
 
+
+/*COMMON*/
 p {
   color: rgb(229 229 229); /*neutral-200*/
 }
@@ -43,7 +45,7 @@ input {
 
   border-style: solid;
   border-width: 1px;
-  border-radius: 0.5rem; /* 8px */
+  border-radius: 0.3rem; /* 8px */
 }
 
 input:-webkit-autofill,
@@ -109,7 +111,6 @@ button:active {
 }
 
 
-
 .button-small {
   background-color: transparent;
   transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -157,7 +158,6 @@ button:active {
   border-color: transparent;
   background-color: transparent;
 }
-
 
 
 .button-option {
@@ -210,7 +210,6 @@ button:active {
 }
 
 
-
 textarea {
   border-radius: 0.3rem;
   color: rgb(229 229 229); /*neutral-200*/
@@ -221,6 +220,10 @@ textarea:focus {
   color: rgb(229 229 229); /*neutral-200*/
 }
 
+
+
+
+/*CUSTOM*/
 .separator-vertical {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -244,10 +247,18 @@ textarea:focus {
   -webkit-box-orient: vertical;
 }
 
+.aspect-4-3 {
+  aspect-ratio: 4 / 3;
+}
+
 ::selection {
   background-color: rgba(56, 189, 248, 0.4); /*sky-400*/
 }
 
+
+
+
+/*ANIMATIONS*/
 .animate-spin-custom {
   --fromDeg: 0deg;
   --toDeg: 360deg;
