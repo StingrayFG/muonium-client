@@ -37,17 +37,17 @@ export default function LoginPage() {
     if (userData && !isLoading) {
       navigate('/drive');
     }
-  }, []);
+  }, [])
   
   const goToSignupPage = () => {
     NavigateWithDelay('/signup', 500)
-  };
+  }
 
 
   // FORM
   useEffect(() => {
     setTimeout(() => setAwaitingAutofill(false), 300);
-  }, []);
+  }, [])
 
   const updateInputLabel = (event) => {
     if((!event.target.value) && (event.type === 'blur')) {
@@ -100,7 +100,7 @@ export default function LoginPage() {
         })
       }
     }
-  };
+  }
 
   const getIsFormCorrect = () => {
     return ((formData.login.isCorrect === true) && 
@@ -134,7 +134,7 @@ export default function LoginPage() {
         }
       })
     }    
-  };
+  }
 
 
   // RENDER
