@@ -191,7 +191,9 @@ export default function LoginPage() {
 
         </form>     
 
-        <p className={`mt-4 place-self-center transition-all duration-300 text-rose-500
+        <p className={`h-16 mt-0
+        transition-all duration-300 
+        text-rose-500 text-center
         ${messageData.isShowing ? 'opacity-100': 'opacity-0'}`}>
           {messageData.message ?  messageData.message : '_'}
         </p>            
