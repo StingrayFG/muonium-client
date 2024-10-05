@@ -15,7 +15,7 @@ import { ReactComponent as ChevronRight } from 'assets/icons/chevron-right.svg'
 import { ReactComponent as Grid } from 'assets/icons/grid.svg'
 import { ReactComponent as ListUl } from 'assets/icons/list-ul.svg'
 import { ReactComponent as BoxArrowRight } from 'assets/icons/box-arrow-right.svg'
-import { ReactComponent as FolderTwo } from 'assets/icons/folder2.svg'
+import { ReactComponent as FolderTwo } from 'assets/icons/elements/bootstrap/folder2.svg'
 
 
 export default function TopPanel () {

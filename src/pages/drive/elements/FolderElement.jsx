@@ -13,7 +13,7 @@ import FolderService from 'services/FolderService.jsx';
 
 import RenameModal from 'pages/drive/modals/RenameModal';
 
-import { ReactComponent as Folder } from 'assets/icons/folder.svg'
+import { ReactComponent as Folder } from 'assets/icons/elements/muonium/folder.svg'
 
 
 export default function FolderElement ({ folder }) {
@@ -195,7 +195,7 @@ export default function FolderElement ({ folder }) {
         onContextMenu={handleOnContextMenu}
         onKeyDown={handleOnKeyDown}
         onDoubleClick={handleOnDoubleClick}>
-          <Folder className={`w-full h-fit place-self-center 
+          <Folder className={`w-full h-full place-self-center 
           transition-all duration-300
           pointer-events-none select-none 
           ${getIconStyle()}`}/>

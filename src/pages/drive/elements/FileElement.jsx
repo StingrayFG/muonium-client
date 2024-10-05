@@ -11,8 +11,7 @@ import FileService from 'services/FileService.jsx';
 
 import RenameModal from 'pages/drive/modals/RenameModal';
 import ImageModal from 'pages/drive//modals/ImageModal';
-
-import { ReactComponent as Folder } from 'assets/icons/folder.svg'
+import FileElementIcon from 'pages/drive/elements/FileElementIcon';
 
 
 export default function FileElement ({ file }) {
@@ -28,15 +27,7 @@ export default function FileElement ({ file }) {
   const folderContext = useContext(FolderContext);
   const modalContext = useContext(ModalContext);
 
-  if (!file) { 
-    file = { 
-      uuid: '', 
-      name: '', 
-      parentUuid: folderContext.currentFile.uuid 
-    } 
-  }
 
-  
   // GETS
   const getIsHovered = () => {
     if (clipboardContext.hoveredElement) {
@@ -82,31 +73,17 @@ export default function FileElement ({ file }) {
 
   const handleNaming = async (name) => {
     if (name && (name !== file.name)) {
-      if (clipboardContext.isCreatingFile) {
-        await FileService.handleCreate(userData, driveData, { ...file, name: name })
-        .then(() => {
-          folderContext.reorderFiles({ ...file, name: name });
-          clipboardContext.setIsCreatingFile(false);
-          modalContext.closeModal();
-        })
-        .catch(() => {
-          clipboardContext.setIsCreatingFile(false);
-          modalContext.closeModal();
-        })
-      } else {
-        await FileService.handleRename(userData, driveData, { ...file, name: name })
-        .then(() => {
-          folderContext.reorderFiles({ ...file, name: name });
-          clipboardContext.setIsRenaming(false);
-          modalContext.closeModal();
-        })
-        .catch(() => {
-          clipboardContext.setIsRenaming(false);
-          modalContext.closeModal();
-        })
-      }
+      await FileService.handleRename(userData, driveData, { ...file, name: name })
+      .then(() => {
+        folderContext.reorderFiles({ ...file, name: name });
+        clipboardContext.setIsRenaming(false);
+        modalContext.closeModal();
+      })
+      .catch(() => {
+        clipboardContext.setIsRenaming(false);
+        modalContext.closeModal();
+      })
     } else {
-      clipboardContext.setIsCreatingFile(false);
       clipboardContext.setIsRenaming(false);
       modalContext.closeModal();
     }
@@ -131,11 +108,13 @@ export default function FileElement ({ file }) {
   }
   
   const handleOnContextMenu = (event) => {
-    contextMenuContext.handleFolderContextMenuClick(event, file);
+    contextMenuContext.handleFileContextMenuClick(event, file);
   }
 
   const handleOnDoubleClick = () => {
-    modalContext.openModal(<ImageModal file={file} />);
+    if (file.thumbnail) {
+      modalContext.openModal(<ImageModal file={file} />);
+    }
   }
   
 
@@ -170,6 +149,16 @@ export default function FileElement ({ file }) {
     return res;
   }
 
+  const getImageStyle = () => { // File icon bg opacity = 0.4
+    let res = '';
+    if (getIsCut()) {
+      res = 'opacity-50'
+    } else {
+      res = 'opacity-100'
+    }  
+    return res;
+  }
+
   
   // RENDER
   if (settingsData.type === 'grid') {
@@ -185,13 +174,17 @@ export default function FileElement ({ file }) {
         onKeyDown={handleOnKeyDown}
         onDoubleClick={handleOnDoubleClick}>
           {file.thumbnail ? 
-            <img className='w-full h-full object-contain'
+            <img className={`w-full h-full object-contain 
+            transition-all duration-300
+            ${getImageStyle()}`}
             src={'data:image/png;base64,' + file.thumbnail} />
             :
-            <Folder className={`w-full h-fit place-self-center 
+            <Box className={`w-full h-full place-self-center 
             transition-all duration-300
             pointer-events-none select-none 
-            ${getIconStyle()}`}/>
+            ${getIconStyle()}`}>
+              <FileElementIcon file={file}/>
+            </Box>
           }
         </Box>
   

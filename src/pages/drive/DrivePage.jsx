@@ -15,7 +15,6 @@ import { FolderContext } from 'contexts/FolderContext';
 import TopPanel from 'pages/drive/panels/TopPanel.jsx';
 import BottomPanel from 'pages/drive/panels/BottomPanel.jsx';
 import SidePanel from 'pages/drive/panels/SidePanel.jsx';
-import PropertiesPanel from 'pages/drive/panels/PropertiesPanel.jsx';
 import DropzoneWrap from 'pages/drive/wraps/DropzoneWrap.jsx';
 import ClipboardWrap from 'pages/drive/wraps/ClipboardWrap.jsx';
 import ContextMenuWrap from 'pages/drive/wraps/ContextMenuWrap.jsx';
