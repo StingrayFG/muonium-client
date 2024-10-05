@@ -21,15 +21,6 @@ export default function BookmarkElement ({ bookmark }) {
 
 
   // HANDLERS
-  const handleClick = (event) => {
-    if (event.button === 0) {   
-      clipboardContext.clearClickedElements();
-      if (!bookmark.folder.isRemoved) { 
-        dispatch(moveToNew({ uuid: bookmark.folder.uuid })); 
-      }
-    }
-  }
-
   const handleOnMouseDown = (event) => {
     if (event.button === 0) {   
       clipboardContext.clearClickedElements();
@@ -53,13 +44,15 @@ export default function BookmarkElement ({ bookmark }) {
   
     
   // STYLES
+  const iconStyle = 'h-5 w-5 mt-[6px]';
+
   const getIcon = () => {
     if (bookmark.folder.uuid === 'home') {
-      return <House className='h-5 w-5 mt-[7px]'/>
+      return <House className={iconStyle}/>
     } else if (bookmark.folder.uuid === 'trash') {
-      return <Trash className='h-5 w-5 mt-[7px]'/>
+      return <Trash className={iconStyle}/>
     } else {
-      return <Box className='h-5 w-5 mt-[7px]'/>
+      return <Box className={iconStyle}/>
     }
   }
 
@@ -84,12 +77,12 @@ export default function BookmarkElement ({ bookmark }) {
 
   const getButtonStyle = () => {
     if (getIsActive()) {
-      return 'button-option-active';
+      return 'button-sidebar-active';
     } else {
       if (getIsSelected()) {
-        return 'button-option-selected';
+        return 'button-sidebar-selected';
       } else {
-        return 'button-option';
+        return 'button-sidebar';
       }
     }
   }

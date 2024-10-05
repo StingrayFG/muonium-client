@@ -122,7 +122,7 @@ export default function FileElement ({ file }) {
   const getNameStyle = () => {
     let res = '';
     if (getIsClicked()) {
-      res = 'bg-sky-400/20';
+      res = 'bg-sky-400/20 duration-0';
     } else {
       if (getIsHovered()) {
         res = 'bg-sky-400/10';
@@ -134,10 +134,10 @@ export default function FileElement ({ file }) {
   const getIconStyle = () => { // File icon bg opacity = 0.4
     let res = '';
     if (getIsCut()) {
-      res = 'opacity-25'
+      res = 'opacity-25 duration-0'
     } else {
       if (getIsClicked()) {
-        res = 'opacity-100'
+        res = 'opacity-100 duration-0'
       } else {
         if (getIsHovered()) {
           res = 'opacity-75'
@@ -161,52 +161,54 @@ export default function FileElement ({ file }) {
 
   
   // RENDER
-  if (settingsData.type === 'grid') {
-    return (
-      <Box className={`w-full h-full p-4 place-self-center border-box
-      transition-all duration-300`}>
-  
-        <Box className={`w-full aspect-4-3 grid`}
-        onMouseDown={handleOnMouseDown}
-        onMouseEnter={handleOnMouseEnter}
-        onMouseLeave={handleOnMouseLeave}
-        onContextMenu={handleOnContextMenu}
-        onKeyDown={handleOnKeyDown}
-        onDoubleClick={handleOnDoubleClick}>
-          {file.thumbnail ? 
-            <img className={`w-full h-full object-contain 
+  if (file) {
+    if (settingsData.type === 'grid') {
+      return (
+        <Box className={`w-full h-full p-4 place-self-center border-box
+        transition-all duration-300`}>
+    
+          <Box className={`w-full aspect-4-3 grid`}
+          onMouseDown={handleOnMouseDown}
+          onMouseEnter={handleOnMouseEnter}
+          onMouseLeave={handleOnMouseLeave}
+          onContextMenu={handleOnContextMenu}
+          onKeyDown={handleOnKeyDown}
+          onDoubleClick={handleOnDoubleClick}>
+            {file.thumbnail ? 
+              <img className={`w-full h-full object-contain 
+              transition-all duration-300
+              ${getImageStyle()}`}
+              src={'data:image/png;base64,' + file.thumbnail} />
+              :
+              <Box className={`w-full h-full place-self-center 
+              transition-all duration-300
+              pointer-events-none select-none 
+              ${getIconStyle()}`}>
+                <FileElementIcon file={file}/>
+              </Box>
+            }
+          </Box>
+    
+          <Box className='w-full pt-2 place-self-center overflow-visible'
+          onMouseDown={handleOnMouseDown}
+          onMouseEnter={handleOnMouseEnter}
+          onMouseLeave={handleOnMouseLeave}
+          onContextMenu={handleOnContextMenu}
+          onKeyDown={handleOnKeyDown}
+          onDoubleClick={handleOnDoubleClick}>
+            <p className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
+            select-none pointer-events-none
             transition-all duration-300
-            ${getImageStyle()}`}
-            src={'data:image/png;base64,' + file.thumbnail} />
-            :
-            <Box className={`w-full h-full place-self-center 
-            transition-all duration-300
-            pointer-events-none select-none 
-            ${getIconStyle()}`}>
-              <FileElementIcon file={file}/>
-            </Box>
-          }
-        </Box>
-  
-        <Box className='w-full pt-2 place-self-center overflow-visible'
-        onMouseDown={handleOnMouseDown}
-        onMouseEnter={handleOnMouseEnter}
-        onMouseLeave={handleOnMouseLeave}
-        onContextMenu={handleOnContextMenu}
-        onKeyDown={handleOnKeyDown}
-        onDoubleClick={handleOnDoubleClick}>
-          <p className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
-          select-none pointer-events-none
-          transition-all duration-300
-          rounded-[0.3rem] overflow-hidden max-w-32
-          leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis
-          ${getNameStyle()}`}>
-            {file.name}   
-          </p>
-        </Box>
+            rounded-[0.3rem] overflow-hidden max-w-32
+            leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis
+            ${getNameStyle()}`}>
+              {file.name}   
+            </p>
+          </Box>
 
-      </Box>
-    );
-  } 
+        </Box>
+      );
+    } 
+  }
     
 }

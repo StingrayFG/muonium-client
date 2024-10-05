@@ -1,86 +1,49 @@
-import { useRef, useContext } from 'react';
+import { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
-import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import { createBookmark, deleteBookmark } from 'state/slices/BookmarkSlice';
 
+import CommonContextMenu from 'pages/drive/menus/CommonContextMenu';
+
+
+
 export default function FolderContextMenu ({ point, folder }) {
-  const contextMenuContext = useContext(ContextMenuContext);
   const clipboardContext = useContext(ClipboardContext);
 
   const dispatch = useDispatch();
   const userData = useSelector(state => state.user);
   const bookmarkData = useSelector(state => state.bookmark);
 
-  const handleCreateBookmark = () => {
-    dispatch(createBookmark({ userData, folderData: folder }));
-    clipboardContext.setDoesRequireMenuClosure(true);
-  }
 
-  const handleDeleteBookmark = () => {
-    dispatch(deleteBookmark({ userData, folderData: folder }));
-    clipboardContext.setDoesRequireMenuClosure(true);
-  }
-  
-  const windowWidth = useRef(window.innerWidth).current;
-  const windowHeight = useRef(window.innerHeight).current;
+  const options = bookmarkData.bookmarkedFoldersUuids.includes(folder?.uuid) ?  
+  [ 
+    { text: 'Remove from places', icon: 'remove-bookmark', handleOnClick: () => {
+      dispatch(deleteBookmark({ userData, folderData: folder }));
+      clipboardContext.setShallContextMenuClose(true);
+    }},
+    'line',
+    { text: 'Cut', icon: 'cut', handleOnClick: clipboardContext.cutClickedElements },
+    { text: 'Rename', icon: 'rename', handleOnClick: () => clipboardContext.setIsRenaming(true) },
+    'line',
+    { text: 'Move to trash', icon: 'trash', handleOnClick: clipboardContext.removeClickedElements },
+  ] 
+  : 
+  [
+    { text: 'Add to places', icon: 'add-bookmark', handleOnClick: () => {
+      dispatch(createBookmark({ userData, folderData: folder }));
+      clipboardContext.setShallContextMenuClose(true);
+    }},
+    'line',
+    { text: 'Cut', icon: 'cut', handleOnClick: clipboardContext.cutClickedElements },
+    { text: 'Rename', icon: 'rename', handleOnClick: () => clipboardContext.setIsRenaming(true) },
+    'line',
+    { text: 'Move to trash', icon: 'trash', handleOnClick: clipboardContext.removeClickedElements },
+  ]
 
-  const menuWidth = 240;
-  const menuHeight = 4 + 40 * 5 + 2 * 2;
-  
-  if (point.x + menuWidth > windowWidth) { point.x -= menuWidth; }
-  if (point.y + menuHeight > windowHeight) { point.y -= menuHeight; }
 
   return (
-    <div className='w-60
-    bg-gradient-to-b from-zinc-600 to-zinc-700 
-    border-solid border-2 border-zinc-800 rounded-md
-    text-lg font-semibold font-sans text-neutral-200' 
-    style={{position: 'absolute', top: point.y, left: point.x}}
-    onMouseEnter={() => { contextMenuContext.setIsHoveredOverMenu(true) }}
-    onMouseLeave={() => { contextMenuContext.setIsHoveredOverMenu(false) }}>
-      {bookmarkData.bookmarkedFoldersUuids.includes(folder.uuid) ? 
-        <button className='w-full h-10 px-2 flex text-left 
-        hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-        onClick={handleDeleteBookmark}>
-          <img src='/icons/star-fill.svg' alt='remove' width='20' className='place-self-center'/>
-          <p className='ml-2 place-self-center'>Remove bookmark</p>
-        </button>
-        :
-        <button className='w-full h-10 px-2 flex text-left 
-        hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-        onClick={handleCreateBookmark}>
-          <img src='/icons/star.svg' alt='add' width='20' className='place-self-center'/>
-          <p className='ml-2 place-self-center'>Add bookmark</p>
-        </button>    
-      }
-
-      <div className='mx-1 border-solid border-t-2 border-zinc-800'></div>
-
-      <button className='w-full h-10 px-2 flex text-left 
-      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={clipboardContext.cutClickedElements}>
-        <img src='/icons/clipboard-x.svg' alt='cut' width='20' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>Cut</p>
-      </button>
-
-      <div className='mx-1 border-solid border-t-2 border-zinc-800'></div>
-
-      <button className='w-full h-10 px-2 flex text-left 
-      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={() => { clipboardContext.setIsRenaming(true) }}>
-        <img src='/icons/pencil.svg' alt='rename' width='20' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>Rename</p>
-      </button>
-
-      <button className='w-full h-10 px-2 flex text-left 
-      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={clipboardContext.removeClickedElements}>
-        <img src='/icons/trash.svg' alt='trash' width='20' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>Move to trash</p>
-      </button>
-    </div>    
+    <CommonContextMenu options={options} point={point}/>  
   );
 };

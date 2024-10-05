@@ -6,7 +6,7 @@ export const createBookmark = createAsyncThunk(
   async ({ userData, folderData }, thunkAPI) => {
     const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
     const body = { userData, folderData };
-    console.log(body)
+
     const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/bookmark/create', body, { headers })
     return(res.data);  
   },

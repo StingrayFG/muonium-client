@@ -154,7 +154,7 @@ export default function FolderElement ({ folder }) {
   const getNameStyle = () => {
     let res = '';
     if (getIsClicked()) {
-      res = 'bg-sky-400/20';
+      res = 'bg-sky-400/20 duration-0';
     } else {
       if (getIsHovered()) {
         res = 'bg-sky-400/10';
@@ -166,10 +166,10 @@ export default function FolderElement ({ folder }) {
   const getIconStyle = () => { // Folder icon bg opacity = 0.4
     let res = '';
     if (getIsCut()) {
-      res = 'opacity-25'
+      res = 'opacity-25 duration-0'
     } else {
       if (getIsClicked()) {
-        res = 'opacity-100'
+        res = 'opacity-100 duration-0'
       } else {
         if (getIsHovered()) {
           res = 'opacity-75'
@@ -183,43 +183,45 @@ export default function FolderElement ({ folder }) {
 
   
   // RENDER
-  if (settingsData.type === 'grid') {
-    return (
-      <Box className={`w-full h-full p-4 place-self-center border-box
-      transition-all duration-300`}>
-  
-        <Box className={`w-full`}
-        onMouseDown={handleOnMouseDown}
-        onMouseEnter={handleOnMouseEnter}
-        onMouseLeave={handleOnMouseLeave}
-        onContextMenu={handleOnContextMenu}
-        onKeyDown={handleOnKeyDown}
-        onDoubleClick={handleOnDoubleClick}>
-          <Folder className={`w-full h-full place-self-center 
-          transition-all duration-300
-          pointer-events-none select-none 
-          ${getIconStyle()}`}/>
-        </Box>
-  
-        <Box className='w-full pt-2 place-self-center overflow-visible'
-        onMouseDown={handleOnMouseDown}
-        onMouseEnter={handleOnMouseEnter}
-        onMouseLeave={handleOnMouseLeave}
-        onContextMenu={handleOnContextMenu}
-        onKeyDown={handleOnKeyDown}
-        onDoubleClick={handleOnDoubleClick}>
-          <p className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
-          select-none pointer-events-none
-          transition-all duration-300
-          rounded-[0.3rem] overflow-hidden max-w-32
-          leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis
-          ${getNameStyle()}`}>
-            {folder.name}   
-          </p>
-        </Box>
+  if (folder) {
+    if (settingsData.type === 'grid') {
+      return (
+        <Box className={`w-full h-full p-4 place-self-center border-box
+        transition-all duration-300`}>
+    
+          <Box className={`w-full`}
+          onMouseDown={handleOnMouseDown}
+          onMouseEnter={handleOnMouseEnter}
+          onMouseLeave={handleOnMouseLeave}
+          onContextMenu={handleOnContextMenu}
+          onKeyDown={handleOnKeyDown}
+          onDoubleClick={handleOnDoubleClick}>
+            <Folder className={`w-full h-full place-self-center 
+            transition-all duration-300
+            pointer-events-none select-none 
+            ${getIconStyle()}`}/>
+          </Box>
+    
+          <Box className='w-full pt-2 place-self-center overflow-visible'
+          onMouseDown={handleOnMouseDown}
+          onMouseEnter={handleOnMouseEnter}
+          onMouseLeave={handleOnMouseLeave}
+          onContextMenu={handleOnContextMenu}
+          onKeyDown={handleOnKeyDown}
+          onDoubleClick={handleOnDoubleClick}>
+            <p className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
+            select-none pointer-events-none
+            transition-all duration-300
+            rounded-[0.3rem] overflow-hidden max-w-32
+            leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis
+            ${getNameStyle()}`}>
+              {folder.name}   
+            </p>
+          </Box>
 
-      </Box>
-    );
-  } 
+        </Box>
+      );
+    } 
+  }
     
 }

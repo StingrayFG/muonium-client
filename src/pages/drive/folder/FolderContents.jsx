@@ -28,7 +28,7 @@ export default function FolderContents ({ children }) {
     return () => window.removeEventListener('resize', handleResize);
   }, [])
 
-
+  
   return (
     <div className={`scrollbar scrollbar-sky-300/20 scrollbar-corner-sky-300/20 scrollbar-track-transparent
     ${settingsData.type === 'grid' && 

@@ -29,7 +29,7 @@ export default function ClipboardWrap ({ children }) {
   const [isDraggingElement, setIsDraggingElement] = useState(false);
 
   const [doesRequireMove, setDoesRequireMove] = useState(false);
-  const [doesRequireMenuClosure, setDoesRequireMenuClosure] = useState(false);
+  const [shallContextMenuClose, setShallContextMenuClose] = useState(false);
 
   const [mousePointInitial, setMousePointInitial] = useState({ x: 0, y: 0 });
   const [containerPoint, setContainerPoint] = useState({ x: 0, y: 0 });
@@ -64,7 +64,7 @@ export default function ClipboardWrap ({ children }) {
     for await (const element of clickedElements) {
       await FileService.handleDownload(userData, driveData, element)
     }
-    setDoesRequireMenuClosure(true);
+    setShallContextMenuClose(true);
   }
 
   const removeClickedElements = async () => {
@@ -80,7 +80,7 @@ export default function ClipboardWrap ({ children }) {
         })
       }
     }
-    setDoesRequireMenuClosure(true);
+    setShallContextMenuClose(true);
   }
 
   const recoverClickedElements = async () => {
@@ -96,7 +96,7 @@ export default function ClipboardWrap ({ children }) {
         })
       }
     }
-    setDoesRequireMenuClosure(true);
+    setShallContextMenuClose(true);
   }
 
   const deleteClickedElements = async () => {
@@ -111,18 +111,18 @@ export default function ClipboardWrap ({ children }) {
         dispatch(deleteBookmark({ userData, folderData: clickedElements[0].folder }));
       }
     }
-    setDoesRequireMenuClosure(true);
+    setShallContextMenuClose(true);
   }
   
   // Clipboard
   const copyClickedElements = () => {
     dispatch(setCopy({ originUuid: folderContext.currentFolder.uuid, elements: clickedElements }));
-    setDoesRequireMenuClosure(true);
+    setShallContextMenuClose(true);
   };
 
   const cutClickedElements = () => {
     dispatch(setCut({ originUuid: folderContext.currentFolder.uuid, elements: clickedElements }));
-    setDoesRequireMenuClosure(true);
+    setShallContextMenuClose(true);
   };
 
   const pasteClickedElements = async () => {
@@ -145,7 +145,7 @@ export default function ClipboardWrap ({ children }) {
       }
     }
     dispatch(setPaste());
-    setDoesRequireMenuClosure(true);
+    setShallContextMenuClose(true);
   };
 
   const clearClipboardElements = async () => {
@@ -177,12 +177,12 @@ export default function ClipboardWrap ({ children }) {
 
   const customSetRenaming = (v) => {
     setIsRenaming(v);
-    setDoesRequireMenuClosure(true);
+    setShallContextMenuClose(true);
   }
 
   const customSetCreatingFolder = (v) => {
     setIsCreatingFolder(v);
-    setDoesRequireMenuClosure(true);
+    setShallContextMenuClose(true);
   }
 
   const windowWidth = useRef(window.innerWidth).current;
@@ -258,7 +258,7 @@ export default function ClipboardWrap ({ children }) {
         isDraggingElement,
         handleMouseDown, handleMouseUp,
         isRenaming, setIsRenaming: customSetRenaming, isCreatingFolder, setIsCreatingFolder: customSetCreatingFolder,
-        doesRequireMenuClosure, setDoesRequireMenuClosure}}>
+        shallContextMenuClose, setShallContextMenuClose}}>
         {isDraggingElement && 
           <div className='bg-gradient-to-b from-sky-200/45 to-sky-400/45 rounded-md' 
           style={{ position: 'absolute', top: containerPoint.y, left: containerPoint.x, width: draggedElementSize.y, height: draggedElementSize.x }}>

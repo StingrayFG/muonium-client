@@ -1,53 +1,32 @@
-import { useRef, useContext } from 'react';
+import { useContext } from 'react';
+import { useSelector } from 'react-redux';
 
 import { DropzoneContext } from 'contexts/DropzoneContext';
 import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
-import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
-export default function DefaultContextMenu ({ point }) {
+import CommonContextMenu from 'pages/drive/menus/CommonContextMenu';
+
+
+export default function DefaultContextMenu () {
   const dropzoneContext = useContext(DropzoneContext);
-  const clipboardContext = useContext(ClipboardContext);
-  const contextMenuContext = useContext(ContextMenuContext);
+  const clipboardContext = useContext(ClipboardContext)
 
-  const windowWidth = useRef(window.innerWidth).current;
-  const windowHeight = useRef(window.innerHeight).current;
+  const clipboardData = useSelector(state => state.clipboard);
 
-  const menuWidth = 240;
-  const menuHeight = 4 + 40 * 3 + 2 * 1;
-
-  if (point.x + menuWidth > windowWidth) { point.x -= menuWidth; }
-  if (point.y + menuHeight > windowHeight) { point.y -= menuHeight; }
+  const options = clipboardData.elements.length > 0 ? 
+  [
+    { text: 'Upload a file', icon: 'upload', handleOnClick: dropzoneContext.open },
+    { text: 'New folder', icon: 'new-folder', handleOnClick: () => clipboardContext.setIsCreatingFolder(true) },
+    'line',
+    { text: 'Paste', icon: 'paste', handleOnClick: clipboardContext.pasteClickedElements }
+  ] 
+  :
+  [
+    { text: 'Upload a file', icon: 'upload', handleOnClick: dropzoneContext.open },
+    { text: 'New folder', icon: 'new-folder', handleOnClick: () => clipboardContext.setIsCreatingFolder(true) }
+  ]
 
   return (
-    <div className='w-60
-    bg-gradient-to-b from-zinc-600 to-zinc-700 
-    border-solid border-2 border-zinc-800 rounded-md
-    text-lg font-semibold font-sans text-neutral-200' 
-    style={{position: 'absolute', top: point.y, left: point.x}}
-    onMouseEnter={() => { contextMenuContext.setIsHoveredOverMenu(true) }}
-    onMouseLeave={() => { contextMenuContext.setIsHoveredOverMenu(false) }}>
-      <button className='w-full h-10 px-2 flex text-left 
-      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={dropzoneContext.open}>
-        <img src='/icons/upload.svg' alt='upload' width='20' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>Upload a file</p>
-      </button>    
-
-      <button className='w-full h-10 px-2 flex text-left 
-      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={() => { clipboardContext.setIsCreatingFolder(true) }}>
-        <img src='/icons/file-plus.svg' alt='new' width='20' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>New folder</p>
-      </button>    
-
-      <div className='mx-1 border-solid border-t-2 border-zinc-800'></div>
-
-      <button className='w-full h-10 px-2 flex text-left 
-      hover:bg-gradient-to-b hover:from-sky-200/50 hover:to-sky-400/50 rounded'
-      onClick={clipboardContext.pasteClickedElements}>
-        <img src='/icons/clipboard-minus.svg' alt='paste' width='20' className='place-self-center'/>
-        <p className='ml-2 place-self-center'>Paste</p>
-      </button>    
-    </div>    
+    <CommonContextMenu options={options} />  
   );
 };
