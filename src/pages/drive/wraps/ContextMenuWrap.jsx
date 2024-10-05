@@ -84,6 +84,7 @@ export default function ContextMenuWrap ({ children }) {
   };
 
   const handleDefaultContextMenuClick = (event) => {
+    console.log(1)
     handleContextMenuClick(event);
 
     if (!isContextMenu) {
@@ -93,11 +94,15 @@ export default function ContextMenuWrap ({ children }) {
   };
 
   const handleBookmarkContextMenuClick = (event, bookmark) => {
-    handleContextMenuClick(event);
-
-    if (!isContextMenu) {
-      clipboardContext.addClickedElement(event, bookmark);
-      setContextMenuType('bookmark');
+    if (!['home', 'trash'].includes(bookmark.folder.uuid)) {
+      handleContextMenuClick(event);
+      if (!isContextMenu) {
+        clipboardContext.addClickedElement(event, bookmark);
+        setContextMenuType('bookmark'); 
+      }
+    } else {
+      event.preventDefault();
+      event.stopPropagation();
     }
   };
 
