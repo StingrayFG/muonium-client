@@ -57,7 +57,7 @@ export default function ImageModal ({ file }) {
 
   useEffect(() => {
     if ((dragDelta.x !== null) && (dragDelta.y !== null) && 
-    ((Math.abs(dragDelta.x) < 10) || (Math.abs(dragDelta.y) < 10))) {
+    ((Math.abs(dragDelta.x) < 10) && (Math.abs(dragDelta.y) < 10))) {
       modalContext.closeNextModal();
     }
   }, [dragDelta])
