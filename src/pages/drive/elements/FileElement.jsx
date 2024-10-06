@@ -115,7 +115,7 @@ export default function FileElement ({ file }) {
       res = 'bg-sky-400/20 duration-0';
     } else {
       if (getIsHovered()) {
-        res = 'bg-sky-400/10';
+        res = 'bg-sky-400/10 duration-300';
       }
     } 
     return res;
@@ -124,15 +124,15 @@ export default function FileElement ({ file }) {
   const getIconStyle = () => { // File icon bg opacity = 0.4
     let res = '';
     if (getIsCut()) {
-      res = 'opacity-25 duration-0'
+      res = 'opacity-25 duration-0';
     } else {
       if (getIsClicked()) {
-        res = 'opacity-100 duration-0'
+        res = 'opacity-100 duration-0';
       } else {
         if (getIsHovered()) {
-          res = 'opacity-75'
+          res = 'opacity-75 duration-300';
         } else {
-          res = 'opacity-50'
+          res = 'opacity-50 duration-300';
         }
       }
     }  
@@ -142,9 +142,9 @@ export default function FileElement ({ file }) {
   const getImageStyle = () => { // File icon bg opacity = 0.4
     let res = '';
     if (getIsCut()) {
-      res = 'opacity-50'
+      res = 'opacity-50';
     } else {
-      res = 'opacity-100'
+      res = 'opacity-100';
     }  
     return res;
   }
@@ -165,13 +165,13 @@ export default function FileElement ({ file }) {
           onDoubleClick={handleOnDoubleClick}>
             {file.thumbnail ? 
               <img className={`w-full h-full object-contain 
-              transition-all duration-300
+              transition-all
               ${getImageStyle()}`}
               src={'data:image/png;base64,' + file.thumbnail} 
               draggable={false} />
               :
               <Box className={`w-full h-full place-self-center 
-              transition-all duration-300
+              transition-all
               pointer-events-none select-none 
               ${getIconStyle()}`}>
                 <FileElementIcon file={file}/>
@@ -187,7 +187,7 @@ export default function FileElement ({ file }) {
           onDoubleClick={handleOnDoubleClick}>
             <p className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
             select-none pointer-events-none
-            transition-all duration-300
+            transition-all
             rounded-[0.3rem] overflow-hidden max-w-32
             leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis
             ${getNameStyle()}`}>

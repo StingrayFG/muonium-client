@@ -149,7 +149,7 @@ export default function FolderElement ({ folder }) {
       res = 'bg-sky-400/20 duration-0';
     } else {
       if (getIsHovered()) {
-        res = 'bg-sky-400/10';
+        res = 'bg-sky-400/10 duration-300';
       }
     } 
     return res;
@@ -158,15 +158,15 @@ export default function FolderElement ({ folder }) {
   const getIconStyle = () => { // Folder icon bg opacity = 0.4
     let res = '';
     if (getIsCut()) {
-      res = 'opacity-25 duration-0'
+      res = 'opacity-25 duration-0';
     } else {
       if (getIsClicked()) {
-        res = 'opacity-100 duration-0'
+        res = 'opacity-100 duration-0';
       } else {
         if (getIsHovered()) {
-          res = 'opacity-75'
+          res = 'opacity-75 duration-300';
         } else {
-          res = 'opacity-50'
+          res = 'opacity-50 duration-300';
         }
       }
     }  
@@ -188,7 +188,7 @@ export default function FolderElement ({ folder }) {
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
             <Folder className={`w-full h-full place-self-center 
-            transition-all duration-300
+            transition-all
             pointer-events-none select-none 
             ${getIconStyle()}`}/>
           </Box>
@@ -201,7 +201,7 @@ export default function FolderElement ({ folder }) {
           onDoubleClick={handleOnDoubleClick}>
             <p className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
             select-none pointer-events-none
-            transition-all duration-300
+            transition-all
             rounded-[0.3rem] overflow-hidden max-w-32
             leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis
             ${getNameStyle()}`}>
