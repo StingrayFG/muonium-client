@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '@mui/material';
 
 import { FolderContext } from 'contexts/FolderContext.jsx';
 import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
@@ -30,14 +31,11 @@ export default function FolderContents ({ children }) {
 
   
   return (
-    <div className={`scrollbar scrollbar-sky-300/20 scrollbar-corner-sky-300/20 scrollbar-track-transparent
-    ${settingsData.type === 'grid' && 
-    'w-full max-h-full grid overflow-y-auto'}
-    ${settingsData.type === 'list' && 'grid p-2 gap-2 '}`}
+    <Box className={`scrollbar scrollbar-sky-300/20 scrollbar-corner-sky-300/20 scrollbar-track-transparent
+    ${settingsData.type === 'grid' &&  'w-full max-h-full grid overflow-y-auto'}`}
     style={{
       gridTemplateColumns: `repeat(${columnsCount}, minmax(0, 1fr))`
-    }}
-    >
+    }}>
       {clipboardContext.isCreatingFolder && (
         <FolderElement />
       )}
@@ -50,6 +48,6 @@ export default function FolderContents ({ children }) {
           <FolderElement key={folder.uuid} folder={folder} />
         ))}
         </>}
-    </div>    
+    </Box>    
   );
 }
