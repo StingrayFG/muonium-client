@@ -25,7 +25,7 @@ export default function CommonContextMenu ({ options }) {
 
   return (
     <Box className={`transition-opacity duration-300
-    bg-gray-950/90 border border-sky-300/20 rounded-[0.3vw]
+    bg-gray-950/90 border border-sky-300/20 rounded-[0.3rem]
     ${contextMenuContext.isContextMenu ? 'opacity-100' : 'opacity-0 pointer-events-none' }`}
     onMouseEnter={() => contextMenuContext.setIsHoveredOverMenu(true)}
     onMouseLeave={() => contextMenuContext.setIsHoveredOverMenu(false)}

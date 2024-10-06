@@ -22,7 +22,7 @@ export default function LoginPage() {
 
       <Box className={`w-fit p-4 place-self-center
       transition-all duration-300 animate-fadein-custom
-      border-solid border border-sky-300/20 rounded-[0.3vw]
+      border-solid border border-sky-300/20 rounded-[0.3rem]
       ${isAwaitingNavigation? 'opacity-0' : 'opacity-100'}`}>
         <p className='text-2xl font-semibold'>
           {'Welcome to muonium'}
