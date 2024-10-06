@@ -3,8 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 import QuickPinchZoom, { make3dTransformValue } from 'react-quick-pinch-zoom';
 
-import { useDetectDragDelta } from 'hooks/UseDetectDragDelta';
-
 import { ModalContext } from 'contexts/ModalContext';
 
 import FileService from 'services/FileService.jsx';
@@ -26,16 +24,15 @@ export default function ImageModal ({ file }) {
   const boxRef = useRef();
   const imgRef = useRef();
 
-  const [dragDelta, dragOnMouseDown, dragOnMouseUp] = useDetectDragDelta();
 
-
+  // LINK
   const getImageLink = async () => {
     await FileService.handleGetImageLink(userData, driveData, file)
     .then(res => {
       setIsLoaded(true);
       setImageLink(res);
     })
-    .catch(err => {
+    .catch(() => {
       setIsLoaded(true);
       setImageLink('');
     })
@@ -45,44 +42,57 @@ export default function ImageModal ({ file }) {
     getImageLink();
   }, [])
 
+
+  // HANDLERS
+  const [mousePositon, setMousePosition] = useState({ x: null, y: null });
+
   const handleOnKeyDown = (event) => {
     if (event.code === 'Escape') { 
-      modalContext.closeNextModal();
+      handleClose();
     }
+  }
+
+  const handleOnMouseUp = (event) => {
+    if (Math.pow(mousePositon.x - event.clientX, 2) + Math.pow(mousePositon.y - event.clientY, 2) < 10) {
+      setMousePosition({ x: null, y: null });
+      handleClose();
+    }
+  }
+
+  const handleOnMouseDown = (event) => {
+    setMousePosition({ x: event.clientX, y: event.clientY })
   }
 
   const handleClose = () => {
     modalContext.closeNextModal();
   }
 
-  useEffect(() => {
-    if ((dragDelta.x !== null) && (dragDelta.y !== null) && 
-    ((Math.abs(dragDelta.x) < 10) && (Math.abs(dragDelta.y) < 10))) {
-      modalContext.closeNextModal();
-    }
-  }, [dragDelta])
 
+  // IMAGE ZOOM
   const onUpdate = useCallback(({ x, y, scale }) => {
     const { current: box } = boxRef;
     if (box) {
       const value = make3dTransformValue({ x, y, scale });
       box.style.setProperty('transform', value);
     }
-  }, []);
+  }, [window]);
 
-
+  
   return(
-    <Box className='w-screen h-screen'
+    <Box className='w-screen h-screen' 
     onKeyDown={handleOnKeyDown}
-    onMouseDown={dragOnMouseDown}
-    onMouseUp={dragOnMouseUp}>
+    onMouseUp={handleOnMouseUp}
+    onMouseDown={handleOnMouseDown}> 
 
-      <QuickPinchZoom className=''
+      <QuickPinchZoom className='' 
       onUpdate={onUpdate} 
       verticalPadding={0}
       horizontalPadding={0}
       zoomOutFactor={0.1}
       wheelScaleFactor={500}
+      minZoom={1}
+      maxZoom={5}
+      inertia={false}
       shouldInterceptWheel={() => false}>
 
         <Box className='w-screen h-screen grid place-items-center'
