@@ -34,10 +34,6 @@ export default function ContextMenuWrap ({ children }) {
 
   const [clickedElements, setClickedElements] = useState([]);
   const [hoveredElement, setHoveredElement] = useState({ uuid: '' });
-  const [draggedElementSize, setDraggedElementSize] = useState({ x: 0, y: 0 });
-  
-  const [isHoldingElement, setIsHoldingElement] = useState(false);
-  const [isDraggingElement, setIsDraggingElement] = useState(false);
 
 
   // SELECTION
@@ -235,8 +231,8 @@ export default function ContextMenuWrap ({ children }) {
       setIsContextMenu(false);   
     } else if (!isContextMenu) {
       setContextMenuClickPosition({
-        x: event.pageX,
-        y: event.pageY,
+        x: event.clientX,
+        y: event.clientY,
       });
       setIsContextMenu(true);
     }
@@ -306,9 +302,12 @@ export default function ContextMenuWrap ({ children }) {
 
 
   // DRAGGING
+  const [draggedElementSize, setDraggedElementSize] = useState({ x: 0, y: 0 });
+  const [isHoldingElement, setIsHoldingElement] = useState(false);
+  const [isDraggingElement, setIsDraggingElement] = useState(false);
+
   const [mousePointInitial, setMousePointInitial] = useState({ x: 0, y: 0 });
   const [containerPoint, setContainerPoint] = useState({ x: 0, y: 0 });
-  const [containerPointInitial, setContainerPointInitial] = useState({ x: 0, y: 0 });
 
   const windowWidth = useRef(window.innerWidth).current;
   const windowHeight = useRef(window.innerHeight).current;
@@ -318,25 +317,31 @@ export default function ContextMenuWrap ({ children }) {
   }
 
   const updateDragging = (event) => {
-    if (((Math.abs(containerPoint.x - containerPointInitial.x) > 10) || (Math.abs(containerPoint.y - containerPointInitial.y) > 10)) && !isDraggingElement && isHoldingElement) {
+    if ((Math.pow(containerPoint.x - mousePointInitial.x, 2) + (Math.pow(containerPoint.y - mousePointInitial.y, 2) > 10)) 
+    && !isDraggingElement && isHoldingElement) {
       setIsDraggingElement(true);
     }
     if (isHoldingElement) {
-      if ((containerPointInitial.x + (event.pageX - mousePointInitial.x) + draggedElementSize.y) >= windowWidth) {
-        setContainerPoint((prev) => ({ ...prev, x: windowWidth - draggedElementSize.y }));
-      } else if ((containerPointInitial.x + (event.pageX - mousePointInitial.x)) < 0) {
-        setContainerPoint((prev) => ({ ...prev, x: 0 }));
+      const movementDelta = { x: event.clientX - mousePointInitial.x, y: event.clientY - mousePointInitial.y }
+      let newContainerPoint = {};
+
+      if ((mousePointInitial.x + movementDelta.x + draggedElementSize.x) >= windowWidth) { // Prevent overflow on the right
+        newContainerPoint.x = windowWidth - draggedElementSize.y;
+      } else if ((mousePointInitial.x + movementDelta.x) < 0) { // Prevent overflow on the left
+        newContainerPoint.x = 0;
       } else {
-        setContainerPoint((prev) => ({ ...prev, x: containerPointInitial.x + (event.pageX - mousePointInitial.x) }));
+        newContainerPoint.x = event.clientX;
       }
 
-      if ((containerPointInitial.y + (event.pageY - mousePointInitial.y) + draggedElementSize.x) >= windowHeight) {
-        setContainerPoint((prev) => ({ ...prev, y: windowHeight - draggedElementSize.x }));
-      } else if ((containerPointInitial.y + (event.pageY - mousePointInitial.y)) < 0) {
-        setContainerPoint((prev) => ({ ...prev, y: 0 }));
+      if ((mousePointInitial.y + movementDelta.y + draggedElementSize.y) >= windowHeight) { // Prevent overflow on the bottom
+        newContainerPoint.y = windowHeight - draggedElementSize.x;
+      } else if ((mousePointInitial.y + movementDelta.y) < 0) { // Prevent overflow on the top
+        newContainerPoint.y = 0;
       } else {
-        setContainerPoint((prev) => ({ ...prev, y: containerPointInitial.y + (event.pageY - mousePointInitial.y) }));
+        newContainerPoint.y = event.clientY;
       }
+
+      setContainerPoint({ x: newContainerPoint.x, y: newContainerPoint.y });
     }
   }
 
@@ -345,7 +350,6 @@ export default function ContextMenuWrap ({ children }) {
     setDraggedElementSize({ x: event.target.offsetWidth, y: event.target.offsetWidth });
 
     setMousePointInitial({ x: event.pageX, y: event.pageY });
-    setContainerPointInitial({ x: event.pageX, y: event.pageY });
     setContainerPoint({ x: event.pageX, y: event.pageY });
   }
 
