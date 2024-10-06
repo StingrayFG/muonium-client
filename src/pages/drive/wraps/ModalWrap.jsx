@@ -61,12 +61,12 @@ export default function ModalWrap ({ children }) {
         setModalStates([{ ...modalStates[0], isOpen: false}, ...modalStates.slice(1)]);
         setTimeout(() => {
           setModalStates([])
-        }, 500);
+        }, 300);
       } else {
         setModalStates([{ ...modalStates[0], isOpen: false }])
         setTimeout(() => {
           setModalStates([])
-        }, 500);
+        }, 300);
       } 
       setIsAwaitingCloseModal(false);
     }
@@ -83,12 +83,12 @@ export default function ModalWrap ({ children }) {
         setModalStates([...modalStates.slice(0, -1), { ...modalStates[modalStates.length - 1], isOpen: false }]);
         setTimeout(() => {
           setModalStates(modalStates.slice(0, -1))     
-        }, 250);
+        }, 300);
       } else {
         setModalStates([{...modalStates[0], isOpen: false}])
         setTimeout(() => {
           setModalStates([])
-        }, 500);
+        }, 300);
       } 
       setIsAwaitingCloseNextModal(false);
     }
@@ -132,14 +132,14 @@ export default function ModalWrap ({ children }) {
     <ModalContext.Provider value={{ openModal, openNextModal, closeModal, closeNextModal }}>
 
       <Box className={`z-20 w-full h-dvh grid place-items-center overflow-hidden fixed
-      transition-opacity duration-500
+      transition-opacity duration-300
       bg-black/90
       ${getBottomModal().isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       onClick={closeOnClickOutside}>
         {(modalStates.length > 0) && <>
           {modalStates.map((modal, index) => (
             <Box className={`absolute grid
-            transition-all duration-500
+            transition-all duration-300
             ${getIsVisible(modal, index) ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
             key={'modal-' + index}>
               {modal.component && modal.component}
