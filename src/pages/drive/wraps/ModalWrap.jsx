@@ -78,7 +78,7 @@ export default function ModalWrap ({ children }) {
     setIsAwaitingCloseNextModal(true);
   }
   useEffect(() => {
-    if (isAwaitingCloseNextModal === true) {
+    if (isAwaitingCloseNextModal) {
       if (modalStates.length > 1) {
         setModalStates([...modalStates.slice(0, -1), { ...modalStates[modalStates.length - 1], isOpen: false }]);
         setTimeout(() => {
@@ -126,7 +126,7 @@ export default function ModalWrap ({ children }) {
   const getIsVisible = (modal, index) => {
     return ((index === modalStates.length - 1) && modal.isOpen) || (modalStates.length === 1);
   }
-  console.log(modalStates)
+
   
   return (
     <ModalContext.Provider value={{ openModal, openNextModal, closeModal, closeNextModal }}>
