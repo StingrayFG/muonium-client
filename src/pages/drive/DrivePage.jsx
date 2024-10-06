@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 
 import { useDelayedNavigate } from 'hooks/UseDelayedNavigate';
 
-import { setInitialUuid, setAbsolutePath, confirmUpdate } from 'state/slices/PathSlice';
+import { setInitialUuid, setAbsolutePath } from 'state/slices/PathSlice';
 import { clearUser } from 'state/slices/UserSlice';
 import { getDrive } from 'state/slices/DriveSlice';
 import { setCounts } from 'state/slices/SelectionSlice';
@@ -16,7 +16,6 @@ import TopPanel from 'pages/drive/panels/TopPanel.jsx';
 import BottomPanel from 'pages/drive/panels/BottomPanel.jsx';
 import SidePanel from 'pages/drive/panels/SidePanel.jsx';
 import DropzoneWrap from 'pages/drive/wraps/DropzoneWrap.jsx';
-import ClipboardWrap from 'pages/drive/wraps/ClipboardWrap.jsx';
 import ContextMenuWrap from 'pages/drive/wraps/ContextMenuWrap.jsx';
 import FolderContents from 'pages/drive/folder/FolderContents.jsx';
 
@@ -40,7 +39,7 @@ export default function DrivePanels ({ folderUuid }) {
   const [currentFolder, setCurrentFolder] = useState({});
   const [isAwaitingNavigation, NavigateWithDelay] = useDelayedNavigate();
 
-  // Auth
+  // AUTH
   useEffect(() => {
     if (!userData && !isAwaitingNavigation) {
       navigate('/login');
@@ -52,10 +51,17 @@ export default function DrivePanels ({ folderUuid }) {
     setTimeout(() => {dispatch(clearUser())}, 500);
   }
 
-  // Update
+
+  // UPDATE
   useEffect(() => {
     dispatch(getDrive(userData));
   }, [])
+
+  useEffect(() => {
+    if (driveData.uuid) {
+      getFolder();
+    }
+  }, [pathData.currentUuid, driveData]);
 
   const getFolder = async () => {
     await FolderService.handleGetByUuid(userData, driveData, { uuid: pathData.currentUuid })
@@ -69,7 +75,9 @@ export default function DrivePanels ({ folderUuid }) {
     }); 
   }
 
-  useEffect(() => {
+
+  // ROUTE SYNC
+  useEffect(() => { // Syncs url route and the chosen folder
     if (!pathData.currentUuid) {
       dispatch(setInitialUuid({ uuid: folderUuid }));
     }
@@ -87,54 +95,74 @@ export default function DrivePanels ({ folderUuid }) {
     } 
   }, [pathData.currentUuid]);
 
-  useEffect(() => {
-    if (driveData.uuid) {
-      getFolder();
-    }
-  }, [pathData.currentUuid, driveData]);
 
-
-  const handleOnContextMenu = (event) => {
+  // CONTEXT MENU
+  const handleOnContextMenu = (event) => { // Used for top and bottom panels only
     event.preventDefault();
   }
 
-  const reorderFolders = (editedFolder) => {
-    let reorderedFolders = currentFolder.folders;
 
-    reorderedFolders = reorderedFolders.filter((folder) => {
-      return (folder.uuid !== editedFolder.uuid)
-    })
-    
-    const insertTo = (reorderedFolders.findIndex((folder) => {
-      return (editedFolder.name < folder.name)
-    }))
-    reorderedFolders.splice(insertTo, 0, editedFolder);
+  // CLIENT SIDE UPDATES
+  const addElementOnClient = (element) => {
+    if (element.type === 'file') {
+      let reorderedFiles = currentFolder.files;
+      const insertTo = reorderedFiles.findIndex(file => (element.name < file.name))
+      reorderedFiles.splice(insertTo, 0, element);
+      setCurrentFolder({ ...currentFolder, files: reorderedFiles })
+    } else if (element.type === 'folder') {
+      let reorderedFolders = currentFolder.folders;
+      const insertTo = reorderedFolders.findIndex(folder => (element.name < folder.name))
+      reorderedFolders.splice(insertTo, 0, element);
+      setCurrentFolder({ ...currentFolder, folders: reorderedFolders })
+    }
+  }
 
-    setCurrentFolder({ ...currentFolder, folders: reorderedFolders })
+  const updateElementOnClient = (element) => {
+    if (element.type === 'file') {
+      let reorderedFiles = currentFolder.files.filter(file => (file.uuid !== element.uuid))
+      const insertTo = reorderedFiles.findIndex(file => (element.name < file.name))
+      reorderedFiles.splice(insertTo, 0, element);
+      setCurrentFolder({ ...currentFolder, files: reorderedFiles })
+    } else if (element.type === 'folder') {
+      let reorderedFolders = currentFolder.folders.filter(folder => (folder.uuid !== element.uuid))
+      const insertTo = reorderedFolders.findIndex(folder => (element.name < folder.name))
+      reorderedFolders.splice(insertTo, 0, element);
+      setCurrentFolder({ ...currentFolder, folders: reorderedFolders })
+    }
+  }
+
+  const deleteElementOnClient = (element) => {
+    if (element.type === 'file') {
+      const reorderedFiles = currentFolder.files.filter(file => (file.uuid !== element.uuid))
+      setCurrentFolder({ ...currentFolder, files: reorderedFiles })
+    } else if (element.type === 'folder') {
+      const reorderedFolders = currentFolder.folders.filter(folder => (folder.uuid !== element.uuid))
+      setCurrentFolder({ ...currentFolder, folders: reorderedFolders })
+    }
   }
 
 
+  // RENDER
   if (userData) {
     return (
       <Box className={`w-screen h-dvh grid grid-rows-[max-content_1fr]
       animate-fadein-custom
       ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}
         onContextMenu={handleOnContextMenu}>
-        <FolderContext.Provider value={{ currentFolder, setCurrentFolder, reorderFolders, handleLogout }}> 
+        <FolderContext.Provider value={{ currentFolder, setCurrentFolder, handleLogout,
+        addElementOnClient, updateElementOnClient, deleteElementOnClient }}> 
           <ModalWrap>
             
             <TopPanel />   
 
             <Box className='w-full h-full overflow-hidden'>
               <DropzoneWrap>
-                <ClipboardWrap>
-                  <ContextMenuWrap>
-                    <SidePanel />
-                    <Box className='flex-1 h-full'>
-                      <FolderContents />   
-                    </Box> 
-                  </ContextMenuWrap>
-                </ClipboardWrap>   
+                <ContextMenuWrap>
+                  <SidePanel />
+                  <Box className='h-full flex-1'>
+                    <FolderContents />   
+                  </Box> 
+                </ContextMenuWrap>
               </DropzoneWrap>
             </Box>
 

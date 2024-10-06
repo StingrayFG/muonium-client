@@ -1,13 +1,13 @@
 import { useContext, useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
-
-import { requestUpdate } from 'state/slices/PathSlice';
+import { Box } from '@mui/material';
 
 import { DropzoneContext } from 'contexts/DropzoneContext';
 import { FolderContext } from 'contexts/FolderContext';
 
 import FileService from 'services/FileService.jsx';
+
 
 export default function DropzoneWrap ({ children }) {
   const folderContext = useContext(FolderContext);
@@ -40,7 +40,7 @@ export default function DropzoneWrap ({ children }) {
     if (requiresUpload) {
       FileService.handleUpload(userData, driveData, { parentUuid: folderContext.currentFolder.uuid }, file)
       .then(() => {
-        dispatch(requestUpdate());
+
       })
       .catch(() => {
         
@@ -51,10 +51,10 @@ export default function DropzoneWrap ({ children }) {
 
   return (
     <DropzoneContext.Provider value={{ open }}>
-      <div {...getRootProps()} className='w-full h-full'>
+      <Box {...getRootProps()} className='w-full h-full'>
         <input {...getInputProps()} />
         { children }
-      </div>
+      </Box>
     </DropzoneContext.Provider>
   );
 }

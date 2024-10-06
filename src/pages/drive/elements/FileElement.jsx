@@ -1,8 +1,7 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useContext, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { FolderContext } from 'contexts/FolderContext.jsx';
 import { ModalContext } from 'contexts/ModalContext.jsx';
@@ -15,30 +14,27 @@ import FileElementIcon from 'pages/drive/elements/FileElementIcon';
 
 
 export default function FileElement ({ file }) {
-  const dispatch = useDispatch();
-
   const userData = useSelector(state => state.user);
   const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
   const settingsData = useSelector(state => state.settings);
 
   const contextMenuContext = useContext(ContextMenuContext);
-  const clipboardContext = useContext(ClipboardContext);
   const folderContext = useContext(FolderContext);
   const modalContext = useContext(ModalContext);
 
 
   // GETS
   const getIsHovered = () => {
-    if (clipboardContext.hoveredElement) {
-      return clipboardContext.hoveredElement.uuid === file.uuid;
+    if (contextMenuContext.hoveredElement) {
+      return contextMenuContext.hoveredElement.uuid === file.uuid;
     } else {
       return false;
     }
   }
 
   const getIsClicked = () => {
-    if (clipboardContext.clickedElements.includes(file)) {
+    if (contextMenuContext.clickedElements.includes(file)) {
       return true;
     } else {
       return false;
@@ -46,7 +42,7 @@ export default function FileElement ({ file }) {
   }
 
   const getIsRenaming = () => {
-    if (clipboardContext.isRenaming && clipboardContext.clickedElements.includes(file)) {
+    if (contextMenuContext.isRenaming && contextMenuContext.clickedElements.includes(file)) {
       return true;
     } else {
       return false;
@@ -68,7 +64,7 @@ export default function FileElement ({ file }) {
 
   const stopNaming = () => {
     modalContext.closeModal();
-    clipboardContext.setIsRenaming(false);
+    contextMenuContext.setIsRenaming(false);
   }
 
   const handleNaming = async (name) => {
@@ -76,35 +72,29 @@ export default function FileElement ({ file }) {
       await FileService.handleRename(userData, driveData, { ...file, name: name })
       .then(() => {
         folderContext.reorderFiles({ ...file, name: name });
-        clipboardContext.setIsRenaming(false);
+        contextMenuContext.setIsRenaming(false);
         modalContext.closeModal();
       })
       .catch(() => {
-        clipboardContext.setIsRenaming(false);
+        contextMenuContext.setIsRenaming(false);
         modalContext.closeModal();
       })
     } else {
-      clipboardContext.setIsRenaming(false);
+      contextMenuContext.setIsRenaming(false);
       modalContext.closeModal();
     }
   }
 
-  const handleOnKeyDown = (event) => {
-    if (event.code === 'Escape') { 
-      clipboardContext.setHoveredElement({ uuid: '' });
-    }
-  }
-
   const handleOnMouseDown = (event) => {
-    clipboardContext.handleMouseDown(event, file);
+    contextMenuContext.handleOnElementMouseDown(event, file);
   }
 
   const handleOnMouseEnter = () => {
-    clipboardContext.setHoveredElement(file);
+    contextMenuContext.setHoveredElement(file);
   }
   
   const handleOnMouseLeave = () => {
-    clipboardContext.setHoveredElement({ uuid: '' });
+    contextMenuContext.clearHoveredElement();
   }
   
   const handleOnContextMenu = (event) => {
@@ -172,13 +162,13 @@ export default function FileElement ({ file }) {
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
-          onKeyDown={handleOnKeyDown}
           onDoubleClick={handleOnDoubleClick}>
             {file.thumbnail ? 
               <img className={`w-full h-full object-contain 
               transition-all duration-300
               ${getImageStyle()}`}
-              src={'data:image/png;base64,' + file.thumbnail} />
+              src={'data:image/png;base64,' + file.thumbnail} 
+              draggable={false} />
               :
               <Box className={`w-full h-full place-self-center 
               transition-all duration-300
@@ -194,7 +184,6 @@ export default function FileElement ({ file }) {
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
-          onKeyDown={handleOnKeyDown}
           onDoubleClick={handleOnDoubleClick}>
             <p className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
             select-none pointer-events-none

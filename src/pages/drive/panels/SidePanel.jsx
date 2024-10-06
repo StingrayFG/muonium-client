@@ -24,19 +24,16 @@ export default function SidePanel () {
   const [bookmarks, setBookmarks] = useState();
 
   useEffect(() => {
-    const get = async () => {
-      if (userData && bookmarkData.doesRequireUpdate) {
-        await dispatch(getBookmarks(userData));
-      }
+    if (!bookmarkData.bookmarks) {
+      dispatch(getBookmarks(userData));
     }
-    get();
-  })
+  }, [])
 
   useEffect(() => {
     if (bookmarks !== bookmarkData.bookmarks) {
       setBookmarks(bookmarkData.bookmarks);
     }
-  })
+  }, [bookmarkData.bookmarks])
 
   return (
     <Box className='w-64 max-h-full overflow-y-auto 

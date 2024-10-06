@@ -127,9 +127,6 @@ export default function LoginPage() {
             showMessage('Something went wrong, try again later');
           }
         } else if (res.type === 'user/login/fulfilled') {
-          dispatch(requestFolderUpdate());
-          dispatch(requestBookmarksUpdate());
-
           NavigateWithDelay('/drive', 500);
         }
       })

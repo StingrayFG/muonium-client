@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
 import { FolderContext } from 'contexts/FolderContext.jsx';
-import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
+import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import FileElement from 'pages/drive/elements/FileElement.jsx';
 import FolderElement from 'pages/drive/elements/FolderElement.jsx';
@@ -11,7 +11,7 @@ import FolderElement from 'pages/drive/elements/FolderElement.jsx';
 
 export default function FolderContents ({ children }) {
   const folderContext = useContext(FolderContext);
-  const clipboardContext = useContext(ClipboardContext);
+  const contextMenuContext = useContext(ContextMenuContext);
 
   const settingsData = useSelector(state => state.settings);
 
@@ -36,7 +36,7 @@ export default function FolderContents ({ children }) {
     style={{
       gridTemplateColumns: `repeat(${columnsCount}, minmax(0, 1fr))`
     }}>
-      {clipboardContext.isCreatingFolder && (
+      {contextMenuContext.isCreatingFolder && (
         <FolderElement />
       )}
 

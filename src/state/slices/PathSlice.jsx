@@ -36,13 +36,7 @@ export const pathSlice = createSlice({
       state.currentUuid = state.pathHistory[state.positionInHistory];
       state.doesRequireUpdate = true;
     },
-    confirmUpdate: (state) => {
-      state.doesRequireUpdate = false;
-    },
-    requestUpdate: (state) => {
-      state.doesRequireUpdate = true;
-    },
   },
 });
 
-export const { setAbsolutePath, setInitialUuid, moveToNew, moveToNext, moveToPrevious, confirmUpdate, requestUpdate } = pathSlice.actions;
+export const { setAbsolutePath, setInitialUuid, moveToNew, moveToNext, moveToPrevious } = pathSlice.actions;

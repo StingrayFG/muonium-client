@@ -4,7 +4,6 @@ import { Box } from '@mui/material';
 
 import { moveToNew } from 'state/slices/PathSlice';
 
-import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import { ReactComponent as House } from 'assets/icons/house.svg'
@@ -13,7 +12,6 @@ import { ReactComponent as Trash } from 'assets/icons/trash.svg'
 
 export default function BookmarkElement ({ bookmark }) {
   const contextMenuContext = useContext(ContextMenuContext);
-  const clipboardContext = useContext(ClipboardContext);
 
   const pathData = useSelector(state => state.path);
   
@@ -23,7 +21,7 @@ export default function BookmarkElement ({ bookmark }) {
   // HANDLERS
   const handleOnMouseDown = (event) => {
     if (event.button === 0) {   
-      clipboardContext.clearClickedElements();
+      contextMenuContext.clearClickedElements();
       if (!bookmark.folder.isRemoved) { 
         dispatch(moveToNew({ uuid: bookmark.folder.uuid })); 
       }
@@ -31,11 +29,11 @@ export default function BookmarkElement ({ bookmark }) {
   }
   
   const handleOnMouseEnter = () => {
-    clipboardContext.setHoveredElement(bookmark);
+    contextMenuContext.setHoveredElement(bookmark);
   }
 
   const handleOnMouseLeave = () => {
-    clipboardContext.setHoveredElement({})
+    contextMenuContext.clearHoveredElement();
   }
 
   const handleOnContextMenu = (event) => {
@@ -57,10 +55,10 @@ export default function BookmarkElement ({ bookmark }) {
   }
 
   const getIsSelected = () => {
-    if ((bookmark.folder.uuid === pathData.currentUuid) && (clipboardContext.clickedElements.length === 0)) {
+    if ((bookmark.folder.uuid === pathData.currentUuid) && (contextMenuContext.clickedElements.length === 0)) {
       return true;
-    } else if (clipboardContext.clickedElements.length > 0) {
-      if (((clipboardContext.clickedElements[0].type === 'folder') || (clipboardContext.clickedElements[0].type === 'file')) && 
+    } else if (contextMenuContext.clickedElements.length > 0) {
+      if (((contextMenuContext.clickedElements[0].type === 'folder') || (contextMenuContext.clickedElements[0].type === 'file')) && 
       (bookmark.folder.uuid === pathData.currentUuid)) {
         return true;
       } else {
@@ -72,7 +70,7 @@ export default function BookmarkElement ({ bookmark }) {
   }
 
   const getIsActive = () => {
-    return clipboardContext.clickedElements.includes(bookmark);
+    return contextMenuContext.clickedElements.includes(bookmark);
   }
 
   const getButtonStyle = () => {

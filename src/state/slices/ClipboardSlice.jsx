@@ -18,7 +18,7 @@ export const clipboardSlice = createSlice({
     }, 
     setCut:(state, action) => {
       state.elements = action.payload.elements;
-      state.cutElementsUuids = state.elements.map(e => e.uuid);
+      state.cutElementsUuids = state.elements.map(element => element.uuid);
       state.originParentUuid = action.payload.originUuid;
       state.mode = 'cut';
     }, 

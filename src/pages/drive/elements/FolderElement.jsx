@@ -4,7 +4,6 @@ import { Box } from '@mui/material';
 
 import { moveToNew } from 'state/slices/PathSlice';
 
-import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { FolderContext } from 'contexts/FolderContext.jsx';
 import { ModalContext } from 'contexts/ModalContext.jsx';
@@ -25,7 +24,6 @@ export default function FolderElement ({ folder }) {
   const settingsData = useSelector(state => state.settings);
 
   const contextMenuContext = useContext(ContextMenuContext);
-  const clipboardContext = useContext(ClipboardContext);
   const folderContext = useContext(FolderContext);
   const modalContext = useContext(ModalContext);
 
@@ -40,15 +38,15 @@ export default function FolderElement ({ folder }) {
 
   // GETS
   const getIsHovered = () => {
-    if (clipboardContext.hoveredElement) {
-      return clipboardContext.hoveredElement.uuid === folder.uuid;
+    if (contextMenuContext.hoveredElement) {
+      return contextMenuContext.hoveredElement.uuid === folder.uuid;
     } else {
       return false;
     }
   }
 
   const getIsClicked = () => {
-    if (clipboardContext.clickedElements.includes(folder)) {
+    if (contextMenuContext.clickedElements.includes(folder)) {
       return true;
     } else {
       return false;
@@ -56,7 +54,7 @@ export default function FolderElement ({ folder }) {
   }
 
   const getIsCreating = () => {
-    if (clipboardContext.isCreatingFolder && (!folder.uuid)) {
+    if (contextMenuContext.isCreatingFolder && (!folder.uuid)) {
       return true;
     } else {
       return false;
@@ -64,7 +62,7 @@ export default function FolderElement ({ folder }) {
   }
 
   const getIsRenaming = () => {
-    if (clipboardContext.isRenaming && clipboardContext.clickedElements.includes(folder)) {
+    if (contextMenuContext.isRenaming && contextMenuContext.clickedElements.includes(folder)) {
       return true;
     } else {
       return false;
@@ -85,58 +83,52 @@ export default function FolderElement ({ folder }) {
   }, [getIsCreating(), getIsRenaming()])
 
   const stopNaming = () => {
-    clipboardContext.setIsCreatingFolder(false);
-    clipboardContext.setIsRenaming(false);
+    contextMenuContext.setIsCreatingFolder(false);
+    contextMenuContext.setIsRenaming(false);
   }
 
   const handleNaming = async (name) => {
     if (name && (name !== folder.name)) {
-      if (clipboardContext.isCreatingFolder) {
+      if (contextMenuContext.isCreatingFolder) {
         await FolderService.handleCreate(userData, driveData, { ...folder, name: name })
         .then(() => {
           folderContext.reorderFolders({ ...folder, name: name });
-          clipboardContext.setIsCreatingFolder(false);
+          contextMenuContext.setIsCreatingFolder(false);
           modalContext.closeModal();
         })
         .catch(() => {
-          clipboardContext.setIsCreatingFolder(false);
+          contextMenuContext.setIsCreatingFolder(false);
           modalContext.closeModal();
         })
       } else {
         await FolderService.handleRename(userData, driveData, { ...folder, name: name })
         .then(() => {
           folderContext.reorderFolders({ ...folder, name: name });
-          clipboardContext.setIsRenaming(false);
+          contextMenuContext.setIsRenaming(false);
           modalContext.closeModal();
         })
         .catch(() => {
-          clipboardContext.setIsRenaming(false);
+          contextMenuContext.setIsRenaming(false);
           modalContext.closeModal();
         })
       }
     } else {
-      clipboardContext.setIsCreatingFolder(false);
-      clipboardContext.setIsRenaming(false);
+      contextMenuContext.setIsCreatingFolder(false);
+      contextMenuContext.setIsRenaming(false);
       modalContext.closeModal();
     }
   }
 
-  const handleOnKeyDown = (event) => {
-    if (event.code === 'Escape') { 
-      clipboardContext.setHoveredElement({ uuid: '' });
-    }
-  }
-
   const handleOnMouseDown = (event) => {
-    clipboardContext.handleMouseDown(event, folder);
+    contextMenuContext.handleOnElementMouseDown(event, folder);
   }
 
   const handleOnMouseEnter = () => {
-    clipboardContext.setHoveredElement(folder);
+    contextMenuContext.setHoveredElement(folder);
   }
   
   const handleOnMouseLeave = () => {
-    clipboardContext.setHoveredElement({ uuid: '' });
+    contextMenuContext.clearHoveredElement();
   }
   
   const handleOnContextMenu = (event) => {
@@ -194,7 +186,6 @@ export default function FolderElement ({ folder }) {
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
-          onKeyDown={handleOnKeyDown}
           onDoubleClick={handleOnDoubleClick}>
             <Folder className={`w-full h-full place-self-center 
             transition-all duration-300
@@ -207,7 +198,6 @@ export default function FolderElement ({ folder }) {
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
-          onKeyDown={handleOnKeyDown}
           onDoubleClick={handleOnDoubleClick}>
             <p className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
             select-none pointer-events-none

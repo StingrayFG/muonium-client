@@ -126,7 +126,7 @@ export default function ModalWrap ({ children }) {
   const getIsVisible = (modal, index) => {
     return ((index === modalStates.length - 1) && modal.isOpen) || (modalStates.length === 1);
   }
-
+  console.log(modalStates)
   
   return (
     <ModalContext.Provider value={{ openModal, openNextModal, closeModal, closeNextModal }}>

@@ -1,18 +1,18 @@
 import { useContext } from 'react';
 
-import { ClipboardContext } from 'contexts/ClipboardContext.jsx';
+import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import CommonContextMenu from 'pages/drive/menus/CommonContextMenu';
 
 
 export default function MultipleFolderContextMenu () {
-  const clipboardContext = useContext(ClipboardContext);
+  const contextMenuContext = useContext(ContextMenuContext);
 
   
   const options = [
-    { text: 'Cut', icon: 'cut', handleOnClick: clipboardContext.cutClickedElements },
+    { text: 'Cut', icon: 'cut', handleOnClick: contextMenuContext.cutClickedElements },
     'line',
-    { text: 'Move to trash', icon: 'trash', handleOnClick: clipboardContext.removeClickedElements },
+    { text: 'Move to trash', icon: 'trash', handleOnClick: contextMenuContext.removeClickedElements },
   ]
 
 
