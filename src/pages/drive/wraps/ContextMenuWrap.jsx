@@ -8,6 +8,7 @@ import { deleteBookmark } from 'state/slices/BookmarkSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { FolderContext } from 'contexts/FolderContext.jsx';
+import { DropzoneContext } from 'contexts/DropzoneContext';
 
 import FileService from 'services/FileService.jsx';
 import FolderService from 'services/FolderService.jsx';
@@ -25,6 +26,7 @@ export default function ContextMenuWrap ({ children }) {
   const dispatch = useDispatch();
 
   const folderContext = useContext(FolderContext);
+  const dropzoneContext = useContext(DropzoneContext);
   
   const userData = useSelector(state => state.user);
   const driveData = useSelector(state => state.drive);
@@ -63,6 +65,28 @@ export default function ContextMenuWrap ({ children }) {
     }
   }, [clickedElements])
 
+  // UPLOAD
+  const openUpload = async () => {
+    dropzoneContext.open();
+    setIsContextMenu(false);
+  }
+  
+  // DOWNLOAD
+  const downloadClickedElements = async () => {
+    setIsContextMenu(false);
+
+    for await (const element of clickedElements) {
+      await FileService.handleDownload(userData, driveData, element);
+    }
+  }
+
+  // NAMING
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+
+  useEffect(() => {
+    setIsContextMenu(false);
+  }, [isRenaming, isCreatingFolder])
 
   // CLIPBOARD
   const copyClickedElements = () => {
@@ -131,26 +155,6 @@ export default function ContextMenuWrap ({ children }) {
     dispatch(setPaste());
   }
 
-
-  // NAMING
-  const [isRenaming, setIsRenaming] = useState(false);
-  const [isCreatingFolder, setIsCreatingFolder] = useState(false);
-
-  useEffect(() => {
-    setIsContextMenu(false);
-  }, [isRenaming, isCreatingFolder])
-
-
-  // DOWNLOAD
-  const downloadClickedElements = async () => {
-    setIsContextMenu(false);
-
-    for await (const element of clickedElements) {
-      await FileService.handleDownload(userData, driveData, element);
-    }
-  }
-  
-
   // TRASH
   const removeClickedElements = async () => {
     setIsContextMenu(false);
@@ -196,14 +200,16 @@ export default function ContextMenuWrap ({ children }) {
     setIsContextMenu(false);
 
     for await (const element of clickedElements) {
-      folderContext.deleteElementOnClient(element);
-
       if (element.type === 'file') { 
+        folderContext.deleteElementOnClient(element);
         await FileService.handleDelete(userData, driveData, element)
         .catch(() => {
           folderContext.addElementOnClient(element);
         })
       } else if (element.type === 'folder') { 
+        folderContext.deleteElementOnClient(element);
+
+        //delete folder bookmark
         await FolderService.handleDelete(userData, driveData, element)
         .catch(() => {
           folderContext.addElementOnClient(element);
@@ -244,7 +250,7 @@ export default function ContextMenuWrap ({ children }) {
     handleContextMenuClick(event);
 
     if (!isContextMenu) {
-      if (clickedElements.length === 0) {
+      if (clickedElements.length <= 1) {
         addClickedElement(event, file);
         setContextMenuType('file')
       } else {
@@ -266,7 +272,7 @@ export default function ContextMenuWrap ({ children }) {
     handleContextMenuClick(event);
 
     if (!isContextMenu) {
-      if (clickedElements.length === 0) {
+      if (clickedElements.length <= 1) {
         addClickedElement(event, folder);
         setContextMenuType('folder');
       } else {
@@ -434,13 +440,15 @@ export default function ContextMenuWrap ({ children }) {
     onContextMenu={handleDefaultContextMenuClick}>
 
       <ContextMenuContext.Provider value={{ 
-      clickedElements, addClickedElement, clearClickedElements, downloadClickedElements, 
+      downloadClickedElements, openUpload,
+      clickedElements, addClickedElement, clearClickedElements,  
       removeClickedElements, recoverClickedElements, deleteClickedElements,
       copyClickedElements, cutClickedElements, pasteClickedElements, 
       hoveredElement, setHoveredElement, clearHoveredElement,
       isRenaming, setIsRenaming, isCreatingFolder, setIsCreatingFolder,
       handleOnElementMouseDown,
-      isContextMenu, contextMenuClickPosition,
+      isContextMenu, setIsContextMenu, 
+      contextMenuClickPosition,
       isHoveredOverMenu, setIsHoveredOverMenu,
       handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick
        }}> 

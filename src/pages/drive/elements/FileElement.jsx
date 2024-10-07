@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
@@ -22,6 +22,18 @@ export default function FileElement ({ file }) {
   const contextMenuContext = useContext(ContextMenuContext);
   const folderContext = useContext(FolderContext);
   const modalContext = useContext(ModalContext);
+
+
+  // IMAGE
+  const [imageSrc, setImageSrc] = useState('');
+
+  useEffect(() => {
+    if (file.thumbnail) {
+      setImageSrc('data:image/png;base64,' + file.thumbnail);
+    } else {
+      setImageSrc(file.imageBlob);
+    }
+  }, [file])
 
 
   // GETS
@@ -69,13 +81,16 @@ export default function FileElement ({ file }) {
 
   const handleNaming = async (name) => {
     if (name && (name !== file.name)) {
-      await FileService.handleRename(userData, driveData, { ...file, name: name })
+      const newFile = { ...file, name: name }
+      folderContext.updateElementOnClient(newFile);
+
+      await FileService.handleRename(userData, driveData, newFile)
       .then(() => {
-        folderContext.reorderFiles({ ...file, name: name });
         contextMenuContext.setIsRenaming(false);
         modalContext.closeModal();
       })
       .catch(() => {
+        folderContext.deleteElementOnClient(newFile);
         contextMenuContext.setIsRenaming(false);
         modalContext.closeModal();
       })
@@ -102,11 +117,11 @@ export default function FileElement ({ file }) {
   }
 
   const handleOnDoubleClick = () => {
-    if (file.thumbnail) {
-      modalContext.openModal(<ImageModal file={file} />);
+    if (file.thumbnail || file.imageBlob) {
+      modalContext.openModal(<ImageModal file={file}/>);
     }
   }
-  
+
 
   // STYLES 
   const getNameStyle = () => {
@@ -163,11 +178,11 @@ export default function FileElement ({ file }) {
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
-            {file.thumbnail ? 
+            {(file.thumbnail || file.imageBlob) ? 
               <img className={`w-full h-full object-contain 
               transition-all
               ${getImageStyle()}`}
-              src={'data:image/png;base64,' + file.thumbnail} 
+              src={imageSrc} 
               draggable={false} />
               :
               <Box className={`w-full h-full place-self-center 

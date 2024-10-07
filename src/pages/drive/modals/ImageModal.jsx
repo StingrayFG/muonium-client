@@ -19,28 +19,30 @@ export default function ImageModal ({ file }) {
   const modalContext = useContext(ModalContext);
 
   const [isLoaded, setIsLoaded] = useState(false);
-  const [imageLink, setImageLink] = useState('');
-
+  
   const boxRef = useRef();
   const imgRef = useRef();
 
 
-  // LINK
-  const getImageLink = async () => {
-    await FileService.handleGetImageLink(userData, driveData, file)
-    .then(res => {
-      setIsLoaded(true);
-      setImageLink(res);
-    })
-    .catch(() => {
-      setIsLoaded(true);
-      setImageLink('');
-    })
-  }
+  // IMAGE
+  const [imageSrc, setImageSrc] = useState('');
 
   useEffect(() => {
-    getImageLink();
-  }, [])
+    if (file.thumbnail) {
+      FileService.handleGetImageLink(userData, driveData, file)
+      .then(res => {
+        setIsLoaded(true);
+        setImageSrc(res);
+      })
+      .catch(() => {
+        setIsLoaded(true);
+        setImageSrc('');
+      })
+    } else {
+      setIsLoaded(true);
+      setImageSrc(file.imageBlob);
+    }
+  }, [file])
 
 
   // HANDLERS
@@ -97,10 +99,10 @@ export default function ImageModal ({ file }) {
 
         <Box className='w-screen h-screen grid place-items-center'
         ref={boxRef}>
-          {(isLoaded && imageLink) && 
+          {(isLoaded && imageSrc) && 
             <img className='w-[80%] h-[80%] absolute
             object-contain'
-            src={imageLink} />
+            src={imageSrc} />
           }
 
           <img className={`w-[80%] h-[80%] absolute

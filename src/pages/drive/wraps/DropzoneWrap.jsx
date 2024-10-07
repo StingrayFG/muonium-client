@@ -10,9 +10,10 @@ import FileService from 'services/FileService.jsx';
 
 
 export default function DropzoneWrap ({ children }) {
-  const folderContext = useContext(FolderContext);
-
   const dispatch = useDispatch();
+
+  const folderContext = useContext(FolderContext);
+  
   const userData = useSelector(state => state.user);
   const driveData = useSelector(state => state.drive);
 
@@ -38,9 +39,12 @@ export default function DropzoneWrap ({ children }) {
 
   useEffect(() => {
     if (requiresUpload) {
+      console.log(file)
+      const newFile = { uuid: Date.now() + '-temp', name: file.name, type: 'file', imageBlob: URL.createObjectURL(file)};
+      
       FileService.handleUpload(userData, driveData, { parentUuid: folderContext.currentFolder.uuid }, file)
       .then(() => {
-
+        folderContext.addElementOnClient(newFile)
       })
       .catch(() => {
         
