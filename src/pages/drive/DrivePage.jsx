@@ -8,7 +8,6 @@ import { useDelayedNavigate } from 'hooks/UseDelayedNavigate';
 import { setInitialUuid, setAbsolutePath } from 'state/slices/PathSlice';
 import { clearUser } from 'state/slices/UserSlice';
 import { getDrive } from 'state/slices/DriveSlice';
-import { setCounts } from 'state/slices/SelectionSlice';
 
 import { FolderContext } from 'contexts/FolderContext';
 
@@ -36,7 +35,11 @@ export default function DrivePanels ({ folderUuid }) {
     folderUuid = uuid;
   }
 
-  const [currentFolder, setCurrentFolder] = useState({});
+  const [currentFolder, setCurrentFolder] = useState({
+    uuid: '',
+    folders: [],
+    files: []
+  });
   const [isAwaitingNavigation, NavigateWithDelay] = useDelayedNavigate();
 
   // AUTH
@@ -66,7 +69,6 @@ export default function DrivePanels ({ folderUuid }) {
   const getFolder = async () => {
     await FolderService.handleGetByUuid(userData, driveData, { uuid: pathData.currentUuid })
     .then(res => {
-      dispatch(setCounts({ filesCount: res.files.length, foldersCount: res.folders.length  }))
       setCurrentFolder(res);
       dispatch(setAbsolutePath({ currentAbsolutePath: res.absolutePath }));
     })
@@ -159,14 +161,13 @@ export default function DrivePanels ({ folderUuid }) {
               <DropzoneWrap>
                 <ContextMenuWrap>
                   <SidePanel />
-                  <Box className='h-full flex-1'>
+                  <Box className='grid grid-rows-[1fr_max-content]'>
                     <FolderContents />   
+                    <BottomPanel />
                   </Box> 
                 </ContextMenuWrap>
               </DropzoneWrap>
             </Box>
-
-            <BottomPanel />
 
           </ModalWrap>
         </FolderContext.Provider>   

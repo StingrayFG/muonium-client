@@ -36,7 +36,7 @@ export default function SidePanel () {
   }, [bookmarkData.bookmarks])
 
   return (
-    <Box className='w-64 max-h-full overflow-y-auto 
+    <Box className='w-64 max-h-full overflow-y-auto
     scrollbar scrollbar-sky-300/20 scrollbar-corner-sky-300/20 scrollbar-track-transparent
     border-r border-sky-300/20'>
       <Box className='w-full h-8 px-2 flex 

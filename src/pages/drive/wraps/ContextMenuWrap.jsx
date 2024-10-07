@@ -57,6 +57,8 @@ export default function ContextMenuWrap ({ children }) {
         if (clickedElements[0].type !== 'bookmark') {
           dispatch(setElements(clickedElements));
         }
+      } else {
+        dispatch(setElements(clickedElements));
       }
     }
   }, [clickedElements])
@@ -424,7 +426,7 @@ export default function ContextMenuWrap ({ children }) {
   }
 
   return (
-    <Box className='w-full h-full flex'
+    <Box className='w-full h-full grid grid-cols-[max-content_1fr]'
     onKeyDown={handleOnKeyDown}
     onMouseUp={handleOnMouseUp}
     onMouseDown={handleOnWrapMouseDown}

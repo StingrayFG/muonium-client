@@ -1,64 +1,99 @@
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '@mui/material';
+
+import { FolderContext } from 'contexts/FolderContext.jsx';
+
 
 export default function BottomPanel () {
   const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
   const selectionData = useSelector(state => state.selection);
 
+  const folderContext = useContext(FolderContext);
+  
+  const getContentsText = () => {
+    let res = '';
+    if (folderContext.currentFolder.folders.length > 0) {
+      res += folderContext.currentFolder.folders.length ;
+      if (folderContext.currentFolder.folders.length  > 1) {
+        res += ' folders';
+      } else {
+        res += ' folder';
+      }
+    }
+    if ((folderContext.currentFolder.folders.length > 0) && (folderContext.currentFolder.files.length > 0)) { 
+      res += ', ';
+    }
+    if (folderContext.currentFolder.files.length > 0) {
+      res += folderContext.currentFolder.files.length;
+      if (folderContext.currentFolder.files.length > 1) {
+        res += ' files';
+      } else {
+        res += ' file';
+      }
+    }
+    return res;
+  }
+
+  const getClipboardText = () => {
+    let res = '';
+
+    if (selectionData.elements.length > 0) {
+      if (selectionData.elements.length === 1) {
+        res += '1 element';
+      } else {
+        res += (selectionData.elements.length + ' elements');
+      }
+
+      if (!clipboardData.mode) {
+        res += ' folder';
+      } else if (clipboardData.mode === 'copy') {
+        res += ' copied';
+      } else if (clipboardData.mode === 'cut') {
+        res += ' cut';
+      }
+    }
+
+  }
+
   return (
-    <div className='w-full h-12 flex
-    bg-gradient-to-b from-zinc-600 to-zinc-700
-    border-solid border-t-2 border-zinc-800
-    text-lg font-semibold font-sans text-neutral-200'>
-      <div className='w-96 flex px-4 py-2'>
-        <p className='h-8 place-self-center text-left'>
-          {(driveData.spaceTotal / (1024 * 1024)).toFixed(0)} MB drive, 
-          {' ' + (driveData.spaceUsed / (1024 * 1024)).toFixed(0)} MB used
-          {' (' + ((driveData.spaceUsed / (driveData.spaceTotal + 0.1) * 100).toFixed(0)) + '% full)'}
-        </p>
-      </div>
+    <Box className='w-full px-2 py-2 flex 
+    border-sky-300/20 border-t'>
 
-      <div className='-ml-[2px] my-2 border-solid border-l-2 border-zinc-800'></div>
+      <Box className='flex'>
+        <Box className='flex'>
+          <p className='px-2 h-8 place-self-center text-left'>
+            {getContentsText()}
+          </p>
+        </Box>
 
-      <div className='flex px-4 py-2'>
-        <p className='h-8 place-self-center text-left'>
-          {(selectionData.foldersCount > 0) && <>
-            {selectionData.foldersCount}
-            {(selectionData.foldersCount > 1) ?  (' folders') : (' folder')}
-          </>}
-          {((selectionData.foldersCount > 0) && (selectionData.filesCount > 0)) && <>
-            {', '}
-          </>}
-          {(selectionData.filesCount > 0) && <>
-            {selectionData.filesCount}
-            {(selectionData.filesCount > 1) ? (' files') : (' file')}
-          </>}
-        </p>
-      </div>
+        {getContentsText() && <Box className='separator-vertical' />}
 
-      {((selectionData.foldersCount > 0) || (selectionData.filesCount > 0)) && <div className='my-2 border-solid border-l-2 border-zinc-800'></div>}
+        <Box className='flex'>
+          <p className='px-2 h-8 place-self-center text-left'>
+            {getClipboardText()}
+          </p>
+        </Box>
+      </Box>
 
-      <div className='flex px-4 py-2'>
-        <p className='h-8 place-self-center text-left'>
-          {(!clipboardData.mode) && <>
-            {(selectionData.elements.length > 0) && <>
-              {(selectionData.elements.length > 1) ? (selectionData.elements.length + ' items selected') : ('1 item selected')}
-            </>}
-          </>}
-          {(clipboardData.mode === 'copy') && <>
-            {(clipboardData.elements.length > 0) && <>
-              {(clipboardData.elements.length > 1) ? (clipboardData.elements.length + ' items copied') : ('1 item copied')}
-            </>}
-          </>}
-          {(clipboardData.mode === 'cut') && <>
-            {(clipboardData.elements.length > 0) && <>
-              {(clipboardData.elements.length > 1) ? (clipboardData.elements.length + ' items cut') : ('1 item cut')}
-            </>}
-          </>}
-        </p>
-      </div>
+      <Box className='ml-auto flex'>
+        <Box className='separator-vertical' />
+        
+        <Box className='relative 
+        border-sky-300/20 border rounded-[0.3rem]'>
+          <Box className='h-full absolute
+          bg-sky-400/20 rounded-[0.2rem]'
+          style={{
+            width: ((driveData.spaceUsed / driveData.spaceTotal) * 100) + '%'
+          }}/>
 
-      {((clipboardData.elements.length > 0) || (selectionData.elements.length > 0)) && <div className='my-2 border-solid border-l-2 border-zinc-800'></div>}
-    </div>
+          <p className='px-4 h-8 place-self-center text-left'>
+            {((driveData.spaceTotal - driveData.spaceUsed) / (1024 * 1024)).toFixed(0) + ' MB free'} 
+          </p>
+        </Box>
+      </Box>
+
+    </Box>
   );
 }

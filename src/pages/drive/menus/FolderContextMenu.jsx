@@ -21,7 +21,7 @@ export default function FolderContextMenu ({ point, folder }) {
   [ 
     { text: 'Remove from places', icon: 'remove-bookmark', handleOnClick: () => {
       dispatch(deleteBookmark({ userData, folderData: folder }));
-      contextMenuContext.setShallContextMenuClose(true);
+      contextMenuContext.setIsContextMenu(false);
     }},
     'line',
     { text: 'Cut', icon: 'cut', handleOnClick: contextMenuContext.cutClickedElements },
@@ -33,7 +33,7 @@ export default function FolderContextMenu ({ point, folder }) {
   [
     { text: 'Add to places', icon: 'add-bookmark', handleOnClick: () => {
       dispatch(createBookmark({ userData, folderData: folder }));
-      contextMenuContext.setShallContextMenuClose(true);
+      contextMenuContext.setIsContextMenu(false);
     }},
     'line',
     { text: 'Cut', icon: 'cut', handleOnClick: contextMenuContext.cutClickedElements },

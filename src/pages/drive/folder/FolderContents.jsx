@@ -30,24 +30,24 @@ export default function FolderContents ({ children }) {
   }, [])
 
   
-  return (
-    <Box className={`scrollbar scrollbar-sky-300/20 scrollbar-corner-sky-300/20 scrollbar-track-transparent
-    ${settingsData.type === 'grid' &&  'w-full max-h-full grid overflow-y-auto'}`}
-    style={{
-      gridTemplateColumns: `repeat(${columnsCount}, minmax(0, 1fr))`
-    }}>
-      {contextMenuContext.isCreatingFolder && (
-        <FolderElement />
-      )}
+  if (folderContext.currentFolder.uuid) {
+    return (
+      <Box className={`scrollbar scrollbar-sky-300/20 scrollbar-corner-sky-300/20 scrollbar-track-transparent
+      ${settingsData.type === 'grid' &&  'w-full h-fit max-h-full grid overflow-y-auto'}`}
+      style={{
+        gridTemplateColumns: `repeat(${columnsCount}, minmax(0, 1fr))`
+      }}>
+        {contextMenuContext.isCreatingFolder && (
+          <FolderElement />
+        )}
 
-      {folderContext.currentFolder.uuid && <>
         {folderContext.currentFolder.files.map((file) => (
           <FileElement key={file.uuid} file={file}/>
         ))}
         {folderContext.currentFolder.folders.map((folder) => (
           <FolderElement key={folder.uuid} folder={folder} />
         ))}
-        </>}
-    </Box>    
-  );
+      </Box>  
+    )  
+  }
 }
