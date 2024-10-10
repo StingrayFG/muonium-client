@@ -81,8 +81,8 @@ export default function FileElement ({ file }) {
 
   const handleNaming = async (name) => {
     if (name && (name !== file.name)) {
-      const newFile = { ...file, name: name }
-      folderContext.updateElementOnClient(newFile);
+      const newFile = { ...file, name: name };
+      const updatedFolder = folderContext.updateElementsOnClient([newFile]);
 
       await FileService.handleRename(userData, driveData, newFile)
       .then(() => {
@@ -90,7 +90,7 @@ export default function FileElement ({ file }) {
         modalContext.closeModal();
       })
       .catch(() => {
-        folderContext.deleteElementOnClient(newFile);
+        folderContext.updateElementsOnClient([file], updatedFolder);
         contextMenuContext.setIsRenaming(false);
         modalContext.closeModal();
       })

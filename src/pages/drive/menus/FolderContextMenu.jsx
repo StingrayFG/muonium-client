@@ -20,7 +20,7 @@ export default function FolderContextMenu ({ point, folder }) {
   const options = bookmarkData.bookmarkedFoldersUuids.includes(folder?.uuid) ?  
   [ 
     { text: 'Remove from places', icon: 'remove-bookmark', handleOnClick: () => {
-      dispatch(deleteBookmark({ userData, folderData: folder }));
+      dispatch(deleteBookmark({ userData, bookmarkData: { folderUuid: folder.uuid } }));
       contextMenuContext.setIsContextMenu(false);
     }},
     'line',
@@ -32,7 +32,7 @@ export default function FolderContextMenu ({ point, folder }) {
   : 
   [
     { text: 'Add to places', icon: 'add-bookmark', handleOnClick: () => {
-      dispatch(createBookmark({ userData, folderData: folder }));
+      dispatch(createBookmark({ userData, bookmarkData: { folderUuid: folder.uuid } }));
       contextMenuContext.setIsContextMenu(false);
     }},
     'line',

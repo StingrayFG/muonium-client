@@ -41,13 +41,11 @@ export default function DropzoneWrap ({ children }) {
     if (requiresUpload) {
       console.log(file)
       const newFile = { uuid: Date.now() + '-temp', name: file.name, type: 'file', imageBlob: URL.createObjectURL(file)};
-      
+
+      const updatedFolder = folderContext.addElementsOnClient([newFile])
       FileService.handleUpload(userData, driveData, { parentUuid: folderContext.currentFolder.uuid }, file)
-      .then(() => {
-        folderContext.addElementOnClient(newFile)
-      })
       .catch(() => {
-        
+        folderContext.deleteElementsOnClient([newFile], updatedFolder);
       })
       setRequiresUpload(false);
     }

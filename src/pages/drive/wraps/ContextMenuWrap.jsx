@@ -81,7 +81,7 @@ export default function ContextMenuWrap ({ children }) {
   }
 
   // NAMING
-  const [isRenaming, setIsRenaming] = useState(false);
+  const [isRenaming, setIsRenaming] = useState(false); // Changed by context menus, changes are read in the elements
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
 
   useEffect(() => {
@@ -103,52 +103,46 @@ export default function ContextMenuWrap ({ children }) {
     setIsContextMenu(false);
     dispatch(setPaste());
 
+    const updatedFolder = folderContext.addElementsOnClient(clipboardData.elements);
+    let failedElements = [];
+
     if (clipboardData.mode === 'copy') {
       for await (const element of clipboardData.elements) {
-        folderContext.addElementOnClient(element);
-
         if (element.type === 'file') {
           await FileService.handleCopy(userData, driveData, { ...element, parentUuid: folderContext.currentFolder.uuid })
-          .catch(() => {
-            folderContext.addElementOnClient(element);
-          })
+          .catch(() => {failedElements.push(element)})
         }
       }
     } else if (clipboardData.mode === 'cut') {
       for await (const element of clipboardData.elements) {
-        folderContext.addElementOnClient(element);
-
         if (element.type === 'file') { 
           await FileService.handleMove(userData, driveData, { ...element, parentUuid: folderContext.currentFolder.uuid } )
-          .catch(() => {
-            folderContext.addElementOnClient(element);
-          })
+          .catch(() => {failedElements.push(element)})
         } else if (element.type === 'folder') { 
           await FolderService.handleMove(userData, driveData, { ...element, parentUuid: folderContext.currentFolder.uuid } )
-          .catch(() => {
-            folderContext.addElementOnClient(element);
-          })
+          .catch(() => {failedElements.push(element)})
         }
-      }
+      } 
     }
+
+    folderContext.deleteElementsOnClient(failedElements, updatedFolder);
   };
 
   const moveClickedElements = async () => { // Used to move by dragging elements
-    for await (let element of clickedElements) {
-      folderContext.deleteElementOnClient(element);
+    const updatedFolder = folderContext.deleteElementsOnClient(clickedElements);
+    let failedElements = [];
 
+    for await (let element of clickedElements) {
       if (element.type === 'file') {
         await FileService.handleMove(userData, driveData, { ...element, parentUuid: hoveredElement.uuid })
-        .catch(() => {
-          folderContext.addElementOnClient(element);
-        })
+        .catch(() => {failedElements.push(element)})
       } else if (element.type === 'folder') {
         await FolderService.handleMove(userData, driveData, { ...element, parentUuid: hoveredElement.uuid })
-        .catch(() => {
-          folderContext.addElementOnClient(element);
-        })
+        .catch(() => {failedElements.push(element)})
       }
     }
+
+    folderContext.addElementsOnClient(failedElements, updatedFolder);
   }
 
   const clearClipboardElements = async () => {
@@ -159,67 +153,62 @@ export default function ContextMenuWrap ({ children }) {
   const removeClickedElements = async () => {
     setIsContextMenu(false);
 
-    for await (const element of clickedElements) {
-      folderContext.deleteElementOnClient(element);
+    const updatedFolder = folderContext.deleteElementsOnClient(clickedElements);
+    let failedElements = [];
 
+    for await (const element of clickedElements) {
       if (element.type === 'file') { 
         await FileService.handleRemove(userData, driveData, element)
-        .catch(() => {
-          folderContext.addElementOnClient(element);
-        })
+        .catch(() => {failedElements.push(element)})
       } else if (element.type === 'folder') { 
         await FolderService.handleRemove(userData, driveData, element)
-        .catch(() => {
-          folderContext.addElementOnClient(element);
-        })
+        .catch(() => {failedElements.push(element)})
       }
     }
+    
+    folderContext.addElementsOnClient(failedElements, updatedFolder);
   }
 
   const recoverClickedElements = async () => {
     setIsContextMenu(false);
 
-    for await (const element of clickedElements) {
-      folderContext.deleteElementOnClient(element);
+    const updatedFolder = folderContext.deleteElementsOnClient(clickedElements);
+    let failedElements = [];
 
+    for await (const element of clickedElements) {
       if (element.type === 'file') {  
         await FileService.handleRecover(userData, driveData, element)
-        .catch(() => {
-          folderContext.addElementOnClient(element);
-        })
+        .catch(() => {failedElements.push(element)})
       } else if (element.type === 'folder') { 
         await FolderService.handleRecover(userData, driveData, element)
-        .catch(() => {
-          folderContext.addElementOnClient(element);
-        })
+        .catch(() => {failedElements.push(element)})
       }
     }  
+
+    folderContext.addElementsOnClient(failedElements, updatedFolder);
   }
 
   const deleteClickedElements = async () => {
     setIsContextMenu(false);
 
+    const updatedFolder = folderContext.deleteElementsOnClient(clickedElements);
+    let failedElements = [];
+
     for await (const element of clickedElements) {
       if (element.type === 'file') { 
-        folderContext.deleteElementOnClient(element);
         await FileService.handleDelete(userData, driveData, element)
-        .catch(() => {
-          folderContext.addElementOnClient(element);
-        })
+        .catch(() => {failedElements.push(element)})
       } else if (element.type === 'folder') { 
-        folderContext.deleteElementOnClient(element);
-
-        //delete folder bookmark
         await FolderService.handleDelete(userData, driveData, element)
-        .catch(() => {
-          folderContext.addElementOnClient(element);
-        })
+        .catch(() => {failedElements.push(element)})
       } else if (element.type === 'bookmark') { 
         dispatch(deleteBookmark({ userData, folderData: clickedElements[0].folder }));
       }
     }
-  }
 
+    folderContext.addElementsOnClient(failedElements, updatedFolder);
+  }
+  
 
   // MENUS HANDLERS
   const [isContextMenu, setIsContextMenu] = useState(false);

@@ -30,7 +30,8 @@ export default function FolderElement ({ folder }) {
   if (!folder) { 
     folder = { 
       uuid: '', 
-      name: '', 
+      name: '',
+      type: 'folder', 
       parentUuid: folderContext.currentFolder.uuid 
     } 
   }
@@ -90,24 +91,30 @@ export default function FolderElement ({ folder }) {
   const handleNaming = async (name) => {
     if (name && (name !== folder.name)) {
       if (contextMenuContext.isCreatingFolder) {
-        await FolderService.handleCreate(userData, driveData, { ...folder, name: name })
+        const newFolder = { ...folder, uuid: Date.now() + 'temp', name: name };
+        const updatedFolder = folderContext.addElementsOnClient([newFolder]);
+
+        await FolderService.handleCreate(userData, driveData, newFolder)
         .then(() => {
-          folderContext.reorderFolders({ ...folder, name: name });
           contextMenuContext.setIsCreatingFolder(false);
           modalContext.closeModal();
         })
         .catch(() => {
+          folderContext.deleteElementsOnClient([newFolder], updatedFolder);
           contextMenuContext.setIsCreatingFolder(false);
           modalContext.closeModal();
         })
       } else {
-        await FolderService.handleRename(userData, driveData, { ...folder, name: name })
-        .then(() => {
-          folderContext.reorderFolders({ ...folder, name: name });
+        const newFolder = { ...folder, name: name };
+        const updatedFolder = folderContext.updateElementsOnClient([newFolder]);
+
+        await FolderService.handleRename(userData, driveData, newFolder)   
+        .then(() => {      
           contextMenuContext.setIsRenaming(false);
           modalContext.closeModal();
         })
         .catch(() => {
+          folderContext.updateElementsOnClient([folder], updatedFolder);
           contextMenuContext.setIsRenaming(false);
           modalContext.closeModal();
         })

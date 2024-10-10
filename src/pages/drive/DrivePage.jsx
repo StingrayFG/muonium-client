@@ -8,6 +8,7 @@ import { useDelayedNavigate } from 'hooks/UseDelayedNavigate';
 import { setInitialUuid, setAbsolutePath } from 'state/slices/PathSlice';
 import { clearUser } from 'state/slices/UserSlice';
 import { getDrive } from 'state/slices/DriveSlice';
+import { getBookmarks } from 'state/slices/BookmarkSlice';
 
 import { FolderContext } from 'contexts/FolderContext';
 
@@ -35,11 +36,6 @@ export default function DrivePanels ({ folderUuid }) {
     folderUuid = uuid;
   }
 
-  const [currentFolder, setCurrentFolder] = useState({
-    uuid: '',
-    folders: [],
-    files: []
-  });
   const [isAwaitingNavigation, NavigateWithDelay] = useDelayedNavigate();
 
   // AUTH
@@ -56,8 +52,15 @@ export default function DrivePanels ({ folderUuid }) {
 
 
   // UPDATE
+  const [currentFolder, setCurrentFolder] = useState({
+    uuid: '',
+    folders: [],
+    files: []
+  });
+
   useEffect(() => {
     dispatch(getDrive(userData));
+    dispatch(getBookmarks(userData));
   }, [])
 
   useEffect(() => {
@@ -105,41 +108,69 @@ export default function DrivePanels ({ folderUuid }) {
 
 
   // CLIENT SIDE UPDATES
-  const addElementOnClient = (element) => {
-    if (element.type === 'file') {
-      let reorderedFiles = currentFolder.files;
-      const insertTo = reorderedFiles.findIndex(file => (element.name < file.name))
-      reorderedFiles.splice(insertTo, 0, element);
-      setCurrentFolder({ ...currentFolder, files: reorderedFiles })
-    } else if (element.type === 'folder') {
-      let reorderedFolders = currentFolder.folders;
-      const insertTo = reorderedFolders.findIndex(folder => (element.name < folder.name))
-      reorderedFolders.splice(insertTo, 0, element);
-      setCurrentFolder({ ...currentFolder, folders: reorderedFolders })
+  const addElementsOnClient = (elements, updatedFolder) => {
+    console.log(elements)
+    if (elements.length > 0) {
+      let reorderedFiles = updatedFolder ? updatedFolder.files : currentFolder.files;
+      let reorderedFolders = updatedFolder ? updatedFolder.folders : currentFolder.folders;
+
+      for (const element of elements) {
+        if (element.type === 'file') {
+          reorderedFiles.push(element);
+        } else if (element.type === 'folder') {
+          reorderedFolders.push(element);
+        }
+      }
+
+      reorderedFiles.sort((a, b) => a.name.localeCompare(b.name));
+      reorderedFolders.sort((a, b) => a.name.localeCompare(b.name));
+
+      setCurrentFolder({ ...currentFolder, files: reorderedFiles, folders: reorderedFolders });
+      return({ ...currentFolder, files: reorderedFiles, folders: reorderedFolders });
     }
   }
 
-  const updateElementOnClient = (element) => {
-    if (element.type === 'file') {
-      let reorderedFiles = currentFolder.files.filter(file => (file.uuid !== element.uuid))
-      const insertTo = reorderedFiles.findIndex(file => (element.name < file.name))
-      reorderedFiles.splice(insertTo, 0, element);
-      setCurrentFolder({ ...currentFolder, files: reorderedFiles })
-    } else if (element.type === 'folder') {
-      let reorderedFolders = currentFolder.folders.filter(folder => (folder.uuid !== element.uuid))
-      const insertTo = reorderedFolders.findIndex(folder => (element.name < folder.name))
-      reorderedFolders.splice(insertTo, 0, element);
-      setCurrentFolder({ ...currentFolder, folders: reorderedFolders })
+  const updateElementsOnClient = (elements, updatedFolder) => {
+    if (elements.length > 0) {
+      let reorderedFiles = updatedFolder ? updatedFolder.files : currentFolder.files;
+      let reorderedFolders = updatedFolder ? updatedFolder.folders : currentFolder.folders;
+
+      for (const element of elements) {
+        if (element.type === 'file') {
+          reorderedFiles.find((o, i) => {
+            if (o.uuid === element.uuid) {
+              reorderedFiles[i] = element;
+            }
+          })
+        } else if (element.type === 'folder') {
+          reorderedFolders.find((o, i) => {
+            if (o.uuid === element.uuid) {
+              reorderedFolders[i] = element;
+            }
+          })
+        }
+      }
+
+      reorderedFiles.sort((a, b) => a.name.localeCompare(b.name));
+      reorderedFolders.sort((a, b) => a.name.localeCompare(b.name));
+
+      setCurrentFolder({ ...currentFolder, files: reorderedFiles, folders: reorderedFolders });
+      return({ ...currentFolder, files: reorderedFiles, folders: reorderedFolders });
     }
   }
 
-  const deleteElementOnClient = (element) => {
-    if (element.type === 'file') {
-      const reorderedFiles = currentFolder.files.filter(file => (file.uuid !== element.uuid))
-      setCurrentFolder({ ...currentFolder, files: reorderedFiles })
-    } else if (element.type === 'folder') {
-      const reorderedFolders = currentFolder.folders.filter(folder => (folder.uuid !== element.uuid))
-      setCurrentFolder({ ...currentFolder, folders: reorderedFolders })
+  const deleteElementsOnClient = (elements, updatedFolder) => {
+    if (elements.length > 0) {
+      let reorderedFiles = updatedFolder ? updatedFolder.files : currentFolder.files;
+      let reorderedFolders = updatedFolder ? updatedFolder.folders : currentFolder.folders;
+
+      const elementsUuids = elements.map(e => e.uuid);
+
+      reorderedFiles = reorderedFiles.filter(file => (!elementsUuids.includes(file.uuid)))
+      reorderedFolders = reorderedFolders.filter(folder => (!elementsUuids.includes(folder.uuid)))
+
+      setCurrentFolder({ ...currentFolder, files: reorderedFiles, folders: reorderedFolders });
+      return({ ...currentFolder, files: reorderedFiles, folders: reorderedFolders });
     }
   }
 
@@ -152,7 +183,7 @@ export default function DrivePanels ({ folderUuid }) {
       ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}
         onContextMenu={handleOnContextMenu}>
         <FolderContext.Provider value={{ currentFolder, setCurrentFolder, handleLogout,
-        addElementOnClient, updateElementOnClient, deleteElementOnClient }}> 
+        addElementsOnClient, updateElementsOnClient, deleteElementsOnClient }}> 
           <ModalWrap>
             
             <TopPanel />   
