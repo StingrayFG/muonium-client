@@ -108,7 +108,7 @@ export default function ImageModal ({ file }) {
           <img className={`w-[80%] h-[80%] absolute
           transition-all duration-500
           object-contain blur-sm
-          ${isLoaded ? 'opacity-0' : 'opacity-100'}`}
+          ${(isLoaded && imageSrc) ? 'opacity-0' : 'opacity-100'}`}
           src={'data:image/png;base64,' + file.thumbnail} 
           ref={imgRef}/>
         </Box>
