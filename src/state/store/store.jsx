@@ -6,7 +6,6 @@ import { pathSlice } from 'state/slices/PathSlice';
 import { clipboardSlice } from 'state/slices/ClipboardSlice';
 import { bookmarkSlice } from 'state/slices/BookmarkSlice';
 import { settingsSlice } from 'state/slices/SettingsSlice';
-import { selectionSlice } from 'state/slices/SelectionSlice';
 
 
 export const store = configureStore({
@@ -18,6 +17,5 @@ export const store = configureStore({
     clipboard: clipboardSlice.reducer,
     bookmark: bookmarkSlice.reducer,
     settings: settingsSlice.reducer,
-    selection: selectionSlice.reducer,
   },
 });

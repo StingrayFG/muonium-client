@@ -2,18 +2,26 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { FolderContext } from 'contexts/FolderContext.jsx';
+import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 
 export default function BottomPanel () {
   const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
-  const selectionData = useSelector(state => state.selection);
   const currentFolderData = useSelector(state => state.currentFolder);
 
-  const folderContext = useContext(FolderContext);
-  
-  const getContentsText = () => {
+  const contextMenuContext = useContext(ContextMenuContext);
+
+  const parseSize = (size) => {
+    let res = '';
+    if (size > Math.pow(1024, 3)) { res += (((size / Math.pow(1024, 3)) + '').slice(0.5) + ' GiB') } 
+    else if (size > Math.pow(1024, 2)) { res += (((size / Math.pow(1024, 2)) + '').slice(0,5) + ' MiB') } 
+    else if (size > Math.pow(1024, 1)) { res += (((size / Math.pow(1024, 1)) + '').slice(0,5) + ' KiB') } 
+    else { res += (size + ' B') } 
+    return res;
+  }
+
+  const getDefaultText = () => {
     let res = '';
     if (currentFolderData.folders.length > 0) {
       res += currentFolderData.folders.length ;
@@ -37,51 +45,67 @@ export default function BottomPanel () {
     return res;
   }
 
-  const getClipboardText = () => {
+  const getSelectionText = () => {
     let res = '';
 
-    if (selectionData.elements.length > 0) {
-      if (selectionData.elements.length === 1) {
-        res += '1 element';
-      } else {
-        res += (selectionData.elements.length + ' elements');
+    if (contextMenuContext.clickedElements.length > 0) {
+      const folders = contextMenuContext.clickedElements.filter(element => (element.type === 'folder'));
+      const files = contextMenuContext.clickedElements.filter(element => (element.type === 'file'));
+      const fileSizesSum = files.reduce((partialSum, element) => partialSum + element.size, 0)
+
+      if (folders.length > 0) {
+        if (folders.length === 1) { res += '1 folder'; } 
+        else { res += folders.length + ' folders'; }
       }
 
-      if (!clipboardData.mode) {
-        res += ' folder';
-      } else if (clipboardData.mode === 'copy') {
-        res += ' copied';
-      } else if (clipboardData.mode === 'cut') {
-        res += ' cut';
+      if ((folders.length > 0) && (files.length > 0)) { res += ', '}
+
+      if (files.length > 0) { 
+        if (files.length === 1) { res += '1 file'; } 
+        else { res += files.length + ' files'; }
+        res += (' (' + parseSize(fileSizesSum) + ')');
       }
+
+      if (clipboardData.mode === 'copy') { res += ' copied'; } 
+      else if (clipboardData.mode === 'cut') { res += ' cut'; } 
+      else { res += ' selected'; }
+      
+    } else if (contextMenuContext.hoveredElement.uuid) {
+      if (contextMenuContext.hoveredElement.type === 'file') {
+        res += (
+          contextMenuContext.hoveredElement.name + ' (' + 
+          contextMenuContext.hoveredElement.type + ', ' + 
+          parseSize(contextMenuContext.hoveredElement.size) + ')'
+        );
+      } else if (contextMenuContext.hoveredElement.type === 'folder') {
+        res += (
+          contextMenuContext.hoveredElement.name + ' (' + 
+          contextMenuContext.hoveredElement.type + ')'
+        );
+      }
+
+    } else {
+      res = getDefaultText();
     }
 
+    return res;
   }
+
 
   return (
     <Box className='w-full px-2 py-2 flex 
     border-sky-300/20 border-t'>
 
       <Box className='flex'>
-        <Box className='flex'>
-          <p className='px-2 h-8 place-self-center text-left'>
-            {getContentsText()}
-          </p>
-        </Box>
-
-        {getContentsText() && <Box className='separator-vertical' />}
-
-        <Box className='flex'>
-          <p className='px-2 h-8 place-self-center text-left'>
-            {getClipboardText()}
-          </p>
-        </Box>
+        <p className='px-2 h-8 place-self-center text-left'>
+          {getSelectionText()}
+        </p>  
       </Box>
 
       <Box className='ml-auto flex'>
         <Box className='separator-vertical' />
         
-        <Box className='relative 
+        <Box className='relative ml-2
         border-sky-300/20 border rounded-[0.3rem]'>
           <Box className='h-full absolute
           bg-sky-400/20 rounded-[0.2rem]'
@@ -90,7 +114,7 @@ export default function BottomPanel () {
           }}/>
 
           <p className='px-4 h-8 place-self-center text-left'>
-            {((driveData.spaceTotal - driveData.spaceUsed) / (1024 * 1024)).toFixed(0) + ' MB free'} 
+            {((driveData.spaceTotal - driveData.spaceUsed) / (1024 * 1024)).toFixed(0) + ' MiB free'} 
           </p>
         </Box>
       </Box>

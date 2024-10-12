@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
 import { copyToClipboard, cutToClipboard, clearClipboard } from 'state/slices/ClipboardSlice.jsx';
-import { setElements } from 'state/slices/SelectionSlice.jsx';
 import { copyElements, pasteElements, moveElements, removeElements, recoverElements, deleteElements } from 'state/slices/CurrentFolderSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
@@ -30,7 +29,6 @@ export default function ContextMenuWrap ({ children }) {
   const userData = useSelector(state => state.user);
   const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
-  const selectionData = useSelector(state => state.selection);
   const currentFolderData = useSelector(state => state.currentFolder);
 
 
@@ -52,18 +50,6 @@ export default function ContextMenuWrap ({ children }) {
   const clearClickedElements = () => {
     setClickedElements([]);
   }
-
-  useEffect(() => {
-    if ((selectionData.elements !== clickedElements)) {
-      if (clickedElements.length > 0) {
-        if (clickedElements[0].type !== 'bookmark') {
-          dispatch(setElements(clickedElements));
-        }
-      } else {
-        dispatch(setElements(clickedElements));
-      }
-    }
-  }, [clickedElements])
 
   // UPLOAD
   const openUpload = async () => {
