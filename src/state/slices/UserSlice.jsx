@@ -1,11 +1,13 @@
-import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+
+import { instance } from 'services/AxiosInstance';
+
 
 export const loginUser = createAsyncThunk(
   'user/login',
   async ({ login, password }, thunkAPI) => {
     const userData = { login, password };
-    const res = await axios.post(process.env.REACT_APP_SERVER_URL + '/auth/login', { userData })
+    const res = await instance.post('/auth/login', { userData })
     return res.data;
   },
 );
@@ -14,7 +16,7 @@ export const signupUser = createAsyncThunk(
   'user/signup',
   async ({ login, password }, thunkAPI) => {
     const userData = { login, password };
-    const res = await axios.post(process.env.REACT_APP_SERVER_URL + '/auth/signup', { userData })
+    const res = await instance.post('/auth/signup', { userData })
     return res.data;
   },
 );

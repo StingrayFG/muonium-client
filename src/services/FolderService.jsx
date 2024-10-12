@@ -1,4 +1,5 @@
-import axios from 'axios';
+import { instance } from 'services/AxiosInstance';
+
 
 const FolderService = {
   handleCreate: async (userData, driveData, folderData) => {
@@ -6,7 +7,7 @@ const FolderService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, folderData };
       
-      await axios.post(process.env.REACT_APP_SERVER_URL + '/folder/create', body, { headers })
+      await instance.post('/folder/create', body, { headers })
       .then(res => {
         resolve(res.data.folderData);
       })
@@ -21,7 +22,7 @@ const FolderService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, folderData };
       
-      await axios.post(process.env.REACT_APP_SERVER_URL + '/folder/get/uuid', body, { headers })
+      await instance.post('/folder/get/uuid', body, { headers })
       .then(res => {
         resolve(res.data.folderData);
       })
@@ -36,7 +37,7 @@ const FolderService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, folderData };
       
-      await axios.post(process.env.REACT_APP_SERVER_URL + '/folder/get/path', body, { headers })
+      await instance.post('/folder/get/path', body, { headers })
       .then(res => {
         resolve(res.data.folderData);
       })
@@ -51,7 +52,7 @@ const FolderService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, folderData };
 
-      await axios.put(process.env.REACT_APP_SERVER_URL + '/folder/rename', body, { headers })
+      await instance.put('/folder/rename', body, { headers })
       .then(res => {
         resolve(res.data.folderData);
       })
@@ -66,7 +67,7 @@ const FolderService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, folderData };
 
-      await axios.put(process.env.REACT_APP_SERVER_URL + '/folder/move', body, { headers })
+      await instance.put('/folder/move', body, { headers })
       .then(res => {
         resolve(res.data.folderData);
       })
@@ -81,7 +82,7 @@ const FolderService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, folderData };
 
-      await axios.put(process.env.REACT_APP_SERVER_URL + '/folder/remove', body, { headers })
+      await instance.put('/folder/remove', body, { headers })
       .then(res => {
         resolve(res.data.folderData);
       })
@@ -96,7 +97,7 @@ const FolderService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };  
       const body = { userData, driveData, folderData };
 
-      await axios.put(process.env.REACT_APP_SERVER_URL + '/folder/recover', body, { headers })
+      await instance.put('/folder/recover', body, { headers })
       .then(res => {
         resolve(res.data.folderData);
       })
@@ -111,7 +112,7 @@ const FolderService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, folderData };
 
-      await axios.post(process.env.REACT_APP_SERVER_URL + '/folder/delete', body, { headers })
+      await instance.post('/folder/delete', body, { headers })
       .then(res => {
         resolve(res.data.folderData);
       })

@@ -1,4 +1,5 @@
-import axios from 'axios';
+import { instance } from 'services/AxiosInstance';
+
 
 const BookmarkService = {
   handleCreate: async (userData, bookmarkData) => { 
@@ -6,7 +7,7 @@ const BookmarkService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, bookmarkData };
   
-      await axios.post(process.env.REACT_APP_SERVER_URL + '/bookmark/create', body, { headers })
+      await instance.post('/bookmark/create', body, { headers })
       .then(res => {
         resolve(res.data.bookmarkData);
       })
@@ -21,7 +22,7 @@ const BookmarkService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData };
   
-      await axios.post(process.env.REACT_APP_SERVER_URL + '/bookmark/get', body, { headers })
+      await instance.post('/bookmark/get', body, { headers })
       .then(res => {
         resolve(res.data.bookmarksData);
       })
@@ -36,7 +37,7 @@ const BookmarkService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, bookmarkData };
   
-      await axios.post(process.env.REACT_APP_SERVER_URL + '/bookmark/delete', body, { headers })
+      await instance.post('/bookmark/delete', body, { headers })
       .then(res => {
         resolve(res.data.bookmarkData);
       })

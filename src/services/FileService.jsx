@@ -1,4 +1,5 @@
-import axios from 'axios';
+import { instance } from 'services/AxiosInstance';
+
 
 const FileService = {
   handleUpload: async (userData, driveData, fileData, file) => {
@@ -7,7 +8,7 @@ const FileService = {
       const formData = new FormData();
       formData.append('file', file);
       
-      await axios.post(process.env.REACT_APP_SERVER_URL + '/file/upload/' + userData.uuid + '/' + 
+      await instance.post('/file/upload/' + userData.uuid + '/' + 
       driveData.uuid + '/' + fileData.parentUuid, formData, { headers })
       .then(res => {
         resolve(res.data.fileData);
@@ -23,9 +24,9 @@ const FileService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, fileData };
 
-      await axios.post(process.env.REACT_APP_SERVER_URL + '/file/download', body, { headers })
+      await instance.post('/file/download', body, { headers })
       .then(res => {
-        resolve(process.env.REACT_APP_SERVER_URL + '/file/download/' + fileData.uuid + '/' + res.data.downloadToken);
+        resolve('/file/download/' + fileData.uuid + '/' + res.data.downloadToken);
       })
       .catch(err => {
         reject(err);
@@ -38,9 +39,9 @@ const FileService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, fileData };
 
-      await axios.post(process.env.REACT_APP_SERVER_URL + '/file/download', body, { headers })
+      await instance.post('/file/download', body, { headers })
       .then(res => {
-        window.location.href = (process.env.REACT_APP_SERVER_URL + '/file/download/' + fileData.uuid + '/' + res.data.downloadToken);
+        window.location.href = ('/file/download/' + fileData.uuid + '/' + res.data.downloadToken);
         resolve(res.data.fileData);
       })
       .catch(err => {
@@ -54,7 +55,7 @@ const FileService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, fileData };
   
-      await axios.put(process.env.REACT_APP_SERVER_URL + '/file/rename', body, { headers })
+      await instance.put('/file/rename', body, { headers })
       .then(res => {
         resolve(res.data.fileData);
       })
@@ -69,7 +70,7 @@ const FileService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, fileData };
 
-      await axios.post(process.env.REACT_APP_SERVER_URL + '/file/copy', body, { headers })
+      await instance.post('/file/copy', body, { headers })
       .then(res => {
         resolve(res.data.fileData);
       })
@@ -84,7 +85,7 @@ const FileService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, fileData };
 
-      await axios.put(process.env.REACT_APP_SERVER_URL + '/file/move', body, { headers })
+      await instance.put('/file/move', body, { headers })
       .then(res => {
         resolve(res.data.fileData);
       })
@@ -99,7 +100,7 @@ const FileService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, fileData };
 
-      await axios.put(process.env.REACT_APP_SERVER_URL + '/file/remove', body, { headers })
+      await instance.put('/file/remove', body, { headers })
       .then(res => {
         resolve(res.data.fileData);
       })
@@ -114,7 +115,7 @@ const FileService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, fileData };
 
-      await axios.put(process.env.REACT_APP_SERVER_URL + '/file/recover', body, { headers })
+      await instance.put('/file/recover', body, { headers })
       .then(res => {
         resolve(res.data.fileData);
       })
@@ -129,7 +130,7 @@ const FileService = {
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, fileData };
 
-      await axios.post(process.env.REACT_APP_SERVER_URL + '/file/delete', body, { headers })
+      await instance.post('/file/delete', body, { headers })
       .then(res => {
         resolve(res.data.fileData);
       })

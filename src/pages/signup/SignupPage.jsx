@@ -20,12 +20,6 @@ export default function SignupPage() {
   const [isAwaitingNavigation, NavigateWithDelay] = useDelayedNavigate();
   const [messageData, showMessage] = useMessageHandler(1500);
 
-  const [shallMoveInputLabels, setShallMoveInputLabels] = useState({
-    login: false,
-    password: false,
-    confirmpassword: false
-  });
-
   const [formData, setFormData] = useState({
     login: { value: '', shallMoveLabel: false, isCorrect: true },
     password: { value: '', shallMoveLabel: false, isCorrect: true },

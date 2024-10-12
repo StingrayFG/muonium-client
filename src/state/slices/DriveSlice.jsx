@@ -1,5 +1,7 @@
-import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+
+import { instance } from 'services/AxiosInstance';
+
 
 export const getDrive = createAsyncThunk(
   'drive/get',
@@ -7,7 +9,7 @@ export const getDrive = createAsyncThunk(
     const headers = { 'Authorization': `Bearer ${ userData.accessToken }`};
     const body  = { userData };
     
-    const res = await axios.post(process.env.REACT_APP_SERVER_URL + '/drive/get/', body, { headers })
+    const res = await instance.post('/drive/get/', body, { headers })
     return res.data;
   },
 );
