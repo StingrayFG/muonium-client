@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Box } from '@mui/material';
 
 import { ReactComponent as Upload } from 'assets/icons/upload.svg'

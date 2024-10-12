@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
@@ -6,7 +6,6 @@ import { moveToNew } from 'state/slices/PathSlice';
 import { createElement, renameElements } from 'state/slices/CurrentFolderSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
-import { FolderContext } from 'contexts/FolderContext.jsx';
 import { ModalContext } from 'contexts/ModalContext.jsx';
 
 import RenameModal from 'pages/drive/modals/RenameModal';
@@ -24,7 +23,6 @@ export default function FolderElement ({ folder }) {
   const currentFolderData = useSelector(state => state.currentFolder);
 
   const contextMenuContext = useContext(ContextMenuContext);
-  const folderContext = useContext(FolderContext);
   const modalContext = useContext(ModalContext);
 
   if (!folder) { 

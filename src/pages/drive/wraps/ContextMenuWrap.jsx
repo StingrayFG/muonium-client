@@ -4,7 +4,6 @@ import { Box } from '@mui/material';
 
 import { copyToClipboard, cutToClipboard, clearClipboard } from 'state/slices/ClipboardSlice.jsx';
 import { setElements } from 'state/slices/SelectionSlice.jsx';
-import { deleteBookmark } from 'state/slices/BookmarkSlice';
 import { copyElements, pasteElements, moveElements, removeElements, recoverElements, deleteElements } from 'state/slices/CurrentFolderSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';

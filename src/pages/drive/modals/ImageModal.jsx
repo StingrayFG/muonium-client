@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import QuickPinchZoom, { make3dTransformValue } from 'react-quick-pinch-zoom';
 
@@ -102,6 +102,7 @@ export default function ImageModal ({ file }) {
           {(isLoaded && imageSrc) && 
             <img className='w-[80%] h-[80%] absolute
             object-contain'
+            alt=''
             src={imageSrc} />
           }
 
@@ -110,6 +111,7 @@ export default function ImageModal ({ file }) {
           object-contain blur-sm
           ${(isLoaded && imageSrc) ? 'opacity-0' : 'opacity-100'}`}
           src={'data:image/png;base64,' + file.thumbnail} 
+          alt=''
           ref={imgRef}/>
         </Box>
         

@@ -386,6 +386,3 @@ export const currentFolderSlice = createSlice({
   },
 });
 
-
-
-export const {} = currentFolderSlice.actions;

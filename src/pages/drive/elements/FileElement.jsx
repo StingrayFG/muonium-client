@@ -5,7 +5,6 @@ import { Box } from '@mui/material';
 import { renameElements } from 'state/slices/CurrentFolderSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
-import { FolderContext } from 'contexts/FolderContext.jsx';
 import { ModalContext } from 'contexts/ModalContext.jsx';
 
 import RenameModal from 'pages/drive/modals/RenameModal';
@@ -23,7 +22,6 @@ export default function FileElement ({ file }) {
   const currentFolderData = useSelector(state => state.currentFolder);
 
   const contextMenuContext = useContext(ContextMenuContext);
-  const folderContext = useContext(FolderContext);
   const modalContext = useContext(ModalContext);
 
 
@@ -176,6 +174,7 @@ export default function FileElement ({ file }) {
               transition-all
               ${getImageStyle()}`}
               src={imageSrc} 
+              alt=''
               draggable={false} />
               :
               <Box className={`w-full h-full place-self-center 

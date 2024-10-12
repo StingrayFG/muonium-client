@@ -1,10 +1,7 @@
-import { useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Box } from '@mui/material';
 
 import { useDelayedNavigate } from 'hooks/UseDelayedNavigate';
-
-import BackgroundOverlay from 'components/background/BackgroundOverlay';
 
 import { ReactComponent as LinkBoxIcon } from 'assets/icons/box-arrow-up-right-sky.svg'
 
