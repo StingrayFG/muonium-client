@@ -3,12 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
 import { moveToNew } from 'state/slices/PathSlice';
+import { createElement, renameElements } from 'state/slices/CurrentFolderSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { FolderContext } from 'contexts/FolderContext.jsx';
 import { ModalContext } from 'contexts/ModalContext.jsx';
-
-import FolderService from 'services/FolderService.jsx';
 
 import RenameModal from 'pages/drive/modals/RenameModal';
 
@@ -22,6 +21,7 @@ export default function FolderElement ({ folder }) {
   const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
   const settingsData = useSelector(state => state.settings);
+  const currentFolderData = useSelector(state => state.currentFolder);
 
   const contextMenuContext = useContext(ContextMenuContext);
   const folderContext = useContext(FolderContext);
@@ -32,7 +32,7 @@ export default function FolderElement ({ folder }) {
       uuid: '', 
       name: '',
       type: 'folder', 
-      parentUuid: folderContext.currentFolder.uuid 
+      parentUuid: currentFolderData.uuid 
     } 
   }
 
@@ -79,7 +79,7 @@ export default function FolderElement ({ folder }) {
   useEffect(() => {
     if (getIsRenaming() || getIsCreating()) {
       modalContext.openModal(<RenameModal name={folder.name} setName={handleNaming} stopNaming={stopNaming} 
-        usedNames={folderContext.currentFolder.folders.map(f => f.name)}/>)
+        usedNames={currentFolderData.folders.map(f => f.name)}/>)
     }
   }, [getIsCreating(), getIsRenaming()])
 
@@ -90,39 +90,17 @@ export default function FolderElement ({ folder }) {
 
   const handleNaming = async (name) => {
     if (name && (name !== folder.name)) {
-      if (contextMenuContext.isCreatingFolder) {
-        const newFolder = { ...folder, uuid: Date.now() + 'temp', name: name };
-        const updatedFolder = folderContext.addElementsOnClient([newFolder]);
-
-        await FolderService.handleCreate(userData, driveData, newFolder)
-        .then(() => {
-          contextMenuContext.setIsCreatingFolder(false);
-          modalContext.closeModal();
-        })
-        .catch(() => {
-          folderContext.deleteElementsOnClient([newFolder], updatedFolder);
-          contextMenuContext.setIsCreatingFolder(false);
-          modalContext.closeModal();
-        })
-      } else {
-        const newFolder = { ...folder, name: name };
-        const updatedFolder = folderContext.updateElementsOnClient([newFolder]);
-
-        await FolderService.handleRename(userData, driveData, newFolder)   
-        .then(() => {      
-          contextMenuContext.setIsRenaming(false);
-          modalContext.closeModal();
-        })
-        .catch(() => {
-          folderContext.updateElementsOnClient([folder], updatedFolder);
-          contextMenuContext.setIsRenaming(false);
-          modalContext.closeModal();
-        })
-      }
-    } else {
-      contextMenuContext.setIsCreatingFolder(false);
-      contextMenuContext.setIsRenaming(false);
       modalContext.closeModal();
+
+      if (contextMenuContext.isCreatingFolder) {
+        contextMenuContext.setIsCreatingFolder(false);
+        const newFolder = { ...folder, uuid: Date.now() + 'temp', name: name };
+        dispatch(createElement({ userData, driveData, element: newFolder }))
+      } else {
+        contextMenuContext.setIsRenaming(false);
+        const newFolder = { ...folder, name: name };
+        dispatch(renameElements({ userData, driveData, elements: [newFolder] }))
+      }
     }
   }
 

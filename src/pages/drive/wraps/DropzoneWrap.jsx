@@ -1,21 +1,19 @@
-import { useContext, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { Box } from '@mui/material';
 
-import { DropzoneContext } from 'contexts/DropzoneContext';
-import { FolderContext } from 'contexts/FolderContext';
+import { uploadElement } from 'state/slices/CurrentFolderSlice';
 
-import FileService from 'services/FileService.jsx';
+import { DropzoneContext } from 'contexts/DropzoneContext';
 
 
 export default function DropzoneWrap ({ children }) {
   const dispatch = useDispatch();
 
-  const folderContext = useContext(FolderContext);
-  
   const userData = useSelector(state => state.user);
   const driveData = useSelector(state => state.drive);
+  const currentFolderData = useSelector(state => state.currentFolder);
 
   // Dropzone
   const [file, setFile] = useState();
@@ -39,17 +37,18 @@ export default function DropzoneWrap ({ children }) {
 
   useEffect(() => {
     if (requiresUpload) {
-      console.log(file)
-      const newFile = { uuid: Date.now() + '-temp', name: file.name, type: 'file', imageBlob: URL.createObjectURL(file)};
+      const newFile = { 
+        uuid: Date.now() + '-temp', 
+        name: file.name, 
+        type: 'file', 
+        imageBlob: URL.createObjectURL(file),
+        parentUuid: currentFolderData.uuid
+      };   
 
-      const updatedFolder = folderContext.addElementsOnClient([newFile])
-      FileService.handleUpload(userData, driveData, { parentUuid: folderContext.currentFolder.uuid }, file)
-      .catch(() => {
-        folderContext.deleteElementsOnClient([newFile], updatedFolder);
-      })
+      dispatch(uploadElement({ userData, driveData, element: newFile, file }));
       setRequiresUpload(false);
     }
-  });
+  }, [requiresUpload]);
 
   return (
     <DropzoneContext.Provider value={{ open }}>

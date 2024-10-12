@@ -2,15 +2,15 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { FolderContext } from 'contexts/FolderContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import FileElement from 'pages/drive/elements/FileElement.jsx';
 import FolderElement from 'pages/drive/elements/FolderElement.jsx';
 
 
-export default function FolderContents ({ children }) {
-  const folderContext = useContext(FolderContext);
+export default function FolderContents () {
+  const currentFolderData = useSelector(state => state.currentFolder);
+
   const contextMenuContext = useContext(ContextMenuContext);
 
   const settingsData = useSelector(state => state.settings);
@@ -40,11 +40,11 @@ export default function FolderContents ({ children }) {
         <FolderElement />
       )}
 
-      {folderContext.currentFolder.uuid && <>
-        {folderContext.currentFolder.folders.map((folder) => (
+      {currentFolderData.uuid && <>
+        {currentFolderData.folders.map((folder) => (
           <FolderElement key={folder.uuid} folder={folder} />
         ))}
-        {folderContext.currentFolder.files.map((file) => (
+        {currentFolderData.files.map((file) => (
           <FileElement key={file.uuid} file={file}/>
         ))}
       </>}

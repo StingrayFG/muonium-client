@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
+
+import { renameElements } from 'state/slices/CurrentFolderSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { FolderContext } from 'contexts/FolderContext.jsx';
 import { ModalContext } from 'contexts/ModalContext.jsx';
-
-import FileService from 'services/FileService.jsx';
 
 import RenameModal from 'pages/drive/modals/RenameModal';
 import ImageModal from 'pages/drive//modals/ImageModal';
@@ -14,10 +14,13 @@ import FileElementIcon from 'pages/drive/elements/FileElementIcon';
 
 
 export default function FileElement ({ file }) {
+  const dispatch = useDispatch();
+
   const userData = useSelector(state => state.user);
   const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
   const settingsData = useSelector(state => state.settings);
+  const currentFolderData = useSelector(state => state.currentFolder);
 
   const contextMenuContext = useContext(ContextMenuContext);
   const folderContext = useContext(FolderContext);
@@ -70,7 +73,7 @@ export default function FileElement ({ file }) {
   useEffect(() => {
     if (getIsRenaming()) {
       modalContext.openModal(<RenameModal name={file.name} setName={handleNaming} stopNaming={stopNaming} 
-        usedNames={folderContext.currentFolder.files.map(f => f.name)} />)
+        usedNames={currentFolderData.files.map(f => f.name)} />)
     }
   }, [getIsRenaming()])
 
@@ -81,23 +84,13 @@ export default function FileElement ({ file }) {
 
   const handleNaming = async (name) => {
     if (name && (name !== file.name)) {
-      const newFile = { ...file, name: name };
-      const updatedFolder = folderContext.updateElementsOnClient([newFile]);
-
-      await FileService.handleRename(userData, driveData, newFile)
-      .then(() => {
-        contextMenuContext.setIsRenaming(false);
-        modalContext.closeModal();
-      })
-      .catch(() => {
-        folderContext.updateElementsOnClient([file], updatedFolder);
-        contextMenuContext.setIsRenaming(false);
-        modalContext.closeModal();
-      })
-    } else {
-      contextMenuContext.setIsRenaming(false);
       modalContext.closeModal();
-    }
+
+      contextMenuContext.setIsRenaming(false);
+
+      const newFile = { ...file, name: name };
+      dispatch(renameElements({ userData, driveData, elements: [newFile] }))
+    } 
   }
 
   const handleOnMouseDown = (event) => {

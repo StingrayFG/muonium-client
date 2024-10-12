@@ -9,25 +9,26 @@ export default function BottomPanel () {
   const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
   const selectionData = useSelector(state => state.selection);
+  const currentFolderData = useSelector(state => state.currentFolder);
 
   const folderContext = useContext(FolderContext);
   
   const getContentsText = () => {
     let res = '';
-    if (folderContext.currentFolder.folders.length > 0) {
-      res += folderContext.currentFolder.folders.length ;
-      if (folderContext.currentFolder.folders.length  > 1) {
+    if (currentFolderData.folders.length > 0) {
+      res += currentFolderData.folders.length ;
+      if (currentFolderData.folders.length  > 1) {
         res += ' folders';
       } else {
         res += ' folder';
       }
     }
-    if ((folderContext.currentFolder.folders.length > 0) && (folderContext.currentFolder.files.length > 0)) { 
+    if ((currentFolderData.folders.length > 0) && (currentFolderData.files.length > 0)) { 
       res += ', ';
     }
-    if (folderContext.currentFolder.files.length > 0) {
-      res += folderContext.currentFolder.files.length;
-      if (folderContext.currentFolder.files.length > 1) {
+    if (currentFolderData.files.length > 0) {
+      res += currentFolderData.files.length;
+      if (currentFolderData.files.length > 1) {
         res += ' files';
       } else {
         res += ' file';

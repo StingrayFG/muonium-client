@@ -11,18 +11,18 @@ export const clipboardSlice = createSlice({
     destinationParentUuid: '',
   },
   reducers: {
-    setCopy:(state, action) => {
+    copyToClipboard:(state, action) => {
       state.elements = action.payload.elements;
       state.originParentUuid = action.payload.originUuid;
       state.mode = 'copy';
     }, 
-    setCut:(state, action) => {
+    cutToClipboard:(state, action) => {
       state.elements = action.payload.elements;
       state.cutElementsUuids = state.elements.map(element => element.uuid);
       state.originParentUuid = action.payload.originUuid;
       state.mode = 'cut';
     }, 
-    setPaste:(state, action) => {
+    clearClipboard:(state, action) => {
       state.elements = [];
       state.cutElementsUuids = [];
       state.mode = '';
@@ -30,4 +30,4 @@ export const clipboardSlice = createSlice({
   },
 });
 
-export const { setCounts, setElements, setCopy, setCut, setPaste } = clipboardSlice.actions;
+export const { setCounts, setElements, copyToClipboard, cutToClipboard, clearClipboard } = clipboardSlice.actions;

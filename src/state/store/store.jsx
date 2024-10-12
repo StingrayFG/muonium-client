@@ -1,16 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { userSlice } from 'state/slices/UserSlice.jsx';
-import { driveSlice } from 'state/slices/DriveSlice.jsx';
-import { pathSlice } from 'state/slices/PathSlice.jsx';
-import { clipboardSlice } from 'state/slices/ClipboardSlice.jsx';
-import { bookmarkSlice } from 'state/slices/BookmarkSlice.jsx';
-import { settingsSlice } from 'state/slices/SettingsSlice.jsx';
-import { selectionSlice } from 'state/slices/SelectionSlice.jsx';
+import { userSlice } from 'state/slices/UserSlice';
+import { driveSlice } from 'state/slices/DriveSlice';
+import { currentFolderSlice } from 'state/slices/CurrentFolderSlice';
+import { pathSlice } from 'state/slices/PathSlice';
+import { clipboardSlice } from 'state/slices/ClipboardSlice';
+import { bookmarkSlice } from 'state/slices/BookmarkSlice';
+import { settingsSlice } from 'state/slices/SettingsSlice';
+import { selectionSlice } from 'state/slices/SelectionSlice';
+
 
 export const store = configureStore({
   reducer: {
     user: userSlice.reducer,
     drive: driveSlice.reducer,
+    currentFolder: currentFolderSlice.reducer,
     path: pathSlice.reducer,
     clipboard: clipboardSlice.reducer,
     bookmark: bookmarkSlice.reducer,

@@ -7,7 +7,6 @@ export const pathSlice = createSlice({
     currentUuid: '',
     positionInHistory: 0,
     pathHistory: [],
-    doesRequireUpdate: true,
   },
   reducers: {
     setAbsolutePath:(state, action) => {
@@ -24,17 +23,14 @@ export const pathSlice = createSlice({
         state.currentUuid = action.payload.uuid;
         state.positionInHistory += 1;
       }
-      state.doesRequireUpdate = true;
     },
     moveToNext: (state) => {
       state.positionInHistory += 1;
       state.currentUuid = state.pathHistory[state.positionInHistory];
-      state.doesRequireUpdate = true;
     },
     moveToPrevious: (state) => {
       state.positionInHistory -= 1;
       state.currentUuid = state.pathHistory[state.positionInHistory];
-      state.doesRequireUpdate = true;
     },
   },
 });

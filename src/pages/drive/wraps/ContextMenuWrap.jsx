@@ -2,16 +2,16 @@ import { useContext, useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { setCopy, setCut, setPaste } from 'state/slices/ClipboardSlice.jsx';
+import { copyToClipboard, cutToClipboard, clearClipboard } from 'state/slices/ClipboardSlice.jsx';
 import { setElements } from 'state/slices/SelectionSlice.jsx';
 import { deleteBookmark } from 'state/slices/BookmarkSlice';
+import { copyElements, pasteElements, moveElements, removeElements, recoverElements, deleteElements } from 'state/slices/CurrentFolderSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { FolderContext } from 'contexts/FolderContext.jsx';
 import { DropzoneContext } from 'contexts/DropzoneContext';
 
 import FileService from 'services/FileService.jsx';
-import FolderService from 'services/FolderService.jsx';
 
 import DefaultContextMenu from 'pages/drive/menus/DefaultContextMenu.jsx';
 import FileContextMenu from 'pages/drive/menus/FileContextMenu.jsx';
@@ -32,6 +32,7 @@ export default function ContextMenuWrap ({ children }) {
   const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
   const selectionData = useSelector(state => state.selection);
+  const currentFolderData = useSelector(state => state.currentFolder);
 
 
   const [clickedElements, setClickedElements] = useState([]);
@@ -91,124 +92,69 @@ export default function ContextMenuWrap ({ children }) {
   // CLIPBOARD
   const copyClickedElements = () => {
     setIsContextMenu(false);
-    dispatch(setCopy({ originUuid: folderContext.currentFolder.uuid, elements: clickedElements }));
+    dispatch(copyToClipboard({ originUuid: currentFolderData.uuid, elements: clickedElements }));
   };
 
   const cutClickedElements = () => {
     setIsContextMenu(false);
-    dispatch(setCut({ originUuid: folderContext.currentFolder.uuid, elements: clickedElements }));
+    dispatch(cutToClipboard({ originUuid: currentFolderData.uuid, elements: clickedElements }));
   };
 
   const pasteClickedElements = async () => {
     setIsContextMenu(false);
-    dispatch(setPaste());
-
-    const updatedFolder = folderContext.addElementsOnClient(clipboardData.elements);
-    let failedElements = [];
+    dispatch(clearClipboard());
 
     if (clipboardData.mode === 'copy') {
-      for await (const element of clipboardData.elements) {
-        if (element.type === 'file') {
-          await FileService.handleCopy(userData, driveData, { ...element, parentUuid: folderContext.currentFolder.uuid })
-          .catch(() => {failedElements.push(element)})
-        }
-      }
+      dispatch(copyElements({ 
+        userData, 
+        driveData, 
+        elements: clipboardData.elements.map(element => ({ ...element, parentUuid: currentFolderData.uuid })) // Change parentUuid to the target uuid
+      }))
     } else if (clipboardData.mode === 'cut') {
-      for await (const element of clipboardData.elements) {
-        if (element.type === 'file') { 
-          await FileService.handleMove(userData, driveData, { ...element, parentUuid: folderContext.currentFolder.uuid } )
-          .catch(() => {failedElements.push(element)})
-        } else if (element.type === 'folder') { 
-          await FolderService.handleMove(userData, driveData, { ...element, parentUuid: folderContext.currentFolder.uuid } )
-          .catch(() => {failedElements.push(element)})
-        }
-      } 
+      dispatch(pasteElements({ 
+        userData, 
+        driveData, 
+        elements:  clipboardData.elements.map(element => ({ ...element, parentUuid: currentFolderData.uuid }))
+      }));
     }
-
-    folderContext.deleteElementsOnClient(failedElements, updatedFolder);
   };
 
   const moveClickedElements = async () => { // Used to move by dragging elements
-    const updatedFolder = folderContext.deleteElementsOnClient(clickedElements);
-    let failedElements = [];
-
-    for await (let element of clickedElements) {
-      if (element.type === 'file') {
-        await FileService.handleMove(userData, driveData, { ...element, parentUuid: hoveredElement.uuid })
-        .catch(() => {failedElements.push(element)})
-      } else if (element.type === 'folder') {
-        await FolderService.handleMove(userData, driveData, { ...element, parentUuid: hoveredElement.uuid })
-        .catch(() => {failedElements.push(element)})
-      }
-    }
-
-    folderContext.addElementsOnClient(failedElements, updatedFolder);
-  }
-
-  const clearClipboardElements = async () => {
-    dispatch(setPaste());
+    dispatch(moveElements({ 
+      userData, 
+      driveData, 
+      elements: clickedElements.map(element => ({ ...element, parentUuid: hoveredElement.uuid }))
+    }))
   }
 
   // TRASH
   const removeClickedElements = async () => {
     setIsContextMenu(false);
-
-    const updatedFolder = folderContext.deleteElementsOnClient(clickedElements);
-    let failedElements = [];
-
-    for await (const element of clickedElements) {
-      if (element.type === 'file') { 
-        await FileService.handleRemove(userData, driveData, element)
-        .catch(() => {failedElements.push(element)})
-      } else if (element.type === 'folder') { 
-        await FolderService.handleRemove(userData, driveData, element)
-        .catch(() => {failedElements.push(element)})
-      }
-    }
-    
-    folderContext.addElementsOnClient(failedElements, updatedFolder);
+    dispatch(removeElements({ 
+      userData, 
+      driveData, 
+      elements: clickedElements
+    }))
   }
 
   const recoverClickedElements = async () => {
     setIsContextMenu(false);
-
-    const updatedFolder = folderContext.deleteElementsOnClient(clickedElements);
-    let failedElements = [];
-
-    for await (const element of clickedElements) {
-      if (element.type === 'file') {  
-        await FileService.handleRecover(userData, driveData, element)
-        .catch(() => {failedElements.push(element)})
-      } else if (element.type === 'folder') { 
-        await FolderService.handleRecover(userData, driveData, element)
-        .catch(() => {failedElements.push(element)})
-      }
-    }  
-
-    folderContext.addElementsOnClient(failedElements, updatedFolder);
+    dispatch(recoverElements({ 
+      userData, 
+      driveData, 
+      elements: clickedElements
+    }))
   }
 
   const deleteClickedElements = async () => {
     setIsContextMenu(false);
-
-    const updatedFolder = folderContext.deleteElementsOnClient(clickedElements);
-    let failedElements = [];
-
-    for await (const element of clickedElements) {
-      if (element.type === 'file') { 
-        await FileService.handleDelete(userData, driveData, element)
-        .catch(() => {failedElements.push(element)})
-      } else if (element.type === 'folder') { 
-        await FolderService.handleDelete(userData, driveData, element)
-        .catch(() => {failedElements.push(element)})
-      } else if (element.type === 'bookmark') { 
-        dispatch(deleteBookmark({ userData, folderData: clickedElements[0].folder }));
-      }
-    }
-
-    folderContext.addElementsOnClient(failedElements, updatedFolder);
+    dispatch(deleteElements({ 
+      userData, 
+      driveData, 
+      elements: clickedElements
+    }))
   }
-  
+
 
   // MENUS HANDLERS
   const [isContextMenu, setIsContextMenu] = useState(false);
@@ -364,7 +310,7 @@ export default function ContextMenuWrap ({ children }) {
   const handleOnKeyDown = (event) => {
     if (event.code === 'Escape') { 
       clearClickedElements();
-      clearClipboardElements();
+      dispatch(clearClipboard());
     }
   }
 
@@ -406,14 +352,14 @@ export default function ContextMenuWrap ({ children }) {
   // RENDER 
   const getMenu = () => {
     if (!isDraggingElement) {
-      if (folderContext.currentFolder.uuid !== 'trash') {
+      if (currentFolderData.uuid !== 'trash') {
         if (contextMenuType === 'default') { return <DefaultContextMenu /> }
         else if (contextMenuType === 'file') { return <FileContextMenu /> } 
         else if (contextMenuType === 'folder') { return <FolderContextMenu folder={clickedElements[0]} /> }  
         else if (contextMenuType === 'file-multiple') { return <MultipleFileContextMenu /> }
         else if (contextMenuType === 'folder-multiple') { return <MultipleFolderContextMenu /> }
         else if (contextMenuType === 'bookmark') { return <BookmarkContextMenu bookmark={clickedElements[0]} /> }  
-      } else if (folderContext.currentFolder.uuid  === 'trash') {
+      } else if (currentFolderData.uuid === 'trash') {
         if (['file', 'folder', 'file-multiple', 'folder-multiple'].includes(contextMenuType)) { return <TrashContextMenu /> }
         else if (contextMenuType === 'bookmark') { return <BookmarkContextMenu bookmark={clickedElements[0]} /> }  
       }
