@@ -1,36 +1,26 @@
-import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+
+import BookmarkService from 'services/BookmarkService'
+
 
 export const createBookmark = createAsyncThunk(
   'bookmark/create',
   async ({ userData, bookmarkData }, thunkAPI) => {
-    const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
-    const body = { userData, bookmarkData };
-
-    const res = await axios.post(process.env.REACT_APP_SERVER_URL + '/bookmark/create', body, { headers })
-    return(res.data);  
+    return await BookmarkService.handleCreate(userData, bookmarkData);
   },
 );
 
 export const getBookmarks = createAsyncThunk(
   'bookmark/get',
   async (userData, thunkAPI) => {
-    const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
-    const body = { userData };
-    
-    const res = await axios.post(process.env.REACT_APP_SERVER_URL + '/bookmark/get', body, { headers })
-    return(res.data);  
+    return await BookmarkService.handleGet(userData);
   },
 );
 
 export const deleteBookmark = createAsyncThunk(
   'bookmark/delete',
   async ({ userData, bookmarkData }, thunkAPI) => {
-    const headers = { 'Authorization': `Bearer ${userData.accessToken}`};
-    const body = { userData, bookmarkData };
-
-    const res = await axios.post(process.env.REACT_APP_SERVER_URL + '/bookmark/delete', body, { headers })
-    return(res.data);  
+    return await BookmarkService.handleDelete(userData, bookmarkData);
   },
 );
 
@@ -45,8 +35,8 @@ export const bookmarkSlice = createSlice({
     builder.addCase(getBookmarks.fulfilled, (state, action) => {
       return { 
         ...state, 
-        bookmarks: action.payload.bookmarksData, 
-        bookmarkedFoldersUuids: action.payload.bookmarksData.map(bookmark => bookmark.folderUuid) 
+        bookmarks: action.payload, 
+        bookmarkedFoldersUuids: action.payload.map(bookmark => bookmark.folderUuid) 
       };
     });
 
