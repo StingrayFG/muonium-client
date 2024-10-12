@@ -103,7 +103,7 @@ export default function ImageModal ({ file }) {
             <img className='w-[80%] h-[80%] absolute
             object-contain'
             alt=''
-            src={imageSrc} />
+            src={process.env.REACT_APP_SERVER_URL + imageSrc} />
           }
 
           <img className={`w-[80%] h-[80%] absolute
