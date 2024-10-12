@@ -7,7 +7,7 @@ import { bookmarkSlice } from 'state/slices/BookmarkSlice.jsx';
 import { settingsSlice } from 'state/slices/SettingsSlice.jsx';
 import { selectionSlice } from 'state/slices/SelectionSlice.jsx';
 
-export default configureStore({
+export const store = configureStore({
   reducer: {
     user: userSlice.reducer,
     drive: driveSlice.reducer,

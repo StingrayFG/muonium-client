@@ -10,9 +10,10 @@ import CommonContextMenu from 'pages/drive/menus/CommonContextMenu';
 
 
 export default function FolderContextMenu ({ point, folder }) {
-  const contextMenuContext = useContext(ContextMenuContext);
-
   const dispatch = useDispatch();
+
+  const contextMenuContext = useContext(ContextMenuContext);
+  
   const userData = useSelector(state => state.user);
   const bookmarkData = useSelector(state => state.bookmark);
 
@@ -20,7 +21,14 @@ export default function FolderContextMenu ({ point, folder }) {
   const options = bookmarkData.bookmarkedFoldersUuids.includes(folder?.uuid) ?  
   [ 
     { text: 'Remove from places', icon: 'remove-bookmark', handleOnClick: () => {
-      dispatch(deleteBookmark({ userData, bookmarkData: { folderUuid: folder.uuid } }));
+      dispatch(deleteBookmark({ 
+        userData, 
+        bookmarkData: { 
+          uuid: userData.uuid + folder.uuid, 
+          folderUuid: folder.uuid, 
+          folder: folder
+        } 
+      }));
       contextMenuContext.setIsContextMenu(false);
     }},
     'line',
@@ -32,7 +40,14 @@ export default function FolderContextMenu ({ point, folder }) {
   : 
   [
     { text: 'Add to places', icon: 'add-bookmark', handleOnClick: () => {
-      dispatch(createBookmark({ userData, bookmarkData: { folderUuid: folder.uuid } }));
+      dispatch(createBookmark({ 
+        userData, 
+        bookmarkData: { 
+          uuid: userData.uuid + folder.uuid, 
+          folderUuid: folder.uuid, 
+          folder: folder
+        } 
+      }));
       contextMenuContext.setIsContextMenu(false);
     }},
     'line',
