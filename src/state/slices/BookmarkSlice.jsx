@@ -40,6 +40,7 @@ export const bookmarkSlice = createSlice({
       };
     });
 
+
     builder.addCase(createBookmark.pending, (state, action) => {
       return { 
         ...state, 
@@ -55,6 +56,7 @@ export const bookmarkSlice = createSlice({
       };
     });
 
+    
     builder.addCase(deleteBookmark.pending, (state, action) => {
       return { 
         ...state, 
