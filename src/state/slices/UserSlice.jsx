@@ -5,7 +5,7 @@ export const loginUser = createAsyncThunk(
   'user/login',
   async ({ login, password }, thunkAPI) => {
     const userData = { login, password };
-    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/auth/login', { userData })
+    const res = await axios.post(process.env.REACT_APP_SERVER_URL + '/auth/login', { userData })
     return res.data;
   },
 );
@@ -14,7 +14,7 @@ export const signupUser = createAsyncThunk(
   'user/signup',
   async ({ login, password }, thunkAPI) => {
     const userData = { login, password };
-    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/auth/signup', { userData })
+    const res = await axios.post(process.env.REACT_APP_SERVER_URL + '/auth/signup', { userData })
     return res.data;
   },
 );

@@ -7,7 +7,7 @@ export const getDrive = createAsyncThunk(
     const headers = { 'Authorization': `Bearer ${ userData.accessToken }`};
     const body  = { userData };
     
-    const res = await axios.post(process.env.REACT_APP_BACKEND_URL + '/drive/get/', body, { headers })
+    const res = await axios.post(process.env.REACT_APP_SERVER_URL + '/drive/get/', body, { headers })
     return res.data;
   },
 );
