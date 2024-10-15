@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 
 import { useDelayedNavigate } from 'hooks/UseDelayedNavigate';
 
-import { setInitialUuid } from 'state/slices/pathSlice';
+import { setAbsolutePath, setInitialUuid } from 'state/slices/pathSlice';
 import { clearUser } from 'state/slices/userSlice';
 import { getDrive } from 'state/slices/driveSlice';
 import { getBookmarks } from 'state/slices/bookmarkSlice';
@@ -30,6 +30,7 @@ export default function DrivePanels ({ folderUuid }) {
   const userData = useSelector(state => state.user);
   const driveData = useSelector(state => state.drive);
   const pathData = useSelector(state => state.path);
+  const currentFolderData = useSelector(state => state.currentFolder);
 
   const [isAwaitingNavigation, NavigateWithDelay] = useDelayedNavigate();
 
@@ -63,6 +64,9 @@ export default function DrivePanels ({ folderUuid }) {
         driveData, 
         folderData: { uuid: pathData.currentUuid } 
       }))
+      .then(res => {
+        dispatch(setAbsolutePath(res.payload.absolutePath))
+      })
     }
   }, [pathData.currentUuid, driveData]);
 

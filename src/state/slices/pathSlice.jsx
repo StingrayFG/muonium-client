@@ -10,7 +10,7 @@ export const pathSlice = createSlice({
   },
   reducers: {
     setAbsolutePath:(state, action) => {
-      state.currentAbsolutePath = action.payload.currentAbsolutePath;
+      state.currentAbsolutePath = action.payload;
     }, 
     setInitialUuid:(state, action) => {
       state.pathHistory.push(action.payload.uuid);
