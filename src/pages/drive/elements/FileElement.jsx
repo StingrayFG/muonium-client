@@ -12,7 +12,7 @@ import ImageModal from 'pages/drive//modals/ImageModal';
 import FileElementIcon from 'pages/drive/elements/FileElementIcon';
 
 
-export default function FileElement ({ file }) {
+export default function FileElement ({ file, elementSize }) {
   const dispatch = useDispatch();
 
   const userData = useSelector(state => state.user);
@@ -161,7 +161,8 @@ export default function FileElement ({ file }) {
     if (settingsData.type === 'grid') {
       return (
         <Box className={`w-full h-full p-4 place-self-center border-box
-        transition-all duration-300`}>
+        transition-all duration-300`}
+        style={{width: elementSize ? elementSize + 'px' : ''}}>
     
           <Box className={`w-full aspect-4-3 grid`}
           onMouseDown={handleOnMouseDown}

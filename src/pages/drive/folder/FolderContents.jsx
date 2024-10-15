@@ -16,36 +16,37 @@ export default function FolderContents () {
   const settingsData = useSelector(state => state.settings);
 
 
-  const defaultSize = 200;
-  const windowRef = useRef(window.innerWidth);
-  const [columnsCount, setColumnsCount] = useState(Math.floor(windowRef.current/ defaultSize));
-
-  const handleResize = (width) => {
-    setColumnsCount(Math.floor(width / defaultSize));
-  }
+  const elementSize = 150;
+  const contentsRef = useRef(null);
+  const [columnsCount, setColumnsCount] = useState(Math.floor(contentsRef?.current?.clientWidth / elementSize));
 
   useEffect(() => {
-    window.addEventListener('resize', () => handleResize(window.innerWidth));
-    return () => window.removeEventListener('resize', handleResize);
-  }, [])
+    if (!contentsRef.current) return;
+    const resizeObserver = new ResizeObserver(() => {
+      setColumnsCount(Math.floor(contentsRef?.current?.clientWidth / elementSize));
+    });
+    resizeObserver.observe(contentsRef.current);
+    return () => resizeObserver.disconnect();
+  }, []);
 
-  
+
   return (
     <Box className={`scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
     ${settingsData.type === 'grid' &&  'w-full h-fit max-h-full grid overflow-y-auto'}`}
     style={{
       gridTemplateColumns: `repeat(${columnsCount}, minmax(0, 1fr))`
-    }}>
+    }}
+    ref={contentsRef}>
       {contextMenuContext.isCreatingFolder && (
-        <FolderElement />
+        <FolderElement elementSize={elementSize}/>
       )}
 
       {currentFolderData.uuid && <>
         {currentFolderData.folders.map((folder) => (
-          <FolderElement key={folder.uuid} folder={folder} />
+          <FolderElement key={folder.uuid} folder={folder} elementSize={elementSize}/>
         ))}
         {currentFolderData.files.map((file) => (
-          <FileElement key={file.uuid} file={file}/>
+          <FileElement key={file.uuid} file={file} elementSize={elementSize}/>
         ))}
       </>}
     </Box>  

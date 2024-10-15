@@ -13,7 +13,7 @@ import RenameModal from 'pages/drive/modals/RenameModal';
 import { ReactComponent as Folder } from 'assets/icons/elements/muonium/folder.svg'
 
 
-export default function FolderElement ({ folder }) {
+export default function FolderElement ({ folder, elementSize }) {
   const dispatch = useDispatch();
 
   const userData = useSelector(state => state.user);
@@ -161,8 +161,9 @@ export default function FolderElement ({ folder }) {
   if (folder) {
     if (settingsData.type === 'grid') {
       return (
-        <Box className={`w-full h-full p-4 place-self-center border-box
-        transition-all duration-300`}>
+        <Box className={`h-full p-4 place-self-center
+        transition-all duration-300`}
+        style={{width: elementSize ? elementSize + 'px' : ''}}>
     
           <Box className={`w-full`}
           onMouseDown={handleOnMouseDown}
