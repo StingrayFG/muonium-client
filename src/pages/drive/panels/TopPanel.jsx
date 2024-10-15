@@ -27,6 +27,8 @@ export default function TopPanel () {
 
   const folderContext = useContext(FolderContext);
 
+
+  // BUTTONS
   const handleGridView = () => {
     dispatch(setViewMode('grid'));
   }
@@ -48,14 +50,15 @@ export default function TopPanel () {
   }
 
 
+  // PATH INPUT
   const [isEditingPath, setIsEditingPath] = useState(false);
   const [previousPath, setPreviousPath] = useState('');
-  const [pathPathInputValue, setPathInputValue] = useState('');
+  const [pathInputValue, setPathInputValue] = useState('');
   
   useEffect(() => {
-    if (!pathPathInputValue) { 
+    if (!pathInputValue) { 
       setPathInputValue(pathData.currentAbsolutePath); 
-    } else if (pathPathInputValue !== pathData.currentAbsolutePath) {
+    } else if (pathInputValue !== pathData.currentAbsolutePath) {
       setPathInputValue(pathData.currentAbsolutePath);
       setPreviousPath(pathData.currentAbsolutePath);
       setIsEditingPath(false);
@@ -68,7 +71,7 @@ export default function TopPanel () {
   }
 
   const setPath = async () => {
-    let path = pathPathInputValue;
+    let path = pathInputValue;
     if (path[path.length - 1] === '/') { path = path.slice(0, path.length - 1); }
     await FolderService.handleGetByPath(userData, driveData, { absolutePath: path })
     .then(res => {
@@ -108,7 +111,7 @@ export default function TopPanel () {
   const handleOnPathKeyDown = (event) => {
     if (event.code === 'Enter') { 
       event.target.blur()
-      setPath(pathPathInputValue);
+      setPath(pathInputValue);
       setIsEditingPath(false);
     } else if (event.code === 'Escape') { 
       event.target.blur()
@@ -117,21 +120,23 @@ export default function TopPanel () {
     }
   }
   
-
+  
+  // GET
   const getCurrentFolderName = () => {
-    let name = pathPathInputValue.split('/').pop();
+    let name = pathInputValue.split('/').pop();
     if (name === 'home') {
       name = 'Home';
     } else if (name === 'trash') {
       name = 'Trash';
     }
-    return name;
+    return name;  
   }
 
 
+  // RENDER
   return (
     <Box className='w-full px-2 py-2 flex 
-    border-sky-300/20 border-b'>
+    bg-black/20 border-sky-300/20 border-b'>
 
         <Box className='flex'>
           <button className={`w-8 h-8 grid
@@ -174,7 +179,7 @@ export default function TopPanel () {
             outline-none resize-none
             bg-black/20 border-sky-300/20 focus:bg-black/20 focus:border-sky-300/20 rounded-lg`}   
             name='path'
-            value={pathPathInputValue}
+            value={pathInputValue}
             onChange={handleOnPathChange}
             onBlur={handleOnPathBlur}
             onFocus={handleOnPathFocus}

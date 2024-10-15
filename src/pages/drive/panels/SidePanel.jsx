@@ -69,9 +69,9 @@ export default function SidePanel () {
       onMouseMove={handleOnMouseMove}
       onMouseLeave={handleOnMouseUp}/> {/* Used to stop resizing if mouse leaves the window */}
 
-      <Box className='h-full overflow-y-auto
+      <Box className='h-full overflow-y-auto 
       scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
-      border-r border-sky-300/20' 
+      bg-black/20 border-r border-sky-300/20' 
       style={{
         width: panelWidth
       }}>
