@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { moveToNew } from 'state/slices/PathSlice';
+import { moveToNew } from 'state/slices/pathSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 

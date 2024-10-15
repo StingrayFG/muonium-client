@@ -2,8 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { setAbsolutePath, moveToNew, moveToNext, moveToPrevious } from 'state/slices/PathSlice';
-import { setViewMode } from 'state/slices/SettingsSlice';
+import { setAbsolutePath, moveToNew, moveToNext, moveToPrevious } from 'state/slices/pathSlice';
+import { setViewMode } from 'state/slices/settingsSlice';
 
 import { FolderContext } from 'contexts/FolderContext.jsx';
 

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { Box } from '@mui/material';
 
-import { uploadElement } from 'state/slices/CurrentFolderSlice';
+import { uploadElement } from 'state/slices/currentFolderSlice';
 
 import { DropzoneContext } from 'contexts/DropzoneContext';
 

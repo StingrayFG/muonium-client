@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 import { useDelayedNavigate } from 'hooks/UseDelayedNavigate';
 import { useMessageHandler } from 'hooks/UseMessageHandler';
 
-import { signupUser } from 'state/slices/UserSlice';
+import { signupUser } from 'state/slices/userSlice';
 
 import MuoniumSpinner from 'components/spinner/MuoniumSpinner';
 

@@ -5,11 +5,11 @@ import { Box } from '@mui/material';
 
 import { useDelayedNavigate } from 'hooks/UseDelayedNavigate';
 
-import { setInitialUuid } from 'state/slices/PathSlice';
-import { clearUser } from 'state/slices/UserSlice';
-import { getDrive } from 'state/slices/DriveSlice';
-import { getBookmarks } from 'state/slices/BookmarkSlice';
-import { getFolder } from 'state/slices/CurrentFolderSlice';
+import { setInitialUuid } from 'state/slices/pathSlice';
+import { clearUser } from 'state/slices/userSlice';
+import { getDrive } from 'state/slices/driveSlice';
+import { getBookmarks } from 'state/slices/bookmarkSlice';
+import { getFolder } from 'state/slices/currentFolderSlice';
 
 import { FolderContext } from 'contexts/FolderContext';
 

@@ -2,8 +2,8 @@ import React, { useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { moveToNew } from 'state/slices/PathSlice';
-import { createElement, renameElements } from 'state/slices/CurrentFolderSlice';
+import { moveToNew } from 'state/slices/pathSlice';
+import { createElement, renameElements } from 'state/slices/currentFolderSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { ModalContext } from 'contexts/ModalContext.jsx';

@@ -2,8 +2,8 @@ import { useContext, useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { copyToClipboard, cutToClipboard, clearClipboard } from 'state/slices/ClipboardSlice.jsx';
-import { copyElements, pasteElements, moveElements, removeElements, recoverElements, deleteElements } from 'state/slices/CurrentFolderSlice';
+import { copyToClipboard, cutToClipboard, clearClipboard } from 'state/slices/clipboardSlice.jsx';
+import { copyElements, pasteElements, moveElements, removeElements, recoverElements, deleteElements } from 'state/slices/currentFolderSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { FolderContext } from 'contexts/FolderContext.jsx';

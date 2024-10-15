@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
-import { createBookmark, deleteBookmark } from 'state/slices/BookmarkSlice';
+import { createBookmark, deleteBookmark } from 'state/slices/bookmarkSlice';
 
 import CommonContextMenu from 'pages/drive/menus/CommonContextMenu';
 

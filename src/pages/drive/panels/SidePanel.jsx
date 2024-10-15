@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { setSidePanelWidth } from 'state/slices/SettingsSlice';
+import { setSidePanelWidth } from 'state/slices/settingsSlice';
 
 import BookmarkElement from 'pages/drive/elements/BookmarkElement.jsx';
 import { useDragHandler } from 'hooks/UseDragHandler';
