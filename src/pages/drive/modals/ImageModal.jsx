@@ -54,7 +54,10 @@ export default function ImageModal ({ file }) {
     }
   }
 
-  const handleOnMouseUp = (event) => {
+  const handleOnMouseUp = (event) => { 
+    // Works with delta > ~10 or delta = 0. With delta > 10 the function gets triggered but does not result in 
+    // the modal getting closed due to the conditional check. With ~10 > delta > 0 the function doesnt get triggered,
+    // therefore the modal isnt getting closed either. Function handleClose() will get called only when delta = 0.
     if (Math.pow(mousePositon.x - event.clientX, 2) + Math.pow(mousePositon.y - event.clientY, 2) < 10) {
       setMousePosition({ x: null, y: null });
       handleClose();
@@ -79,7 +82,8 @@ export default function ImageModal ({ file }) {
     }
   }, [window]);
 
-  
+
+  // RENDER
   return(
     <Box className='w-screen h-screen' 
     onKeyDown={handleOnKeyDown}
