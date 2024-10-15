@@ -8,7 +8,7 @@ import FileElement from 'pages/drive/elements/FileElement.jsx';
 import FolderElement from 'pages/drive/elements/FolderElement.jsx';
 
 
-export default function FolderContents () {
+export default function ContentsPanel () {
   const currentFolderData = useSelector(state => state.currentFolder);
 
   const contextMenuContext = useContext(ContextMenuContext);

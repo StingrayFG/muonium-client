@@ -18,7 +18,7 @@ import BottomPanel from 'pages/drive/panels/BottomPanel.jsx';
 import SidePanel from 'pages/drive/panels/SidePanel.jsx';
 import DropzoneWrap from 'pages/drive/wraps/DropzoneWrap.jsx';
 import ContextMenuWrap from 'pages/drive/wraps/ContextMenuWrap.jsx';
-import FolderContents from 'pages/drive/folder/FolderContents.jsx';
+import ContentsPanel from 'pages/drive/panels/ContentsPanel.jsx';
 
 import ModalWrap from './wraps/ModalWrap';
 
@@ -110,7 +110,7 @@ export default function DrivePanels ({ folderUuid }) {
                 <ContextMenuWrap>
                   <SidePanel />
                   <Box className='grid grid-rows-[1fr_max-content] overflow-hidden'>
-                    <FolderContents />   
+                    <ContentsPanel />   
                     <BottomPanel />
                   </Box> 
                 </ContextMenuWrap>
