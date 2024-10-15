@@ -256,6 +256,11 @@ textarea:focus {
   color: rgb(229 229 229); /*neutral-200*/
 }
 
+svg {
+  fill: currentColor;
+  color: rgb(229 229 229); /*neutral-200*/
+}
+
 
 
 
