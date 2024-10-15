@@ -31,7 +31,7 @@ export default function FolderContents () {
 
   
   return (
-    <Box className={`scrollbar scrollbar-sky-300/20 scrollbar-corner-sky-300/20 scrollbar-track-transparent
+    <Box className={`scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
     ${settingsData.type === 'grid' &&  'w-full h-fit max-h-full grid overflow-y-auto'}`}
     style={{
       gridTemplateColumns: `repeat(${columnsCount}, minmax(0, 1fr))`

@@ -109,7 +109,7 @@ export default function DrivePanels ({ folderUuid }) {
               <DropzoneWrap>
                 <ContextMenuWrap>
                   <SidePanel />
-                  <Box className='grid grid-rows-[1fr_max-content]'>
+                  <Box className='grid grid-rows-[1fr_max-content] overflow-hidden'>
                     <FolderContents />   
                     <BottomPanel />
                   </Box> 

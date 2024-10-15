@@ -23,7 +23,6 @@ import TrashContextMenu from 'pages/drive/menus/TrashContextMenu.jsx';
 export default function ContextMenuWrap ({ children }) {
   const dispatch = useDispatch();
 
-  const folderContext = useContext(FolderContext);
   const dropzoneContext = useContext(DropzoneContext);
   
   const userData = useSelector(state => state.user);
@@ -352,7 +351,7 @@ export default function ContextMenuWrap ({ children }) {
   }
 
   return (
-    <Box className='w-full h-full grid grid-cols-[max-content_1fr]'
+    <Box className='w-full h-full grid grid-cols-[max-content_1fr] overflow-hidden'
     onKeyDown={handleOnKeyDown}
     onMouseUp={handleOnMouseUp}
     onMouseDown={handleOnWrapMouseDown}
