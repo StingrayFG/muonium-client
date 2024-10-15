@@ -93,19 +93,18 @@ export default function BottomPanel () {
 
 
   return (
-    <Box className='w-full px-2 py-2 flex 
+    <Box className='w-full px-2 py-2 grid grid-cols-[1fr_max-content] overflow-hidden
     border-sky-300/20 border-t'>
 
-      <Box className='flex'>
-        <p className='px-2 h-8 place-self-center text-left'>
-          {getSelectionText()}
-        </p>  
-      </Box>
+      <p className='w-full h-8
+      text-left overflow-hidden break-all'>
+        {getSelectionText()}
+      </p>  
 
-      <Box className='ml-auto flex'>
+      <Box className='flex'>
         <Box className='separator-vertical' />
         
-        <Box className='relative ml-2
+        <Box className='relative
         border-sky-300/20 border rounded-[0.3rem]'>
           <Box className='h-full absolute
           bg-sky-400/20 rounded-[0.2rem]'
@@ -113,7 +112,7 @@ export default function BottomPanel () {
             width: ((driveData.spaceUsed / driveData.spaceTotal) * 100) + '%'
           }}/>
 
-          <p className='px-4 h-8 place-self-center text-left'>
+          <p className='px-2 h-8 place-self-center text-left'>
             {((driveData.spaceTotal - driveData.spaceUsed) / (1024 * 1024)).toFixed(0) + ' MiB free'} 
           </p>
         </Box>

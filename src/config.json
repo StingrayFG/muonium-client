@@ -1,0 +1,12 @@
+{
+  "sidePanel": {
+    "minWidth": 120
+  },
+  "contentsPanel": {
+    "minWidth": 240
+  },
+  "defaultSettings": {
+    "viewMode": "grid",
+    "sidePanelWidth": 240
+  }
+}

@@ -16,7 +16,7 @@ export default function FolderContents () {
   const settingsData = useSelector(state => state.settings);
 
 
-  const elementSize = 150;
+  const elementSize = 160;
   const contentsRef = useRef(null);
   const [columnsCount, setColumnsCount] = useState(Math.floor(contentsRef?.current?.clientWidth / elementSize));
 
@@ -29,10 +29,9 @@ export default function FolderContents () {
     return () => resizeObserver.disconnect();
   }, []);
 
-
   return (
     <Box className={`scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
-    ${settingsData.type === 'grid' &&  'w-full h-fit max-h-full grid overflow-y-auto'}`}
+    ${settingsData.viewMode === 'grid' &&  'w-full h-fit max-h-full grid overflow-y-auto'}`}
     style={{
       gridTemplateColumns: `repeat(${columnsCount}, minmax(0, 1fr))`
     }}

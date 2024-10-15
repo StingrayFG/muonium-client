@@ -158,7 +158,7 @@ export default function FileElement ({ file, elementSize }) {
   
   // RENDER
   if (file) {
-    if (settingsData.type === 'grid') {
+    if (settingsData.viewMode === 'grid') {
       return (
         <Box className={`w-full h-full p-4 place-self-center border-box
         transition-all duration-300`}

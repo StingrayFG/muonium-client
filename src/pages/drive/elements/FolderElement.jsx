@@ -159,7 +159,7 @@ export default function FolderElement ({ folder, elementSize }) {
   
   // RENDER
   if (folder) {
-    if (settingsData.type === 'grid') {
+    if (settingsData.viewMode === 'grid') {
       return (
         <Box className={`h-full p-4 place-self-center
         transition-all duration-300`}

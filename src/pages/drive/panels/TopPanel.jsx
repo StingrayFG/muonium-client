@@ -1,10 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
 import { setAbsolutePath, moveToNew, moveToNext, moveToPrevious } from 'state/slices/PathSlice';
-import { setType } from 'state/slices/SettingsSlice';
+import { setViewMode } from 'state/slices/SettingsSlice';
 
 import { FolderContext } from 'contexts/FolderContext.jsx';
 
@@ -19,7 +18,6 @@ import { ReactComponent as FolderTwo } from 'assets/icons/elements/bootstrap/fol
 
 
 export default function TopPanel () {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const userData = useSelector(state => state.user);
@@ -30,11 +28,11 @@ export default function TopPanel () {
   const folderContext = useContext(FolderContext);
 
   const handleGridView = () => {
-    dispatch(setType('grid'));
+    dispatch(setViewMode('grid'));
   }
 
   const handleListView = () => {
-    dispatch(setType('list'));
+    dispatch(setViewMode('list'));
   }
 
   const handleNextPath = () => {
@@ -153,12 +151,12 @@ export default function TopPanel () {
           <Box className='separator-vertical' />
 
           <button className={`w-8 h-8 grid 
-          ${(settingsData.type === 'grid') ? 'button-small-selected' : 'button-small'}`}
+          ${(settingsData.viewMode === 'grid') ? 'button-small-selected' : 'button-small'}`}
           onClick={handleGridView}>
             <Grid className={`place-self-center h-5 w-5`} />
           </button>
           <button className={`w-8 h-8 grid ml-1
-          ${(settingsData.type === 'list') ? 'button-small-selected' : 'button-small'}`}
+          ${(settingsData.viewMode === 'list') ? 'button-small-selected' : 'button-small'}`}
           onClick={handleListView}>
             <ListUl className={`place-self-center h-5 w-5`} />      
           </button>
@@ -197,10 +195,10 @@ export default function TopPanel () {
         <Box className='separator-vertical' />
 
         <Box className='ml-auto flex'>
-          <Box className='mr-4 ml-2'>
+          <Box className='mr-2'>
             <p className='place-self-center'>{userData.login}</p>
           </Box>
-          <button className='w-16 h-8 grid'
+          <button className='w-8 h-8 grid'
           onClick={folderContext.handleLogout}>
             <BoxArrowRight className='place-self-center h-5 w-5' />
           </button >    

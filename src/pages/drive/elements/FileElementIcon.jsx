@@ -22,7 +22,7 @@ export default function FileElement ({ file }) {
   const archiveExtensions = ['zip', '7z', 'rar', 'gz'];
   const appExtensions = ['x86_64', 'sh', 'AppImage', 'exe' ];
 
-  if (settingsData.type === 'grid') {
+  if (settingsData.viewMode === 'grid') {
     if (textExtensions.includes(ext)) { return <FileTextMu className={iconStyle}/> } 
     else if (musicExtensions.includes(ext)) { return <FileMusicMu className={iconStyle}/> } 
     else if (videoExtensions.includes(ext)) { return <FileVideoMu className={iconStyle}/>  } 
