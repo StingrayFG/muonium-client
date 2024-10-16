@@ -11,7 +11,7 @@ export default function CommonContextMenu ({ options }) {
 
   const linesCount = options.filter(option => option === 'line').length
   const menuWidth = 256;
-  const menuHeight = 2 + (32 * options.length) + linesCount * 9;
+  const menuHeight = 2 + (32 * (options.length - linesCount)) + linesCount * 9;
 
 
   const windowWidth = useRef(window.innerWidth).current;
