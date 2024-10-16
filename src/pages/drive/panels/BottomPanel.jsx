@@ -93,7 +93,8 @@ export default function BottomPanel () {
 
 
   return (
-    <Box className='w-full px-2 py-2 grid grid-cols-[1fr_max-content] overflow-hidden
+    <Box className='w-full px-2 py-2 overflow-hidden absolute bottom-0 backdrop-blur
+    grid grid-cols-[1fr_max-content]
     border-sky-300/20 border-t'>
 
       <p className='w-full h-8

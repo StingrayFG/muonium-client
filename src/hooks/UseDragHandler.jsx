@@ -23,7 +23,7 @@ export function useDragHandler (lowerDeltaLimit = 10) {
 
     setDragDelta(newDragDelta);
 
-    if (((newDragDelta.x * newDragDelta.x) + (newDragDelta.y * newDragDelta.y) > lowerDeltaLimit * lowerDeltaLimit) && isHolding && !isDragging) {
+    if (((newDragDelta.x * newDragDelta.x) + (newDragDelta.y * newDragDelta.y) > (lowerDeltaLimit * lowerDeltaLimit)) && isHolding && !isDragging) {
       setIsDragging(true);
     }
   }
