@@ -6,8 +6,8 @@ import { ReactComponent as Download } from 'assets/icons/download.svg'
 import { ReactComponent as FilePlus } from 'assets/icons/file-plus.svg'
 import { ReactComponent as FileX } from 'assets/icons/file-x.svg'
 
-import { ReactComponent as ClipboardMinus } from 'assets/icons/clipboard-minus.svg'
-import { ReactComponent as Copy } from 'assets/icons/copy.svg'
+import { ReactComponent as ClipboardMinus } from 'assets/icons/clipboard2-minus.svg'
+import { ReactComponent as Files } from 'assets/icons/files.svg'
 import { ReactComponent as Scissors } from 'assets/icons/scissors.svg'
 import { ReactComponent as Pencil } from 'assets/icons/pencil.svg'
 
@@ -29,7 +29,7 @@ export default function MenuOptionElement ({ option }) {
     else if (icon === 'add-bookmark') { return <FilePlus className={iconStyle}/> } 
     else if (icon === 'remove-bookmark') { return <FileX className={iconStyle}/> }
 
-    else if (icon === 'copy') { return <Copy className={iconStyle}/> }
+    else if (icon === 'copy') { return <Files className={iconStyle}/> }
     else if (icon === 'cut') { return <Scissors className={iconStyle}/> }
     else if (icon === 'paste') { return <ClipboardMinus className={iconStyle}/> } 
     else if (icon === 'rename') { return <Pencil className={iconStyle}/> }
