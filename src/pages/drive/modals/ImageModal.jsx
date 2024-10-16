@@ -20,8 +20,13 @@ export default function ImageModal ({ file }) {
 
   const [isLoaded, setIsLoaded] = useState(false);
   
-  const boxRef = useRef();
-  const imgRef = useRef();
+  const boxRef = useRef(null);
+  const imgRef = useRef(null);
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    modalRef.current.focus();
+  }, []);
 
 
   // IMAGE
@@ -85,10 +90,12 @@ export default function ImageModal ({ file }) {
 
   // RENDER
   return(
-    <Box className='w-screen h-screen' 
+    <Box className='w-screen h-dvh'
     onKeyDown={handleOnKeyDown}
     onMouseUp={handleOnMouseUp}
-    onMouseDown={handleOnMouseDown}> 
+    onMouseDown={handleOnMouseDown}
+    tabIndex={0}
+    ref={modalRef}> 
 
       <QuickPinchZoom className='' 
       onUpdate={onUpdate} 
