@@ -57,6 +57,7 @@ export default function SidePanel () {
   }
 
 
+  // RENDER
   return (
     <Box className={`pr-2 -mr-2 overflow-hidden
     ${isDragging ? 'static' : 'relative'}`}>
