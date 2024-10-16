@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 
 import { moveToNew } from 'state/slices/pathSlice';
 import { createElement, renameElements } from 'state/slices/currentFolderSlice';
+import { updateBookmarksOnClient, revertUpdateBookmarksOnClient } from 'state/slices/bookmarkSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { ModalContext } from 'contexts/ModalContext.jsx';
@@ -92,12 +93,24 @@ export default function FolderElement ({ folder, elementSize }) {
 
       if (contextMenuContext.isCreatingFolder) {
         contextMenuContext.setIsCreatingFolder(false);
-        const newFolder = { ...folder, uuid: Date.now() + 'temp', name: name };
+        const newFolder = { ...folder, uuid: 'temp-' + Date.now(), name: name };
         dispatch(createElement({ userData, driveData, element: newFolder }))
       } else {
         contextMenuContext.setIsRenaming(false);
         const newFolder = { ...folder, name: name };
+        dispatch(updateBookmarksOnClient([{
+          uuid: userData.uuid + newFolder.uuid,
+          folder: newFolder
+        }]))
         dispatch(renameElements({ userData, driveData, elements: [newFolder] }))
+        .then(res => {
+          if (res.type === 'elements/rename/rejected') {
+            dispatch(revertUpdateBookmarksOnClient([{
+              uuid: userData.uuid + newFolder.uuid,
+              folder: newFolder
+            }]))
+          }
+        })
       }
     }
   }

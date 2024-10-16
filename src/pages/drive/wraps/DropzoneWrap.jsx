@@ -38,7 +38,7 @@ export default function DropzoneWrap ({ children }) {
   useEffect(() => {
     if (requiresUpload) {
       const newFile = { 
-        uuid: Date.now() + '-temp', 
+        uuid: 'temp-' + Date.now(), 
         name: file.name, 
         type: 'file', 
         imageBlob: URL.createObjectURL(file),

@@ -24,13 +24,76 @@ export const deleteBookmark = createAsyncThunk(
   },
 );
 
+
+const parseToObject = (state) => {
+  return JSON.parse(JSON.stringify(state))
+}
+
+
 export const bookmarkSlice = createSlice({
   name: 'bookmark',
   initialState: {
     bookmarks: [],
     bookmarkedFoldersUuids: [],
   },
-  reducers: {},
+  reducers: {
+    addBookmarksOnClient: (state, action) => {
+      let newBookmarks = [...parseToObject(state.bookmarks), ...action.payload]
+
+      return { 
+        ...state, 
+        bookmarks: newBookmarks, 
+        bookmarkedFoldersUuids: newBookmarks.map(bookmark => bookmark.folderUuid) 
+      };
+    },
+    updateBookmarksOnClient: (state, action) => {
+      let newBookmarks = parseToObject(state.bookmarks);
+
+      for (const element of action.payload) {
+        newBookmarks.find((bookmark, index) => {
+          if (bookmark.uuid === element.uuid) {
+            newBookmarks[index] = { ...element, originalBookmark: newBookmarks[index] };
+          }
+        })
+      }
+
+      return { 
+        ...state, 
+        bookmarks: newBookmarks, 
+        bookmarkedFoldersUuids: newBookmarks.map(bookmark => bookmark.folderUuid) 
+      };
+    },
+    revertUpdateBookmarksOnClient: (state, action) => {
+      let newBookmarks = parseToObject(state.bookmarks);
+
+      for (const element of action.payload) {
+        newBookmarks.find((bookmark, index) => {
+          if (bookmark.uuid === element.uuid) {
+            newBookmarks[index] = bookmark.originalBookmark;
+          }
+        })
+      }
+
+      return { 
+        ...state, 
+        bookmarks: newBookmarks, 
+        bookmarkedFoldersUuids: newBookmarks.map(bookmark => bookmark.folderUuid) 
+      };
+    },
+    deleteBookmarksOnClient: (state, action) => {
+      let newBookmarks = parseToObject(state.bookmarks);
+
+      const bookmarksUuids = action.payload.map(bookmark =>bookmark.uuid);
+
+      newBookmarks = newBookmarks.filter(bookmark => (!bookmarksUuids.includes(bookmark.uuid)))
+
+      return { 
+        ...state, 
+        bookmarks: newBookmarks, 
+        bookmarkedFoldersUuids: newBookmarks.map(bookmark => bookmark.folderUuid) 
+      };
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getBookmarks.fulfilled, (state, action) => {
       return { 
@@ -74,4 +137,4 @@ export const bookmarkSlice = createSlice({
   },
 });
 
-export const {} = bookmarkSlice.actions;
+export const { addBookmarksOnClient, updateBookmarksOnClient, revertUpdateBookmarksOnClient, deleteBookmarksOnClient } = bookmarkSlice.actions;

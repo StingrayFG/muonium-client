@@ -8,6 +8,7 @@ import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import { ReactComponent as House } from 'assets/icons/house.svg'
 import { ReactComponent as Trash } from 'assets/icons/trash.svg'
+import { ReactComponent as ArrowLeft } from 'assets/icons/arrow-left.svg'
 
 
 export default function BookmarkElement ({ bookmark }) {
@@ -85,7 +86,7 @@ export default function BookmarkElement ({ bookmark }) {
     }
   }
 
-  
+
   // RENDER
   if (bookmark) {
     return (
@@ -100,10 +101,18 @@ export default function BookmarkElement ({ bookmark }) {
           {getIcon()}
         </Box>
 
-        <p className='ml-2 place-self-center
-        text-left text-ellipsis overflow-hidden'>
-          { bookmark.folder.name + (bookmark.folder.isRemoved ? ' (in trash)' : '') }
-        </p>
+        <Box className='ml-2 flex'>
+          {bookmark.folder.isRemoved && <>    
+            <Trash className='w-4 h-4 mt-2 mr-1' style={{color: 'rgb(244 63 94)'}}/>
+            <ArrowLeft className='w-4 h-4 mt-2 mr-1' style={{color: 'rgb(244 63 94)'}}/>
+          </>}
+
+          <p className='place-self-center
+          text-left text-ellipsis overflow-hidden'>
+            { bookmark.folder.name }
+          </p>
+        </Box>
+
 
       </button>
     );

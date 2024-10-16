@@ -15,28 +15,39 @@ export const getFolder = createAsyncThunk(
 export const uploadElement = createAsyncThunk(
   'elements/upload',
   async ({ userData, driveData, element, file}, thunkAPI) => {
-    let failedElements = [];
-    
+    let newElement;   
     if (element.type === 'file') {
       await FileService.handleUpload(userData, driveData, element, file)
-      .catch(() => failedElements.push(element))
-    }   
-
-    return thunkAPI.fulfillWithValue(failedElements);
+      .then(res => {
+        newElement = res;   
+      })
+      .catch(() => {
+        return thunkAPI.rejectWithValue(element);
+      })
+    }
+    if (newElement) {
+      return thunkAPI.fulfillWithValue(newElement);
+    } else {
+      return thunkAPI.rejectWithValueWithValue();
+    } 
   },
 );
 
 export const createElement = createAsyncThunk(
   'elements/create',
   async ({ userData, driveData, element}, thunkAPI) => {
-    let failedElements = [];
-
+    let newElement;   
     if (element.type === 'folder') {
       await FolderService.handleCreate(userData, driveData, element)
-      .catch(() => failedElements.push(element))
+      .then(res => {
+        newElement = res;   
+      })
     }
-
-    return thunkAPI.fulfillWithValue(failedElements);
+    if (newElement) {
+      return thunkAPI.fulfillWithValue(newElement);
+    } else {
+      return thunkAPI.rejectWithValueWithValue();
+    }
   },
 );
 
@@ -55,7 +66,11 @@ export const renameElements = createAsyncThunk(
       }
     } 
 
-    return thunkAPI.fulfillWithValue(failedElements);
+    if (failedElements.length > 0) {
+      return thunkAPI.rejectWithValue(failedElements);
+    } else {
+      return thunkAPI.fulfillWithValue();
+    }
   },
 );
 
@@ -71,7 +86,11 @@ export const copyElements = createAsyncThunk(
       }
     }
 
-    return thunkAPI.fulfillWithValue(failedElements);
+    if (failedElements.length > 0) {
+      return thunkAPI.rejectWithValue(failedElements);
+    } else {
+      return thunkAPI.fulfillWithValue();
+    }
   },
 );
 
@@ -90,7 +109,11 @@ export const pasteElements = createAsyncThunk(
       }
     } 
 
-    return thunkAPI.fulfillWithValue(failedElements);
+    if (failedElements.length > 0) {
+      return thunkAPI.rejectWithValue(failedElements);
+    } else {
+      return thunkAPI.fulfillWithValue();
+    }
   },
 );
 
@@ -110,7 +133,11 @@ export const moveElements = createAsyncThunk(
       }
     } 
 
-    return thunkAPI.fulfillWithValue(failedElements);
+    if (failedElements.length > 0) {
+      return thunkAPI.rejectWithValue(failedElements);
+    } else {
+      return thunkAPI.fulfillWithValue();
+    }
   },
 );
 
@@ -129,7 +156,11 @@ export const removeElements = createAsyncThunk(
       }
     }  
 
-    return thunkAPI.fulfillWithValue(failedElements);
+    if (failedElements.length > 0) {
+      return thunkAPI.rejectWithValue(failedElements);
+    } else {
+      return thunkAPI.fulfillWithValue();
+    }
   },
 );
 
@@ -148,7 +179,11 @@ export const recoverElements = createAsyncThunk(
       }
     }  
 
-    return thunkAPI.fulfillWithValue(failedElements);
+    if (failedElements.length > 0) {
+      return thunkAPI.rejectWithValue(failedElements);
+    } else {
+      return thunkAPI.fulfillWithValue();
+    }
   },
 );
 
@@ -168,7 +203,11 @@ export const deleteElements = createAsyncThunk(
       }
     }  
 
-    return thunkAPI.fulfillWithValue(failedElements);
+    if (failedElements.length > 0) {
+      return thunkAPI.rejectWithValue(failedElements);
+    } else {
+      return thunkAPI.fulfillWithValue();
+    }
   },
 );
 
@@ -209,17 +248,17 @@ const updateElementsOnClient = (state, elements) => {
 
     for (const element of elements) {
       if (element.type === 'file') {
-        reorderedFiles.find((o, i) => {
-          if (o.uuid === element.uuid) {
-            delete reorderedFiles[i].originalElement;
-            reorderedFiles[i] = { ...element, originalElement: reorderedFiles[i] };
+        reorderedFiles.find((file, index) => {
+          if (file.uuid === element.uuid) {
+            delete reorderedFiles[index].originalElement;
+            reorderedFiles[index] = { ...element, originalElement: reorderedFiles[index] };
           }
         })
       } else if (element.type === 'folder') {
-        reorderedFolders.find((o, i) => {
-          if (o.uuid === element.uuid) {
-            delete reorderedFolders[i].originalElement;
-            reorderedFolders[i] = { ...element, originalElement: reorderedFolders[i] };
+        reorderedFolders.find((folder, index) => {
+          if (folder.uuid === element.uuid) {
+            delete reorderedFolders[index].originalElement;
+            reorderedFolders[index] = { ...element, originalElement: reorderedFolders[index] };
           }
         })
       }
@@ -246,18 +285,51 @@ const revertUpdateElementsOnClient = (state, elements) => {
 
     for (const element of elements) {
       if (element.type === 'file') {
-        reorderedFiles.find((o, i) => {
-          if (o.uuid === element.uuid) {
-            reorderedFiles[i] = reorderedFiles[i].originalElement;
+        reorderedFiles.find((file, index) => {
+          if (file.uuid === element.uuid) {
+            reorderedFiles[index] = reorderedFiles[index].originalElement;
           }
         })
       } else if (element.type === 'folder') {
-        reorderedFolders.find((o, i) => {
-          if (o.uuid === element.uuid) {
-            reorderedFolders[i] = reorderedFolders[i].originalElement;
+        reorderedFolders.find((folder, index) => {
+          if (folder.uuid === element.uuid) {
+            reorderedFolders[index] = reorderedFolders[index].originalElement;
           }
         })
       }
+    }
+
+    reorderedFiles.sort((a, b) => a.name.localeCompare(b.name));
+    reorderedFolders.sort((a, b) => a.name.localeCompare(b.name));
+
+    return { 
+      ...state, 
+      files: reorderedFiles,
+      folders: reorderedFolders
+    };
+  } else {
+    return state;
+  }
+}
+
+const updateUuidToPermanent = (state, clientElement, serverElement) => {
+  state = parseToObject(state);
+  if (clientElement && serverElement) {
+    let reorderedFiles = state.files;
+    let reorderedFolders = state.folders;
+
+    if (clientElement.type === 'file') {
+      reorderedFiles.find((file, index) => {
+        if (file.uuid === clientElement.uuid) {
+          reorderedFiles[index] = serverElement;
+        }
+      })
+    } else if (clientElement.type === 'folder') {
+      reorderedFolders.find((folder, index) => {
+        if (folder.uuid === clientElement.uuid) { 
+          reorderedFolders[index] = serverElement;
+        }
+      })
     }
 
     reorderedFiles.sort((a, b) => a.name.localeCompare(b.name));
@@ -317,22 +389,25 @@ export const currentFolderSlice = createSlice({
       return addElementsOnClient(state, [action.meta.arg.element]);
     });
     builder.addCase(uploadElement.rejected, (state, action) => {
-      return removeElementsOnClient(state, action.payload);
+      return removeElementsOnClient(state, [action.meta.arg.element]);
     });
 
 
     builder.addCase(createElement.pending, (state, action) => {
       return addElementsOnClient(state, [action.meta.arg.element]);
     });
+    builder.addCase(createElement.fulfilled, (state, action) => {
+      return updateUuidToPermanent(state, action.meta.arg.element, action.payload);
+    });
     builder.addCase(createElement.rejected, (state, action) => {
-      return removeElementsOnClient(state, action.payload);
+      return removeElementsOnClient(state, [action.meta.arg.element]);
     });
 
 
     builder.addCase(renameElements.pending, (state, action) => {
       return updateElementsOnClient(state, action.meta.arg.elements);
     });
-    builder.addCase(renameElements.fulfilled, (state, action) => {
+    builder.addCase(renameElements.rejected, (state, action) => {
       return revertUpdateElementsOnClient(state, action.payload);
     });
 

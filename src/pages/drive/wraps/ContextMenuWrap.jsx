@@ -4,9 +4,9 @@ import { Box } from '@mui/material';
 
 import { copyToClipboard, cutToClipboard, clearClipboard } from 'state/slices/clipboardSlice.jsx';
 import { copyElements, pasteElements, moveElements, removeElements, recoverElements, deleteElements } from 'state/slices/currentFolderSlice';
+import { addBookmarksOnClient, updateBookmarksOnClient, revertUpdateBookmarksOnClient, deleteBookmarksOnClient } from 'state/slices/bookmarkSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
-import { FolderContext } from 'contexts/FolderContext.jsx';
 import { DropzoneContext } from 'contexts/DropzoneContext';
 
 import FileService from 'services/FileService.jsx';
@@ -114,29 +114,71 @@ export default function ContextMenuWrap ({ children }) {
   // TRASH
   const removeClickedElements = async () => {
     setIsContextMenu(false);
+    
+    dispatch(updateBookmarksOnClient(clickedElements
+      .filter(element => element.type === 'folder')
+      .map(element => ({ uuid: userData.uuid + element.uuid, folder: { ...element, isRemoved: true } }))
+    ))
+
     dispatch(removeElements({ 
       userData, 
       driveData, 
       elements: clickedElements
     }))
+    .then(async res => {
+      if ((res.payload) && (res.type === 'elements/remove/rejected')) {
+        dispatch(revertUpdateBookmarksOnClient(res.payload
+          .filter(element => element.type === 'folder')
+          .map(element => ({ uuid: userData.uuid + element.uuid, folder: element }))
+        ))
+      }
+    })
   }
 
   const recoverClickedElements = async () => {
     setIsContextMenu(false);
+
+    dispatch(updateBookmarksOnClient(clickedElements
+      .filter(element => element.type === 'folder')
+      .map(element => ({ uuid: userData.uuid + element.uuid, folder: { ...element, isRemoved: false } }))
+    ))
+
     dispatch(recoverElements({ 
       userData, 
       driveData, 
       elements: clickedElements
     }))
+    .then(async res => {
+      if ((res.payload) && (res.type === 'elements/recover/rejected')) {
+        dispatch(revertUpdateBookmarksOnClient(res.payload
+          .filter(element => element.type === 'folder')
+          .map(element => ({ uuid: userData.uuid + element.uuid, folder: element }))
+        ))
+      }
+    })
   }
 
   const deleteClickedElements = async () => {
     setIsContextMenu(false);
+
+    dispatch(deleteBookmarksOnClient(clickedElements
+      .filter(element => element.type === 'folder')
+      .map(element => ({ uuid: userData.uuid + element.uuid, folder: element }))
+    ))
+
     dispatch(deleteElements({ 
       userData, 
       driveData, 
       elements: clickedElements
-    }))
+    }))    
+    .then(async res => {
+      if ((res.payload) && (res.type === 'elements/delete/rejected')) {
+        dispatch(addBookmarksOnClient(res.payload
+          .filter(element => element.type === 'folder')
+          .map(element => ({ uuid: userData.uuid + element.uuid, folder: element }))
+        ))
+      }
+    })
   }
 
 
@@ -244,7 +286,7 @@ export default function ContextMenuWrap ({ children }) {
   }
 
   const updateDragging = (event) => {
-    if ((Math.pow(containerPoint.x - mousePointInitial.x, 2) + (Math.pow(containerPoint.y - mousePointInitial.y, 2) > 10)) 
+    if ((Math.pow(containerPoint.x - mousePointInitial.x, 2) + Math.pow(containerPoint.y - mousePointInitial.y, 2) > Math.pow(10, 2)) 
     && !isDraggingElement && isHoldingElement) {
       setIsDraggingElement(true);
     }
@@ -280,12 +322,14 @@ export default function ContextMenuWrap ({ children }) {
     setContainerPoint({ x: event.pageX, y: event.pageY });
   }
 
-  const stopDraggingElement = () => {
+  const stopDraggingElement = (event) => {
     setIsDraggingElement(false);
     setIsHoldingElement(false);
-    if (hoveredElement.uuid && (!clickedElements.includes(hoveredElement)) && (hoveredElement.type === 'folder') && 
-    isDraggingElement && !isRenaming && !isCreatingFolder) {
+    if ((!clickedElements.includes(hoveredElement)) && (hoveredElement.type === 'folder') && 
+    isDraggingElement && hoveredElement.uuid) {
       moveClickedElements();
+    } else if (!event.ctrlKey && !isDraggingElement && !isContextMenu && hoveredElement.uuid) { // Used to set clicked element if there was no drag attempt after mouse down event
+      addClickedElement({}, hoveredElement)
     }
   }
 
@@ -302,7 +346,7 @@ export default function ContextMenuWrap ({ children }) {
     event.preventDefault();
 
     if (event.button === 0) {
-      stopDraggingElement()
+      stopDraggingElement(event)
     }
   };
 
@@ -323,7 +367,7 @@ export default function ContextMenuWrap ({ children }) {
   };
 
   const handleOnElementMouseDown = (event, element) => {
-    if (!isContextMenu && (event.button === 0)) {
+    if (!isContextMenu && (event.button === 0) && !clickedElements.includes(element)) {
       addClickedElement(event, element); // Will get added or appended depending on the ctrl key
     }
   };
