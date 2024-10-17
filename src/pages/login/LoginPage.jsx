@@ -107,9 +107,8 @@ export default function LoginPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = {login: event.target.elements.login.value, password: event.target.elements.password.value}
-    if (!data.login || !data.password) {
-      //showMessage('Please enter correct data');
-    } else {
+    
+    if (getIsFormCorrect()) {
       setIsLoading(true);
       await dispatch(loginUser(data))
       .then(res => {
