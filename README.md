@@ -1,6 +1,6 @@
-# Muonium
+# About
 
-Muonium is a cloud storage project built with React + Redux, TailwindCSS, Express, Prisma + PostgreSQL, and Redis.
+muonium is a cloud storage app built with React, Redux, TailwindCSS, MUI, Express, Prisma, PostgreSQL, Dragonfly.
 
 ### Real world example
 
@@ -8,22 +8,23 @@ See the real world example at https://muoniumdrive.com
 
 # Features
 
-- Drag&Drop files upload
-- Custom Redux store-based clipboard
-- Traversing folders by their absolute path
+- Drag & Drop support
+- Custom Redux slice-based clipboard
 - Grid & List view options
-- Bookmarks
+- Traversing folders by their absolute path
+- Bookmarks support
+- JWT auth, all requests get authenticated
 
-- Heavy use of JWT auth, all the requests get authenticated
-- Folders arent present on the disk, they exist only in form of metadata in the database
-
+- Files & folders metadata is stored in the database
+  
 # To be added
+
 - Clustered backend
 - Mobile devices support
-- Extended list view (with date, size, type etc columns)
+- Fully customizable list view with columns customization
 
 # Screenshots
 
 ### Desktop 
 
-![Capture](https://github.com/StingrayFG/muonium-frontend/assets/54187585/71610d8a-2e08-4c7b-b3cc-fbeaef28a94e)
+![ksnip_20241017-223348](https://github.com/user-attachments/assets/e2eefd2b-c0d8-4395-b478-01299ceb3510)
