@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import QuickPinchZoom, { make3dTransformValue } from 'react-quick-pinch-zoom';
 
+import  { env } from 'env.js'
+
 import { ModalContext } from 'contexts/ModalContext';
 
 import FileService from 'services/FileService.jsx';
@@ -37,7 +39,7 @@ export default function ImageModal ({ file }) {
       FileService.handleGetImageLink(userData, driveData, file)
       .then(res => {
         setIsLoaded(true);
-        setImageSrc(process.env.REACT_APP_SERVER_URL + res);
+        setImageSrc(env.REACT_APP_SERVER_URL + res);
       })
       .catch(() => {
         setIsLoaded(true);

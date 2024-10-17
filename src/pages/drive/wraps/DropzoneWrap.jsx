@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { Box } from '@mui/material';
 
+import  { env } from 'env.js'
+
 import { uploadElement } from 'state/slices/currentFolderSlice';
 
 import { DropzoneContext } from 'contexts/DropzoneContext';
@@ -30,7 +32,7 @@ export default function DropzoneWrap ({ children }) {
 
   const handleChange = (file) => {
     setFile(file);
-    if (file && (file.size < (1024 * 1024 * process.env.REACT_APP_MAX_FILE_SIZE))) {
+    if (file && (file.size < (1024 * 1024 * env.REACT_APP_MAX_FILE_SIZE))) {
       setRequiresUpload(true);
     }
   };
