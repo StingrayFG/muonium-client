@@ -175,7 +175,7 @@ export default function SignupPage() {
             <p className={`absolute pointer-events-none right-0
             transition-all duration-300
             text-rose-500
-            ${formData.login.isCorrect ? 'opacity-0' : 'opacity-100'}`}>{'At least 4 characters'}</p>
+            ${(formData.login.isCorrect || !formData.login.value) ? 'opacity-0' : 'opacity-100'}`}>{'At least 4 characters'}</p>
 
             <input className='w-full px-2 mt-8'
               name='login'
@@ -189,7 +189,7 @@ export default function SignupPage() {
             <p className={`absolute pointer-events-none right-0
             transition-all duration-300
             text-rose-500
-            ${formData.password.isCorrect ? 'opacity-0' : 'opacity-100'}`}>{'At least 8 characters'}</p>
+            ${(formData.password.isCorrect || !formData.password.value) ? 'opacity-0' : 'opacity-100'}`}>{'At least 8 characters'}</p>
 
             <input className='w-full px-2 mt-8'
               name='password'
@@ -203,7 +203,7 @@ export default function SignupPage() {
             <p className={`absolute pointer-events-none right-0
             transition-all duration-300
             text-rose-500
-            ${formData.confirmpassword.isCorrect ? 'opacity-0' : 'opacity-100'}`}>{'Does not match'}</p>
+            ${(formData.confirmpassword.isCorrect || !formData.confirmpassword.value) ? 'opacity-0' : 'opacity-100'}`}>{'Does not match'}</p>
 
             <input className='w-full px-2 mt-8'
               name='confirmpassword'
