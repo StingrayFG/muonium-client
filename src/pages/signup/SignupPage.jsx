@@ -21,9 +21,9 @@ export default function SignupPage() {
   const [messageData, showMessage] = useMessageHandler(1500);
 
   const [formData, setFormData] = useState({
-    login: { value: '', shallMoveLabel: false, isCorrect: true },
-    password: { value: '', shallMoveLabel: false, isCorrect: true },
-    confirmpassword: { value: '', shallMoveLabel: false, isCorrect: true }
+    login: { value: '', shallMoveLabel: false, isCorrect: false },
+    password: { value: '', shallMoveLabel: false, isCorrect: false },
+    confirmpassword: { value: '', shallMoveLabel: false, isCorrect: false }
   });
   const [awaitingAutofill, setAwaitingAutofill] = useState(true);
 
