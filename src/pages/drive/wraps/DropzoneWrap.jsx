@@ -39,13 +39,16 @@ export default function DropzoneWrap ({ children }) {
 
   useEffect(() => {
     if (requiresUpload) {
-      const newFile = { 
+      let newFile = { 
         uuid: 'temp-' + Date.now(), 
         name: file.name, 
         type: 'file', 
-        imageBlob: URL.createObjectURL(file),
         parentUuid: currentFolderData.uuid
       };   
+
+      if (['png', 'webp', 'jpg', 'jpeg'].includes(file.name.split('.').pop())) {
+        newFile.imageBlob = URL.createObjectURL(file);
+      }
 
       dispatch(uploadElement({ userData, driveData, element: newFile, file }));
       setRequiresUpload(false);
