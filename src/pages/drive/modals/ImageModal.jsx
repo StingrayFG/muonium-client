@@ -37,7 +37,7 @@ export default function ImageModal ({ file }) {
       FileService.handleGetImageLink(userData, driveData, file)
       .then(res => {
         setIsLoaded(true);
-        setImageSrc(res);
+        setImageSrc(process.env.REACT_APP_SERVER_URL + res);
       })
       .catch(() => {
         setIsLoaded(true);
@@ -114,7 +114,7 @@ export default function ImageModal ({ file }) {
             <img className='w-[80%] h-[80%] absolute
             object-contain'
             alt=''
-            src={process.env.REACT_APP_SERVER_URL + imageSrc} />
+            src={imageSrc} />
           }
 
           <img className={`w-[80%] h-[80%] absolute
