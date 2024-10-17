@@ -136,7 +136,7 @@ export default function TopPanel () {
   // RENDER
   return (
     <Box className='w-full px-2 py-2 flex 
-    bg-black/20 border-sky-300/20 border-b'>
+    bg-black/40 border-sky-300/20 border-b'>
 
         <Box className='flex'>
           <button className={`w-8 h-8 grid
