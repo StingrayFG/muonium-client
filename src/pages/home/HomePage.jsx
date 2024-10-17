@@ -35,7 +35,7 @@ export default function LoginPage() {
 
         <p> 
           {'To find more, check the '}
-          <a href='https://github.com/StingrayFG/muonium-frontend' className='inline-flex gap-2 hover:underline'>
+          <a href='https://github.com/StingrayFG/muonium-client' className='inline-flex gap-2 hover:underline'>
             {'github repository'}
             <LinkBoxIcon className='mt-1.5'/>
           </a>      
