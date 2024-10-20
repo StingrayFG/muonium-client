@@ -136,7 +136,7 @@ export default function BottomPanel () {
           <Box className='absolute w-full opacity-0'>
             <Slider 
             onChange={handleSlider}
-            defaultValue={settingsData.elementSize}
+            value={settingsData.elementSize}
             step={10}
             min={config.element.minSize}
             max={config.element.maxSize} />
