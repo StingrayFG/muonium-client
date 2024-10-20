@@ -272,6 +272,13 @@ svg {
   width: 1px;
 }
 
+.separator-vertical-extra {
+  margin-left: 1rem;
+  margin-right: 1rem;
+  background-color: rgba(125, 211, 252, 0.2); /*sky-300*/
+  width: 1px;
+}
+
 .separator-horizontal {
   margin-left: 0.375rem;
   margin-right: 0.375rem;

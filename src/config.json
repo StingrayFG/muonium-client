@@ -5,8 +5,13 @@
   "contentsPanel": {
     "minWidth": 240
   },
+  "element": {
+    "minSize": 80,
+    "maxSize": 400
+  },
   "defaultSettings": {
     "viewMode": "grid",
-    "sidePanelWidth": 240
+    "sidePanelWidth": 240,
+    "elementSize": 200
   }
 }

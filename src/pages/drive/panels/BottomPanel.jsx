@@ -1,17 +1,32 @@
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
-import { Box } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { Box, Slider } from '@mui/material';
+
+import { setElementSize } from 'state/slices/settingsSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
+import config from 'config.json';
+
 
 export default function BottomPanel () {
+  const dispatch = useDispatch();
+
   const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
   const currentFolderData = useSelector(state => state.currentFolder);
+  const settingsData = useSelector(state => state.settings);
 
   const contextMenuContext = useContext(ContextMenuContext);
 
+
+  // HANDLERS
+  const handleSlider = (event, value) => {
+    dispatch(setElementSize(value));
+  }
+  
+
+  // GETS
   const parseSize = (size) => {
     let res = '';
     if (size > Math.pow(1024, 3)) { res += (((size / Math.pow(1024, 3)) + '').slice(0.5) + ' GiB') } 
@@ -91,20 +106,56 @@ export default function BottomPanel () {
     return res;
   }
 
+  const getZoomText = () => {
+    return 'Zoom: ' + ((settingsData.elementSize / config.defaultSettings.elementSize) * 100).toFixed(0) + '%';
+  }
 
+  const getUsageText = () => {
+    return ((driveData.spaceTotal - driveData.spaceUsed) / (1024 * 1024)).toFixed(0) + ' MiB / ' +
+    (driveData.spaceTotal / (1024 * 1024)).toFixed(0) + ' MiB'
+  }
+
+
+  // RENDER
   return (
-    <Box className='w-full px-2 py-2 overflow-hidden absolute bottom-0 backdrop-blur
-    grid grid-cols-[1fr_max-content]
-    border-sky-300/20 border-t'>
+    <Box className='w-full px-2 py-2 absolute bottom-0
+    overflow-hidden flex
+    bg-black/40 border-sky-300/20 border-t backdrop-blur'>
 
-      <p className='w-full h-8
-      text-left overflow-hidden break-all'>
+      <p className='w-full h-8 pr-2
+      text-left text-ellipsis overflow-hidden'>
         {getSelectionText()}
       </p>  
 
-      <Box className='flex'>
-        <Box className='separator-vertical' />
-        
+      <Box className='separator-vertical' />
+
+      <Box className='flex shrink-0'>
+        <Box className='w-40 relative
+        border-sky-300/20 border rounded-[0.3rem]'>
+          <Box className='absolute w-full opacity-0'>
+            <Slider 
+            onChange={handleSlider}
+            defaultValue={settingsData.elementSize}
+            step={10}
+            min={config.element.minSize}
+            max={config.element.maxSize} />
+          </Box>
+
+          <Box className='h-full absolute pointer-events-none
+          bg-sky-400/20 rounded-[0.2rem]'
+          style={{
+            width: (((settingsData.elementSize - config.element.minSize) / (config.element.maxSize - config.element.minSize)) * 100) + '%'
+          }}/>
+
+          <p className='px-2 h-8 place-self-center text-center'>
+            {getZoomText()} 
+          </p>
+        </Box>
+      </Box>
+
+      <Box className='separator-vertical' />
+
+      <Box className='flex shrink-0'>
         <Box className='relative
         border-sky-300/20 border rounded-[0.3rem]'>
           <Box className='h-full absolute
@@ -113,8 +164,8 @@ export default function BottomPanel () {
             width: ((driveData.spaceUsed / driveData.spaceTotal) * 100) + '%'
           }}/>
 
-          <p className='px-2 h-8 place-self-center text-left'>
-            {((driveData.spaceTotal - driveData.spaceUsed) / (1024 * 1024)).toFixed(0) + ' MiB free'} 
+          <p className='px-4 h-8'>
+            {getUsageText()} 
           </p>
         </Box>
       </Box>

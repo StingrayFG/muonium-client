@@ -162,7 +162,10 @@ export default function FileElement ({ file, elementSize }) {
       return (
         <Box className={`w-full h-full p-4 place-self-center border-box
         transition-all duration-300`}
-        style={{width: elementSize ? elementSize + 'px' : ''}}>
+        style={{
+          width: elementSize ? elementSize + 'px' : '',
+          padding: elementSize ? elementSize * 0.1 + 'px' : '1rem'
+        }}> 
     
           <Box className={`w-full aspect-4-3 grid`}
           onMouseDown={handleOnMouseDown}

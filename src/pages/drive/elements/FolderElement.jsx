@@ -174,9 +174,12 @@ export default function FolderElement ({ folder, elementSize }) {
   if (folder) {
     if (settingsData.viewMode === 'grid') {
       return (
-        <Box className={`h-full p-4 place-self-center
+        <Box className={`h-full place-self-center
         transition-all duration-300`}
-        style={{width: elementSize ? elementSize + 'px' : ''}}>
+        style={{
+          width: elementSize ? elementSize + 'px' : '',
+          padding: elementSize ? elementSize * 0.1 + 'px' : '1rem'
+        }}>
     
           <Box className={`w-full`}
           onMouseDown={handleOnMouseDown}

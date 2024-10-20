@@ -18,7 +18,11 @@ export const settingsSlice = createSlice({
       state.sidePanelWidth = action.payload;
       localStorage.setItem('settings', JSON.stringify(state));  
     }, 
+    setElementSize: (state, action) => {
+      state.elementSize = action.payload;
+      localStorage.setItem('settings', JSON.stringify(state));  
+    }, 
   },
 });
 
-export const { setViewMode, setSidePanelWidth } = settingsSlice.actions;
+export const { setViewMode, setSidePanelWidth, setElementSize } = settingsSlice.actions;
