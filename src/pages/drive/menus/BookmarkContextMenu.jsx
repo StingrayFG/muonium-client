@@ -21,7 +21,7 @@ export default function BookmarkContextMenu ({ bookmark }) {
         userData, 
         bookmarkData: bookmark
       }));
-      contextMenuContext.setIsContextMenu(false);
+      contextMenuContext.setIsContextMenuOpen(false);
     }}
   ] 
 

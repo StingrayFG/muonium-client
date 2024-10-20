@@ -29,7 +29,7 @@ export default function FolderContextMenu ({ point, folder }) {
           folder: folder
         } 
       }));
-      contextMenuContext.setIsContextMenu(false);
+      contextMenuContext.setIsContextMenuOpen(false);
     }},
     'line',
     { text: 'Cut', icon: 'cut', handleOnClick: contextMenuContext.cutClickedElements },
@@ -48,7 +48,7 @@ export default function FolderContextMenu ({ point, folder }) {
           folder: folder
         } 
       }));
-      contextMenuContext.setIsContextMenu(false);
+      contextMenuContext.setIsContextMenuOpen(false);
     }},
     'line',
     { text: 'Cut', icon: 'cut', handleOnClick: contextMenuContext.cutClickedElements },

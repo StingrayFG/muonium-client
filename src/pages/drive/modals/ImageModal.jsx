@@ -55,7 +55,7 @@ export default function ImageModal ({ file }) {
 
   // HANDLERS
   const [mousePositon, setMousePosition] = useState({ x: null, y: null });
-  const [isContextMenuOnMouseDown, setIsContextMenuOnMouseDown] = useState(false);
+  const [isContextMenuOpenOnMouseDown, setIsContextMenuOpenOnMouseDown] = useState(false);
 
   const handleOnKeyDown = (event) => {
     if (event.code === 'Escape') { 
@@ -68,16 +68,16 @@ export default function ImageModal ({ file }) {
     // the modal getting closed due to the conditional check. With ~10 > delta > 0 the function doesnt get triggered,
     // therefore the modal isnt getting closed either. Function handleClose() will get called only when delta = 0.
     if ((Math.pow(mousePositon.x - event.clientX, 2) + Math.pow(mousePositon.y - event.clientY, 2) < 10) &&
-    (event.button === 0) && (!isContextMenuOnMouseDown)) {
+    (event.button === 0) && (!isContextMenuOpenOnMouseDown)) {
       setMousePosition({ x: null, y: null });
       handleClose();
     }
-    setIsContextMenuOnMouseDown(false);
+    setIsContextMenuOpenOnMouseDown(false);
   }
 
   const handleOnMouseDown = (event) => {
     setMousePosition({ x: event.clientX, y: event.clientY })
-    setIsContextMenuOnMouseDown(contextMenuContext.isContextMenu);
+    setIsContextMenuOpenOnMouseDown(contextMenuContext.isContextMenuOpen);
   }
 
   const handleClose = () => {

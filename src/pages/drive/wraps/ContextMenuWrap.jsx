@@ -53,12 +53,12 @@ export default function ContextMenuWrap ({ children }) {
   // UPLOAD
   const openUpload = async () => {
     dropzoneContext.open();
-    setIsContextMenu(false);
+    setIsContextMenuOpen(false);
   }
   
   // DOWNLOAD
   const downloadClickedElements = async () => {
-    setIsContextMenu(false);
+    setIsContextMenuOpen(false);
 
     for await (const element of clickedElements) {
       await FileService.handleDownload(userData, driveData, element);
@@ -70,22 +70,22 @@ export default function ContextMenuWrap ({ children }) {
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
 
   useEffect(() => {
-    setIsContextMenu(false);
+    setIsContextMenuOpen(false);
   }, [isRenaming, isCreatingFolder])
 
   // CLIPBOARD
   const copyClickedElements = () => {
-    setIsContextMenu(false);
+    setIsContextMenuOpen(false);
     dispatch(copyToClipboard({ originUuid: currentFolderData.uuid, elements: clickedElements }));
   };
 
   const cutClickedElements = () => {
-    setIsContextMenu(false);
+    setIsContextMenuOpen(false);
     dispatch(cutToClipboard({ originUuid: currentFolderData.uuid, elements: clickedElements }));
   };
 
   const pasteClickedElements = async () => {
-    setIsContextMenu(false);
+    setIsContextMenuOpen(false);
     dispatch(clearClipboard());
 
     if (clipboardData.mode === 'copy') {
@@ -113,7 +113,7 @@ export default function ContextMenuWrap ({ children }) {
 
   // TRASH
   const removeClickedElements = async () => {
-    setIsContextMenu(false);
+    setIsContextMenuOpen(false);
     
     dispatch(updateBookmarksOnClient(clickedElements
       .filter(element => element.type === 'folder')
@@ -136,7 +136,7 @@ export default function ContextMenuWrap ({ children }) {
   }
 
   const recoverClickedElements = async () => {
-    setIsContextMenu(false);
+    setIsContextMenuOpen(false);
 
     dispatch(updateBookmarksOnClient(clickedElements
       .filter(element => element.type === 'folder')
@@ -159,7 +159,7 @@ export default function ContextMenuWrap ({ children }) {
   }
 
   const deleteClickedElements = async () => {
-    setIsContextMenu(false);
+    setIsContextMenuOpen(false);
 
     dispatch(deleteBookmarksOnClient(clickedElements
       .filter(element => element.type === 'folder')
@@ -183,8 +183,8 @@ export default function ContextMenuWrap ({ children }) {
 
 
   // MENUS HANDLERS
-  const [isContextMenu, setIsContextMenu] = useState(false);
-  const [isContextMenuLock, setIsContextMenuLock] = useState(false);
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+  const [isContextMenuLockActive, setIsContextMenuLockActive] = useState(false);
   const [isHoveredOverMenu, setIsHoveredOverMenu] = useState(false);
 
   const [contextMenuType, setContextMenuType] = useState('default');
@@ -197,28 +197,28 @@ export default function ContextMenuWrap ({ children }) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (isContextMenu && !isHoveredOverMenu) {
-      setIsContextMenu(false); // Close context menu on mouse down
-    } else if (!isContextMenu) {
+    if (isContextMenuOpen && !isHoveredOverMenu) {
+      setIsContextMenuOpen(false); // Close context menu on mouse down
+    } else if (!isContextMenuOpen) {
       setContextMenuClickPosition({
         x: event.clientX,
         y: event.clientY,
       });
-      setIsContextMenu(true);
-      setIsContextMenuLock(true);
+      setIsContextMenuOpen(true);
+      setIsContextMenuLockActive(true);
     }
   };
 
   const handleContextMenuLockClick = (event) => {
-    if (!isContextMenu) {
-      setIsContextMenuLock(false); // Disable context menu lock only on mouse up
+    if (!isContextMenuOpen) {
+      setIsContextMenuLockActive(false); // Disable context menu lock only on mouse up
     }
   }
 
   const handleDefaultContextMenuClick = (event) => {
     handleContextMenuClick(event);
 
-    if (!isContextMenu) {
+    if (!isContextMenuOpen) {
       clearClickedElements();
       setContextMenuType('default');
     }
@@ -239,7 +239,7 @@ export default function ContextMenuWrap ({ children }) {
   const handleFileContextMenuClick = (event, file) => {
     handleContextMenuClick(event);
 
-    if (!isContextMenu) {
+    if (!isContextMenuOpen) {
       if (clickedElements.length <= 1) {
         addClickedElement(event, file);
         setContextMenuType('file')
@@ -261,7 +261,7 @@ export default function ContextMenuWrap ({ children }) {
   const handleFolderContextMenuClick = (event, folder) => {
     handleContextMenuClick(event);
 
-    if (!isContextMenu) {
+    if (!isContextMenuOpen) {
       if (clickedElements.length <= 1) {
         addClickedElement(event, folder);
         setContextMenuType('folder');
@@ -279,7 +279,7 @@ export default function ContextMenuWrap ({ children }) {
   const handleBookmarkContextMenuClick = (event, bookmark) => {
     if (!['home', 'trash'].includes(bookmark.folder.uuid)) {
       handleContextMenuClick(event);
-      if (!isContextMenu) {
+      if (!isContextMenuOpen) {
         addClickedElement(event, bookmark);
         setContextMenuType('bookmark'); 
       }
@@ -350,7 +350,7 @@ export default function ContextMenuWrap ({ children }) {
     isDraggingElement && hoveredElement.uuid) {
       // If dragged onto a folder, move the clicked elements
       moveClickedElements();
-    } else if (!event.ctrlKey && !isDraggingElement && !isContextMenu && hoveredElement.uuid) { 
+    } else if (!event.ctrlKey && !isDraggingElement && !isContextMenuOpen && hoveredElement.uuid) { 
       // Used to set clicked element if there was no drag attempt after mouse down event
       addClickedElement({}, hoveredElement)
     }
@@ -374,12 +374,12 @@ export default function ContextMenuWrap ({ children }) {
   };
 
   const handleOnWrapMouseDown = (event) => {
-    if (isContextMenu && !isHoveredOverMenu) { // LMB only, the RMB clicks are handled in context menu handler functions
-      setIsContextMenu(false);   
+    if (isContextMenuOpen && !isHoveredOverMenu) { // LMB only, the RMB clicks are handled in context menu handler functions
+      setIsContextMenuOpen(false);   
     } 
 
     if (event.button === 0) {
-      if (!hoveredElement.uuid && !isContextMenu && !event.ctrlKey) { // Deselect elements if context menu is not open
+      if (!hoveredElement.uuid && !isContextMenuOpen && !event.ctrlKey) { // Deselect elements if context menu is not open
         clearClickedElements();  
       }
 
@@ -390,7 +390,7 @@ export default function ContextMenuWrap ({ children }) {
   };
 
   const handleOnElementMouseDown = (event, element) => {
-    if (!isContextMenu && (event.button === 0) && !clickedElements.includes(element)) {
+    if (!isContextMenuOpen && (event.button === 0) && !clickedElements.includes(element)) {
       addClickedElement(event, element); // Will get added or appended depending on the ctrl key
     }
   };
@@ -433,7 +433,7 @@ export default function ContextMenuWrap ({ children }) {
 
       isRenaming, setIsRenaming, isCreatingFolder, setIsCreatingFolder,
 
-      isContextMenu, setIsContextMenu, 
+      isContextMenuOpen, setIsContextMenuOpen, 
       isHoveredOverMenu, setIsHoveredOverMenu,
       contextMenuClickPosition,
       handleOnElementMouseDown,
@@ -457,7 +457,7 @@ export default function ContextMenuWrap ({ children }) {
         { children }  
 
         <Box className={`w-full h-full absolute z-40 
-        ${isContextMenuLock ? 'pointer-events-auto' : 'pointer-events-none'}`}
+        ${isContextMenuLockActive ? 'pointer-events-auto' : 'pointer-events-none'}`}
         onClick={handleContextMenuLockClick}
         onContextMenu={handleContextMenuLockClick}>
           { getMenu() }
