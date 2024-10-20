@@ -100,28 +100,27 @@ export default function DrivePanels ({ folderUuid }) {
   // RENDER
   if (userData) {
     return (
-      <Box className={`w-screen h-dvh grid grid-rows-[max-content_1fr]
+      <Box className={`w-screen h-dvh
       animate-fadein-custom
       ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}
         onContextMenu={handleOnContextMenu}>
         <FolderContext.Provider value={{ handleLogout }}> 
-          <ModalWrap>
+          <DropzoneWrap>
+            <ContextMenuWrap>
+              <ModalWrap>
             
-            <TopPanel />   
-
-            <Box className='w-full h-full overflow-hidden'>
-              <DropzoneWrap>
-                <ContextMenuWrap>
+                <TopPanel />   
+                <Box className='w-full h-full overflow-hidden grid grid-cols-[max-content_1fr] overflow-hidden'>
                   <SidePanel />
-                  <Box className='overflow-hidden relative'>
+                  <Box className='w-full h-full overflow-hidden relative'>
                     <ContentsPanel />   
                     <BottomPanel />
-                  </Box> 
-                </ContextMenuWrap>
-              </DropzoneWrap>
-            </Box>
+                  </Box>
+                </Box>
 
-          </ModalWrap>
+              </ModalWrap>
+            </ContextMenuWrap>
+          </DropzoneWrap>
         </FolderContext.Provider>   
       </Box>
     );

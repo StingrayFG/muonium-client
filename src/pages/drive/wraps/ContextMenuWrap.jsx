@@ -184,6 +184,7 @@ export default function ContextMenuWrap ({ children }) {
 
   // MENUS HANDLERS
   const [isContextMenu, setIsContextMenu] = useState(false);
+  const [isContextMenuLock, setIsContextMenuLock] = useState(false);
   const [isHoveredOverMenu, setIsHoveredOverMenu] = useState(false);
 
   const [contextMenuType, setContextMenuType] = useState('default');
@@ -197,16 +198,44 @@ export default function ContextMenuWrap ({ children }) {
     event.stopPropagation();
 
     if (isContextMenu && !isHoveredOverMenu) {
-      setIsContextMenu(false);   
+      setIsContextMenu(false); // Close context menu on mouse down
     } else if (!isContextMenu) {
       setContextMenuClickPosition({
         x: event.clientX,
         y: event.clientY,
       });
       setIsContextMenu(true);
+      setIsContextMenuLock(true);
     }
   };
 
+  const handleContextMenuLockClick = (event) => {
+    if (!isContextMenu) {
+      setIsContextMenuLock(false); // Disable context menu lock only on mouse up
+    }
+  }
+
+  const handleDefaultContextMenuClick = (event) => {
+    handleContextMenuClick(event);
+
+    if (!isContextMenu) {
+      clearClickedElements();
+      setContextMenuType('default');
+    }
+  };
+
+  const handleTopPanelContextMenuClick = (event) => {
+    clearClickedElements();
+  };
+
+  const handleSidePanelContextMenuClick = (event) => {
+    clearClickedElements();
+  };
+  
+  const handleBottomPanelContextMenuClick = (event) => {
+    clearClickedElements();
+  };
+  
   const handleFileContextMenuClick = (event, file) => {
     handleContextMenuClick(event);
 
@@ -244,15 +273,6 @@ export default function ContextMenuWrap ({ children }) {
         }
         setContextMenuType('folder-multiple');
       }
-    }
-  };
-
-  const handleDefaultContextMenuClick = (event) => {
-    handleContextMenuClick(event);
-
-    if (!isContextMenu) {
-      clearClickedElements();
-      setContextMenuType('default');
     }
   };
 
@@ -325,10 +345,13 @@ export default function ContextMenuWrap ({ children }) {
   const stopDraggingElement = (event) => {
     setIsDraggingElement(false);
     setIsHoldingElement(false);
+
     if ((!clickedElements.includes(hoveredElement)) && (hoveredElement.type === 'folder') && 
     isDraggingElement && hoveredElement.uuid) {
+      // If dragged onto a folder, move the clicked elements
       moveClickedElements();
-    } else if (!event.ctrlKey && !isDraggingElement && !isContextMenu && hoveredElement.uuid) { // Used to set clicked element if there was no drag attempt after mouse down event
+    } else if (!event.ctrlKey && !isDraggingElement && !isContextMenu && hoveredElement.uuid) { 
+      // Used to set clicked element if there was no drag attempt after mouse down event
       addClickedElement({}, hoveredElement)
     }
   }
@@ -351,14 +374,14 @@ export default function ContextMenuWrap ({ children }) {
   };
 
   const handleOnWrapMouseDown = (event) => {
+    if (isContextMenu && !isHoveredOverMenu) { // LMB only, the RMB clicks are handled in context menu handler functions
+      setIsContextMenu(false);   
+    } 
+
     if (event.button === 0) {
       if (!hoveredElement.uuid && !isContextMenu && !event.ctrlKey) { // Deselect elements if context menu is not open
         clearClickedElements();  
       }
-
-      if (isContextMenu && !isHoveredOverMenu) { // LMB only, the RMB clicks are handled in handleContextMenuClick()
-        setIsContextMenu(false);   
-      } 
 
       if (hoveredElement.uuid) { // Get ready for dragging
         startDraggingElement(event);
@@ -395,26 +418,29 @@ export default function ContextMenuWrap ({ children }) {
   }
 
   return (
-    <Box className='w-full h-full grid grid-cols-[max-content_1fr] overflow-hidden'
+    <Box className='w-full h-full grid grid-rows-[max-content_1fr] overflow-hidden'
     onKeyDown={handleOnKeyDown}
     onMouseUp={handleOnMouseUp}
     onMouseDown={handleOnWrapMouseDown}
-    onMouseMove={handleOnMouseMove}
-    onContextMenu={handleDefaultContextMenuClick}>
+    onMouseMove={handleOnMouseMove}>
 
       <ContextMenuContext.Provider value={{ 
-      downloadClickedElements, openUpload,
+      hoveredElement, setHoveredElement, clearHoveredElement,
       clickedElements, addClickedElement, clearClickedElements,  
+      downloadClickedElements, openUpload,
       removeClickedElements, recoverClickedElements, deleteClickedElements,
       copyClickedElements, cutClickedElements, pasteClickedElements, 
-      hoveredElement, setHoveredElement, clearHoveredElement,
+
       isRenaming, setIsRenaming, isCreatingFolder, setIsCreatingFolder,
-      handleOnElementMouseDown,
+
       isContextMenu, setIsContextMenu, 
-      contextMenuClickPosition,
       isHoveredOverMenu, setIsHoveredOverMenu,
-      handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick
-       }}> 
+      contextMenuClickPosition,
+      handleOnElementMouseDown,
+
+      handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick, 
+      handleDefaultContextMenuClick, handleTopPanelContextMenuClick, handleSidePanelContextMenuClick, handleBottomPanelContextMenuClick
+      }}> 
 
         {isDraggingElement && 
           <Box className='bg-sky-400/20 rounded-[0.3rem]' 
@@ -430,7 +456,13 @@ export default function ContextMenuWrap ({ children }) {
 
         { children }  
 
-        { getMenu() }
+        <Box className={`w-full h-full absolute z-40 
+        ${isContextMenuLock ? 'pointer-events-auto' : 'pointer-events-none'}`}
+        onClick={handleContextMenuLockClick}
+        onContextMenu={handleContextMenuLockClick}>
+          { getMenu() }
+        </Box>
+        
 
       </ContextMenuContext.Provider> 
 

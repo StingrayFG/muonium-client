@@ -5,12 +5,12 @@ import QuickPinchZoom, { make3dTransformValue } from 'react-quick-pinch-zoom';
 
 import  { env } from 'env.js'
 
+import { ContextMenuContext } from 'contexts/ContextMenuContext';
 import { ModalContext } from 'contexts/ModalContext';
 
 import FileService from 'services/FileService.jsx';
 
 import { ReactComponent as XLg } from 'assets/icons/x-lg.svg'
-
 
 
 export default function ImageModal ({ file }) {
@@ -19,6 +19,7 @@ export default function ImageModal ({ file }) {
   const driveData = useSelector(state => state.drive);
 
   const modalContext = useContext(ModalContext);
+  const contextMenuContext = useContext(ContextMenuContext)
 
   const [isLoaded, setIsLoaded] = useState(false);
   
@@ -54,6 +55,7 @@ export default function ImageModal ({ file }) {
 
   // HANDLERS
   const [mousePositon, setMousePosition] = useState({ x: null, y: null });
+  const [isContextMenuOnMouseDown, setIsContextMenuOnMouseDown] = useState(false);
 
   const handleOnKeyDown = (event) => {
     if (event.code === 'Escape') { 
@@ -65,14 +67,17 @@ export default function ImageModal ({ file }) {
     // Works with delta > ~10 or delta = 0. With delta > 10 the function gets triggered but does not result in 
     // the modal getting closed due to the conditional check. With ~10 > delta > 0 the function doesnt get triggered,
     // therefore the modal isnt getting closed either. Function handleClose() will get called only when delta = 0.
-    if (Math.pow(mousePositon.x - event.clientX, 2) + Math.pow(mousePositon.y - event.clientY, 2) < 10) {
+    if ((Math.pow(mousePositon.x - event.clientX, 2) + Math.pow(mousePositon.y - event.clientY, 2) < 10) &&
+    (event.button === 0) && (!isContextMenuOnMouseDown)) {
       setMousePosition({ x: null, y: null });
       handleClose();
     }
+    setIsContextMenuOnMouseDown(false);
   }
 
   const handleOnMouseDown = (event) => {
     setMousePosition({ x: event.clientX, y: event.clientY })
+    setIsContextMenuOnMouseDown(contextMenuContext.isContextMenu);
   }
 
   const handleClose = () => {
@@ -104,6 +109,7 @@ export default function ImageModal ({ file }) {
       verticalPadding={0}
       horizontalPadding={0}
       zoomOutFactor={0.1}
+      tapZoomFactor={0}
       wheelScaleFactor={500}
       minZoom={1}
       maxZoom={5}

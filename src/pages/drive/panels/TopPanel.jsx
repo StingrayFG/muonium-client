@@ -6,6 +6,7 @@ import { setAbsolutePath, moveToNew, moveToNext, moveToPrevious } from 'state/sl
 import { setViewMode } from 'state/slices/settingsSlice';
 
 import { FolderContext } from 'contexts/FolderContext.jsx';
+import { ContextMenuContext } from 'contexts/ContextMenuContext';
 
 import FolderService from 'services/FolderService.jsx';
 
@@ -26,6 +27,7 @@ export default function TopPanel () {
   const settingsData = useSelector(state => state.settings);
 
   const folderContext = useContext(FolderContext);
+  const contextMenuContext = useContext(ContextMenuContext);
 
 
   // BUTTONS
@@ -136,7 +138,8 @@ export default function TopPanel () {
   // RENDER
   return (
     <Box className='w-full px-2 py-2 flex 
-    bg-neutral-950/40 border-sky-300/20 border-b'>
+    bg-neutral-950/40 border-sky-300/20 border-b'
+    onContextMenu={contextMenuContext.handleTopPanelContextMenuClick}>
 
         <Box className='flex'>
           <button className={`w-8 h-8 grid

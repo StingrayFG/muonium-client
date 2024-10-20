@@ -17,6 +17,8 @@ export default function ContentsPanel () {
   const contentsRef = useRef(null);
   const [columnsCount, setColumnsCount] = useState(Math.floor(contentsRef?.current?.clientWidth / settingsData.elementSize));
 
+
+  //
   useEffect(() => {
     if (!contentsRef.current) return;
     const resizeObserver = new ResizeObserver(() => {
@@ -26,6 +28,8 @@ export default function ContentsPanel () {
     return () => resizeObserver.disconnect();
   }, [settingsData.elementSize]);
 
+
+  //
   return (
     <Box className={`scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
     pb-16
@@ -33,7 +37,9 @@ export default function ContentsPanel () {
     style={{
       gridTemplateColumns: `repeat(${columnsCount}, minmax(0, 1fr))`
     }}
-    ref={contentsRef}>
+    ref={contentsRef}
+    onContextMenu={contextMenuContext.handleDefaultContextMenuClick}>
+
       {contextMenuContext.isCreatingFolder && (
         <FolderElement elementSize={settingsData.elementSize}/>
       )}
@@ -46,6 +52,7 @@ export default function ContentsPanel () {
           <FileElement key={file.uuid} file={file} elementSize={settingsData.elementSize}/>
         ))}
       </>}
+      
     </Box>  
   )  
 }

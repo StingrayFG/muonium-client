@@ -1,17 +1,22 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
 import { setSidePanelWidth } from 'state/slices/settingsSlice';
 
-import BookmarkElement from 'pages/drive/elements/BookmarkElement.jsx';
+import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
+
 import { useDragHandler } from 'hooks/UseDragHandler';
+
+import BookmarkElement from 'pages/drive/elements/BookmarkElement.jsx';
 
 import config from 'config.json';
 
 
 export default function SidePanel () {
   const dispatch = useDispatch();
+
+  const contextMenuContext = useContext(ContextMenuContext);
 
   const bookmarkData = useSelector(state => state.bookmark);
   const settingsData = useSelector(state => state.settings);
@@ -60,7 +65,8 @@ export default function SidePanel () {
   // RENDER
   return (
     <Box className={`pr-2 -mr-2 overflow-hidden
-    ${isDragging ? 'static' : 'relative'}`}>
+    ${isDragging ? 'static' : 'relative'}`}
+    onContextMenu={contextMenuContext.handleSidePanelContextMenuClick}>
 
       <Box className={`absolute z-20
       cursor-col-resize
