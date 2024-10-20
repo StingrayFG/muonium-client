@@ -62,16 +62,16 @@ export default function SidePanel () {
     <Box className={`pr-2 -mr-2 overflow-hidden
     ${isDragging ? 'static' : 'relative'}`}>
 
-      <Box className={`absolute z-10
+      <Box className={`absolute z-20
       cursor-col-resize
       ${isDragging ? 'h-dvh w-screen top-0 left-0' : 'h-full w-4 right-0'}`}
       onMouseDown={handleOnMouseDown}
       onMouseUp={handleOnMouseUp}
       onMouseMove={handleOnMouseMove}/> {/* Used to stop resizing if mouse leaves the window */}
 
-      <Box className='h-full overflow-y-auto 
+      <Box className='h-full overflow-y-auto overflow-x-hidden
       scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
-      bg-black/20 border-r border-sky-300/20' 
+      bg-neutral-950/40 border-r border-sky-300/20' 
       style={{
         width: panelWidth
       }}>

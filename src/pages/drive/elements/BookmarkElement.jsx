@@ -101,13 +101,13 @@ export default function BookmarkElement ({ bookmark }) {
           {getIcon()}
         </Box>
 
-        <Box className='ml-2 flex'>
+        <Box className='ml-2 flex overflow-hidden'>
           {bookmark.folder.isRemoved && <>    
             <Trash className='w-4 h-4 mt-2 mr-1' style={{color: 'rgb(244 63 94)'}}/>
             <ArrowLeft className='w-4 h-4 mt-2 mr-1' style={{color: 'rgb(244 63 94)'}}/>
           </>}
 
-          <p className='place-self-center
+          <p className='w-full
           text-left text-ellipsis overflow-hidden'>
             { bookmark.folder.name }
           </p>

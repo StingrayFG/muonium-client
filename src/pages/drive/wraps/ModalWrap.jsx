@@ -133,7 +133,7 @@ export default function ModalWrap ({ children }) {
 
       <Box className={`z-20 w-full h-dvh grid place-items-center overflow-hidden fixed
       transition-opacity duration-300
-      bg-black/90
+      bg-neutral-950/90
       ${getBottomModal().isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       onClick={closeOnClickOutside}>
         {(modalStates.length > 0) && <>

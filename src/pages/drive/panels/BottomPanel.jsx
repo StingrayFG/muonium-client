@@ -120,7 +120,7 @@ export default function BottomPanel () {
   return (
     <Box className='w-full px-2 py-2 absolute bottom-0
     overflow-hidden flex
-    bg-black/40 border-sky-300/20 border-t backdrop-blur'>
+    bg-gray-900/60 border-sky-300/20 border-t backdrop-blur'>
 
       <p className='w-full h-8 pr-2
       text-left text-ellipsis overflow-hidden'>
