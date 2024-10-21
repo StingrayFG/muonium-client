@@ -112,6 +112,10 @@ export default function FolderElement ({ folder, index, elementSize }) {
           }
         })
       }
+
+    } else if (name === folder.name) {
+      modalContext.closeModal();
+      contextMenuContext.setIsRenaming(false);
     }
   }
 

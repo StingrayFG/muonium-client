@@ -83,12 +83,15 @@ export default function FileElement ({ file, index, elementSize }) {
   const handleNaming = async (name) => {
     if (name && (name !== file.name)) {
       modalContext.closeModal();
-
       contextMenuContext.setIsRenaming(false);
 
       const newFile = { ...file, name: name };
       dispatch(renameElements({ userData, driveData, elements: [newFile] }))
-    } 
+
+    } else if (name === file.name) {
+      modalContext.closeModal();
+      contextMenuContext.setIsRenaming(false);
+    }
   }
 
   const handleOnMouseDown = (event) => {
