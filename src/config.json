@@ -9,6 +9,9 @@
     "minSize": 80,
     "maxSize": 400
   },
+  "menu": {
+    "defaultWidth": 240
+  },
   "defaultSettings": {
     "viewMode": "grid",
     "sidePanelWidth": 240,

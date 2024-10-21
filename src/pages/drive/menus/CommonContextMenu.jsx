@@ -5,12 +5,14 @@ import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import MenuOptionElement from 'pages/drive/elements/MenuOptionElement';
 
+import config from 'config.json';
+
 
 export default function CommonContextMenu ({ options }) {
   const contextMenuContext = useContext(ContextMenuContext);
 
   const linesCount = options.filter(option => option === 'line').length
-  const menuWidth = 256;
+  const menuWidth = config.menu.defaultWidth;
   const menuHeight = 2 + (32 * (options.length - linesCount)) + linesCount * 9;
 
 
