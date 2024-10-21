@@ -39,10 +39,10 @@ export default function ContextMenuWrap ({ children }) {
   const addClickedElement = (event, element) => {
     if (event.ctrlKey) {
       if (!clickedElements.includes(element)) {
-        setClickedElements(clickedElements => [...clickedElements, element]);
+        setClickedElements([ ...clickedElements, element ]);
       }   
     } else {
-      setClickedElements([element]);
+      setClickedElements([ element ]);
     }
   }
 
@@ -291,6 +291,7 @@ export default function ContextMenuWrap ({ children }) {
 
 
   // DRAGGING
+  const [draggingStartEvent, setDraggingStartEvent] = useState({});
   const [draggedElementSize, setDraggedElementSize] = useState({ x: 0, y: 0 });
   const [isHoldingElement, setIsHoldingElement] = useState(false);
   const [isDraggingElement, setIsDraggingElement] = useState(false);
@@ -337,6 +338,7 @@ export default function ContextMenuWrap ({ children }) {
   const startDraggingElement = (event) => {
     setIsHoldingElement(true);
     setDraggedElementSize({ x: event.target.offsetWidth, y: event.target.offsetWidth });
+    setDraggingStartEvent(event)
 
     setMousePointInitial({ x: event.pageX, y: event.pageY });
     setContainerPoint({ x: event.pageX, y: event.pageY });
@@ -350,7 +352,8 @@ export default function ContextMenuWrap ({ children }) {
     isDraggingElement && hoveredElement.uuid) {
       // If dragged onto a folder, move the clicked elements
       moveClickedElements();
-    } else if (!event.ctrlKey && !isDraggingElement && !isContextMenuOpen && hoveredElement.uuid) { 
+    } else if (!draggingStartEvent.ctrlKey && !draggingStartEvent.shiftKey && 
+    !isDraggingElement && !isContextMenuOpen && hoveredElement.uuid) { 
       // Used to set clicked element if there was no drag attempt after mouse down event
       addClickedElement({}, hoveredElement)
     }
@@ -389,14 +392,29 @@ export default function ContextMenuWrap ({ children }) {
     }
   };
 
-  const handleOnElementMouseDown = (event, element) => {
-    if (!isContextMenuOpen && (event.button === 0) && !clickedElements.includes(element)) {
+  const handleOnElementMouseDown = (event, element, index) => {
+    if ((event.button === 0) && event.shiftKey && !isContextMenuOpen && (clickedElements.length > 0) && !clickedElements.includes(element)) {
+      const mergedElements = [ ...currentFolderData.folders, ...currentFolderData.files ]
+      const firstElementIndex = mergedElements.indexOf(clickedElements[0]);
+
+      if (index < firstElementIndex) {
+        setClickedElements([ clickedElements[0], ...mergedElements.slice(index, firstElementIndex) ])
+      } else if (index > firstElementIndex) {
+        setClickedElements([ clickedElements[0], ...mergedElements.slice(firstElementIndex + 1, index + 1) ])
+      }
+
+    } else if ((event.button === 0) && !isContextMenuOpen && 
+    !clickedElements.map(element => element.uuid).includes(element.uuid)) {
       addClickedElement(event, element); // Will get added or appended depending on the ctrl key
     }
-  };
+  };console.log(clickedElements)
 
   const handleOnMouseMove = (event) => {
     updateDragging(event);
+  }
+
+  const handleOnWrapContextMenu = (event) => {
+    event.preventDefault();
   }
   
 
@@ -422,7 +440,8 @@ export default function ContextMenuWrap ({ children }) {
     onKeyDown={handleOnKeyDown}
     onMouseUp={handleOnMouseUp}
     onMouseDown={handleOnWrapMouseDown}
-    onMouseMove={handleOnMouseMove}>
+    onMouseMove={handleOnMouseMove}
+    onContextMenu={handleOnWrapContextMenu}>
 
       <ContextMenuContext.Provider value={{ 
       hoveredElement, setHoveredElement, clearHoveredElement,
@@ -456,7 +475,7 @@ export default function ContextMenuWrap ({ children }) {
 
         { children }  
 
-        <Box className={`w-full h-full absolute z-40 
+        <Box className={`z-40 
         ${isContextMenuLockActive ? 'pointer-events-auto' : 'pointer-events-none'}`}
         onClick={handleContextMenuLockClick}
         onContextMenu={handleContextMenuLockClick}>

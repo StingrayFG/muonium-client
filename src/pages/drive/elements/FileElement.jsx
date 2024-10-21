@@ -12,7 +12,7 @@ import ImageModal from 'pages/drive//modals/ImageModal';
 import FileElementIcon from 'pages/drive/elements/FileElementIcon';
 
 
-export default function FileElement ({ file, elementSize }) {
+export default function FileElement ({ file, elementSize, index }) {
   const dispatch = useDispatch();
 
   const userData = useSelector(state => state.user);
@@ -92,7 +92,7 @@ export default function FileElement ({ file, elementSize }) {
   }
 
   const handleOnMouseDown = (event) => {
-    contextMenuContext.handleOnElementMouseDown(event, file);
+    contextMenuContext.handleOnElementMouseDown(event, file, index);
   }
 
   const handleOnMouseEnter = () => {

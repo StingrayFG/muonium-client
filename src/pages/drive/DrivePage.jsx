@@ -91,19 +91,12 @@ export default function DrivePanels ({ folderUuid }) {
   }, [pathData.currentUuid, usedFolderUuid]);
 
 
-  // CONTEXT MENU
-  const handleOnContextMenu = (event) => { // Used for top and bottom panels only
-    event.preventDefault();
-  }
-
-
   // RENDER
   if (userData) {
     return (
       <Box className={`w-screen h-dvh
       animate-fadein-custom
-      ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}
-        onContextMenu={handleOnContextMenu}>
+      ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}>
         <FolderContext.Provider value={{ handleLogout }}> 
           <DropzoneWrap>
             <ContextMenuWrap>

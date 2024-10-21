@@ -14,7 +14,7 @@ import RenameModal from 'pages/drive/modals/RenameModal';
 import { ReactComponent as Folder } from 'assets/icons/elements/muonium/folder.svg'
 
 
-export default function FolderElement ({ folder, elementSize }) {
+export default function FolderElement ({ folder, index, elementSize }) {
   const dispatch = useDispatch();
 
   const userData = useSelector(state => state.user);
@@ -116,7 +116,7 @@ export default function FolderElement ({ folder, elementSize }) {
   }
 
   const handleOnMouseDown = (event) => {
-    contextMenuContext.handleOnElementMouseDown(event, folder);
+    contextMenuContext.handleOnElementMouseDown(event, folder, index);
   }
 
   const handleOnMouseEnter = () => {

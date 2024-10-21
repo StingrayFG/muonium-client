@@ -45,11 +45,17 @@ export default function ContentsPanel () {
       )}
 
       {currentFolderData.uuid && <>
-        {currentFolderData.folders.map((folder) => (
-          <FolderElement key={folder.uuid} folder={folder} elementSize={settingsData.elementSize}/>
+        {currentFolderData.folders.map((folder, index) => (
+          <FolderElement key={folder.uuid} 
+          folder={folder} 
+          index={index}
+          elementSize={settingsData.elementSize}/>
         ))}
-        {currentFolderData.files.map((file) => (
-          <FileElement key={file.uuid} file={file} elementSize={settingsData.elementSize}/>
+        {currentFolderData.files.map((file, index) => (
+          <FileElement key={file.uuid} 
+          file={file} 
+          index={currentFolderData.folders.length + index}
+          lementSize={settingsData.elementSize}/>
         ))}
       </>}
       
