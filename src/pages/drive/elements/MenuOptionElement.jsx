@@ -14,6 +14,8 @@ import { ReactComponent as Pencil } from 'assets/icons/pencil.svg'
 import { ReactComponent as Trash } from 'assets/icons/trash.svg'
 import { ReactComponent as ArrowClockwise } from 'assets/icons/arrow-clockwise.svg'
 
+import { ReactComponent as Gear } from 'assets/icons/gear.svg'
+
 
 export default function MenuOptionElement ({ option }) {
 
@@ -36,6 +38,9 @@ export default function MenuOptionElement ({ option }) {
 
     else if (icon === 'trash') { return <Trash className={iconStyle}/> }
     else if (icon === 'recover') { return <ArrowClockwise className={iconStyle}/> }
+
+    else if (icon === 'settings') { return <Gear className={iconStyle}/> }
+
     else { return <Box className={iconStyle}/> } 
   }
 

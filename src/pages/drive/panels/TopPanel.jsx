@@ -14,6 +14,7 @@ import { ReactComponent as ChevronLeft } from 'assets/icons/chevron-left.svg'
 import { ReactComponent as ChevronRight } from 'assets/icons/chevron-right.svg'
 import { ReactComponent as Grid } from 'assets/icons/grid.svg'
 import { ReactComponent as ListUl } from 'assets/icons/list-ul.svg'
+import { ReactComponent as List } from 'assets/icons/list.svg'
 import { ReactComponent as BoxArrowRight } from 'assets/icons/box-arrow-right.svg'
 import { ReactComponent as FolderTwo } from 'assets/icons/elements/bootstrap/folder2.svg'
 
@@ -121,6 +122,12 @@ export default function TopPanel () {
       setPathInputValue(previousPath);
     }
   }
+
+  const handleOnMenuMouseDown = (event) => {
+    if (event.button === 0) {
+      contextMenuContext.handleMainMenuClick(event);
+    } 
+  }
   
   
   // GET
@@ -132,6 +139,14 @@ export default function TopPanel () {
       name = 'Trash';
     }
     return name;  
+  }
+
+  const getMenuButtonStyle = () => {
+    if (contextMenuContext.isContextMenuOpen && (contextMenuContext.contextMenuType === 'main')) {
+      return 'button-small-active'
+    } else {
+      return 'button-small'
+    }
   }
 
 
@@ -168,12 +183,11 @@ export default function TopPanel () {
           onClick={handleListView}>
             <ListUl className={`place-self-center h-5 w-5`} />      
           </button>
-
-          <Box className='separator-vertical' />
         </Box> 
 
-        <Box className='w-full h-8 relative'>
+        <Box className='separator-vertical' />
 
+        <Box className='w-full h-8 relative'>
           <Box className={`w-full h-8 flex absolute
           transition-all duration-300
           ${isEditingPath ? 'opacity-100' : 'opacity-0' }`}>
@@ -197,7 +211,16 @@ export default function TopPanel () {
               {getCurrentFolderName()}
             </p>
           </Box>
- 
+        </Box>
+
+        <Box className='separator-vertical' />
+
+        <Box className='flex'>
+          <button className={`w-8 h-8 grid 
+          ${getMenuButtonStyle()}`}
+          onMouseDown={handleOnMenuMouseDown}>
+            <List className={`place-self-center h-5 w-5 pointer-events-none`}/>
+          </button>
         </Box>
 
         <Box className='separator-vertical' />
@@ -206,7 +229,8 @@ export default function TopPanel () {
           <Box className='mr-2'>
             <p className='place-self-center'>{userData.login}</p>
           </Box>
-          <button className='w-8 h-8 grid'
+          <button className='w-8 h-8 grid
+          button-small'
           onClick={folderContext.handleLogout}>
             <BoxArrowRight className='place-self-center h-5 w-5' />
           </button >    

@@ -45,6 +45,7 @@ export default function SidePanel () {
   // HANDLERS
   const handleOnMouseDown = (event) => {
     startDragging(event);
+    dispatch(setSidePanelWidth(panelWidth));
   }
 
   const handleOnMouseUp = (event) => {
@@ -60,12 +61,36 @@ export default function SidePanel () {
       setPanelWidth(settingsData.sidePanelWidth + dragDelta.x);
     }
   }
+  
+
+  // GETS
+  const [usedIsVisible, setUsedIsVisible] = useState(settingsData.sidePanelIsVisible);
+  const [isChangingIsVisible, setIsChangingIsVisible] = useState(false)
+
+  useEffect(() => {
+    if (usedIsVisible !== settingsData.sidePanelIsVisible) {
+      setIsChangingIsVisible(true);
+      setUsedIsVisible(settingsData.sidePanelIsVisible);
+      setTimeout(() => setIsChangingIsVisible(false), 300);
+    }
+  }, [settingsData.sidePanelIsVisible])
+  
+  const getSidePanelStyle = () => {
+    if (isChangingIsVisible) {
+      return 'duration-300'
+    } else {
+      return 'duration-0'
+    }
+  }
 
 
   // RENDER
   return (
     <Box className={`pr-2 -mr-2 overflow-hidden
-    ${isDragging ? 'static' : 'relative'}`}
+    transition-opacity duration-300
+    ${isDragging ? 'static' : 'relative'}
+    ${usedIsVisible ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
+
     onContextMenu={contextMenuContext.handleSidePanelContextMenuClick}>
 
       <Box className={`absolute z-20
@@ -75,11 +100,13 @@ export default function SidePanel () {
       onMouseUp={handleOnMouseUp}
       onMouseMove={handleOnMouseMove}/> {/* Used to stop resizing if mouse leaves the window */}
 
-      <Box className='h-full overflow-y-auto overflow-x-hidden
+      <Box className={`h-full overflow-y-auto overflow-x-hidden
+      transition-all
       scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
-      bg-neutral-950/40 border-r border-sky-300/20' 
+      bg-neutral-950/40 border-r border-sky-300/20
+      ${getSidePanelStyle()}`}
       style={{
-        width: panelWidth
+        width: usedIsVisible ? panelWidth : '0px'
       }}>
 
         <Box className='w-full h-8 px-2 flex

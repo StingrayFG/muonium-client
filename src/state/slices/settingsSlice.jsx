@@ -3,6 +3,11 @@ import { createSlice } from '@reduxjs/toolkit'
 import config from 'config.json';
 
 
+const saveSettings = (state) => {
+  localStorage.setItem('settings', JSON.stringify(state));
+}
+
+
 export const settingsSlice = createSlice({
   name: 'path',
   initialState: {
@@ -12,17 +17,21 @@ export const settingsSlice = createSlice({
   reducers: {
     setViewMode: (state, action) => {
       state.viewMode = action.payload;
-      localStorage.setItem('settings', JSON.stringify(state));  
+      saveSettings(state); 
     }, 
     setSidePanelWidth: (state, action) => {
       state.sidePanelWidth = action.payload;
-      localStorage.setItem('settings', JSON.stringify(state));  
+      saveSettings(state); 
+    }, 
+    setSidePanelIsVisible: (state, action) => {
+      state.sidePanelIsVisible = action.payload;
+      saveSettings(state); 
     }, 
     setElementSize: (state, action) => {
       state.elementSize = action.payload;
-      localStorage.setItem('settings', JSON.stringify(state));  
+      saveSettings(state); 
     }, 
   },
 });
 
-export const { setViewMode, setSidePanelWidth, setElementSize } = settingsSlice.actions;
+export const { setViewMode, setSidePanelWidth, setSidePanelIsVisible, setElementSize } = settingsSlice.actions;

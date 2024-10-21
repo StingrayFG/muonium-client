@@ -12,6 +12,7 @@
   "defaultSettings": {
     "viewMode": "grid",
     "sidePanelWidth": 240,
+    "sidePanelIsVisible": false,
     "elementSize": 200
   }
 }

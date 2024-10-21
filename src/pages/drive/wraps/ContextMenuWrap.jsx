@@ -397,8 +397,13 @@ export default function ContextMenuWrap ({ children }) {
     if (event.button === 0) {
       stopDraggingElement(event)
 
-      if (isContextMenuLockActive && isContextMenuOpen) {
-        setIsContextMenuLockActive(false); // Close context menu on mouse down
+      const staticMenuTypes = ['main']
+
+      if (isContextMenuLockActive && isContextMenuOpen && !staticMenuTypes.includes(contextMenuType)) { 
+        // Used to deactivate on menu option click
+        // Used for options in context menus which open a modal
+        // Does not apply to static menus
+        setIsContextMenuLockActive(false);
       }
     }
   };
@@ -482,9 +487,9 @@ export default function ContextMenuWrap ({ children }) {
 
       isDraggingElement, containerPoint, mousePointInitial, draggedElementSize,
 
-      isContextMenuOpen, setIsContextMenuOpen, isContextMenuLockActive, getMenu,
+      isContextMenuOpen, setIsContextMenuOpen, isContextMenuLockActive, setIsContextMenuLockActive, 
       isHoveredOverMenu, setIsHoveredOverMenu,
-      contextMenuClickPosition,
+      getMenu, contextMenuType, contextMenuClickPosition,
       handleOnElementMouseDown,
 
       handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick, 

@@ -2,9 +2,11 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Slider } from '@mui/material';
 
-import { setElementSize } from 'state/slices/settingsSlice';
+import { setElementSize, setSidePanelIsVisible } from 'state/slices/settingsSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
+
+import { ReactComponent as ChevronBarLeft } from 'assets/icons/chevron-bar-left.svg'
 
 import config from 'config.json';
 
@@ -24,7 +26,11 @@ export default function BottomPanel () {
   const handleSlider = (event, value) => {
     dispatch(setElementSize(value));
   }
-  
+
+  const changeSidePanelIsVisible = () => {
+    dispatch(setSidePanelIsVisible(!settingsData.sidePanelIsVisible))
+  }
+
 
   // GETS
   const parseSize = (size) => {
@@ -122,6 +128,17 @@ export default function BottomPanel () {
     overflow-hidden flex
     bg-gray-900/60 border-sky-300/20 border-t backdrop-blur'
     onContextMenu={contextMenuContext.handleBottomPanelContextMenuClick}>
+
+      <Box className='flex'>
+        <button className={`w-8 h-8 grid button-small`}
+        onClick={changeSidePanelIsVisible}>
+          <ChevronBarLeft className={`place-self-center h-5 w-5 pointer-events-none
+          transition-all duration-300
+          ${settingsData.sidePanelIsVisible ? '' : 'rotate-180'}`}/>
+        </button>
+      </Box>
+
+      <Box className='separator-vertical' />
 
       <p className='w-full h-8 pr-2
       text-left text-ellipsis overflow-hidden'>
