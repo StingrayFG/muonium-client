@@ -129,35 +129,12 @@ export default function ModalWrap ({ children }) {
 
   
   return (
-    <ModalContext.Provider value={{ openModal, openNextModal, closeModal, closeNextModal }}>
-
-      <Box className={`z-20 w-full h-dvh grid place-items-center overflow-hidden fixed
-      transition-opacity duration-300
-      bg-neutral-950/90
-      ${getBottomModal().isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-      onClick={closeOnClickOutside}>
-        {(modalStates.length > 0) && <>
-          {modalStates.map((modal, index) => (
-            <Box className={`absolute grid
-            transition-all duration-300
-            ${getIsVisible(modal, index) ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
-            key={'modal-' + index}>
-              {modal.component && modal.component}
-            </Box>)
-          )}
-        </>}
-
-        {getTopModal().hasCloseButton && 
-          <button className='h-12 w-12 absolute top-0 right-0 grid place-content-center
-          hover:opacity-50 hover:bg-transparent bg-transparent'
-          onClick={closeOnButton}>
-            <Box className='h-8 w-8 m-2 grid
-            rounded-full bg-black/40'>
-              <XLg className='w-5 h-5 place-self-center'/>
-            </Box>      
-          </button>
-        }
-      </Box>
+    <ModalContext.Provider value={{ 
+      openModal, openNextModal, closeModal, closeNextModal, 
+      modalStates,
+      getBottomModal, getTopModal, getIsVisible, 
+      closeOnClickOutside, closeOnButton
+    }}>
 
       { children }
 

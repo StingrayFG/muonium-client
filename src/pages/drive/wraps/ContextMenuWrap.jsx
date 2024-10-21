@@ -18,6 +18,7 @@ import MultipleFileContextMenu from 'pages/drive/menus/MultipleFileContextMenu.j
 import MultipleFolderContextMenu from 'pages/drive/menus/MultipleFolderContextMenu.jsx';
 import BookmarkContextMenu from 'pages/drive/menus/BookmarkContextMenu.jsx';
 import TrashContextMenu from 'pages/drive/menus/TrashContextMenu.jsx';
+import MainMenu from 'pages/drive/menus/MainMenu';
 
 
 export default function ContextMenuWrap ({ children }) {
@@ -98,7 +99,7 @@ export default function ContextMenuWrap ({ children }) {
       dispatch(pasteElements({ 
         userData, 
         driveData, 
-        elements:  clipboardData.elements.map(element => ({ ...element, parentUuid: currentFolderData.uuid }))
+        elements: clipboardData.elements.map(element => ({ ...element, parentUuid: currentFolderData.uuid }))
       }));
     }
   };
@@ -222,6 +223,27 @@ export default function ContextMenuWrap ({ children }) {
     if (!isContextMenuOpen) {
       clearClickedElements();
       setContextMenuType('default');
+    }
+  };
+
+  const handleMainMenuClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (isContextMenuOpen && !isHoveredOverMenu) {
+      setIsContextMenuOpen(false); // Close context menu on mouse down
+    } else if (!isContextMenuOpen) {
+      setContextMenuClickPosition({
+        x: event.target.offsetLeft + event.target.offsetWidth + 8,
+        y: event.target.offsetTop + event.target.offsetHeight + 8,
+      });
+      setIsContextMenuOpen(true);
+      setIsContextMenuLockActive(true);
+    }
+
+    if (!isContextMenuOpen) {
+      clearClickedElements();
+      setContextMenuType('main');
     }
   };
 
@@ -432,7 +454,8 @@ export default function ContextMenuWrap ({ children }) {
         else if (contextMenuType === 'folder') { return <FolderContextMenu folder={clickedElements[0]} /> }  
         else if (contextMenuType === 'file-multiple') { return <MultipleFileContextMenu /> }
         else if (contextMenuType === 'folder-multiple') { return <MultipleFolderContextMenu /> }
-        else if (contextMenuType === 'bookmark') { return <BookmarkContextMenu bookmark={clickedElements[0]} /> }  
+        else if (contextMenuType === 'bookmark') { return <BookmarkContextMenu bookmark={clickedElements[0]} /> } 
+        else if (contextMenuType === 'main') { return <MainMenu /> } 
       } else if (currentFolderData.uuid === 'trash') {
         if (['file', 'folder', 'file-multiple', 'folder-multiple'].includes(contextMenuType)) { return <TrashContextMenu /> }
         else if (contextMenuType === 'bookmark') { return <BookmarkContextMenu bookmark={clickedElements[0]} /> }  
@@ -457,37 +480,22 @@ export default function ContextMenuWrap ({ children }) {
 
       isRenaming, setIsRenaming, isCreatingFolder, setIsCreatingFolder,
 
-      isContextMenuOpen, setIsContextMenuOpen, 
+      isDraggingElement, containerPoint, mousePointInitial, draggedElementSize,
+
+      isContextMenuOpen, setIsContextMenuOpen, isContextMenuLockActive, getMenu,
       isHoveredOverMenu, setIsHoveredOverMenu,
       contextMenuClickPosition,
       handleOnElementMouseDown,
 
       handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick, 
-      handleDefaultContextMenuClick, handleTopPanelContextMenuClick, handleSidePanelContextMenuClick, handleBottomPanelContextMenuClick
+      handleDefaultContextMenuClick, 
+      handleTopPanelContextMenuClick, handleSidePanelContextMenuClick, handleBottomPanelContextMenuClick,
+      handleMainMenuClick,
+      handleContextMenuLockClick,
       }}> 
 
-        {isDraggingElement && 
-          <Box className='bg-sky-400/20 rounded-[0.3rem]' 
-          style={{ 
-            position: 'absolute', 
-            top: containerPoint.y, 
-            left: containerPoint.x, 
-            width: draggedElementSize.y, 
-            height: draggedElementSize.x 
-          }}>
-          </Box>
-        }
-
         { children }  
-
-        <Box className={`w-full h-full absolute z-40 
-        ${isContextMenuLockActive ? 'pointer-events-auto' : 'pointer-events-none'}`}
-        onClick={handleContextMenuLockClick}
-        onContextMenu={handleContextMenuLockClick}>
-          { getMenu() }
-        </Box>
         
-
       </ContextMenuContext.Provider> 
 
     </Box>

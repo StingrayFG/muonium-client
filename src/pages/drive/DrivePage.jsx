@@ -21,6 +21,7 @@ import ContextMenuWrap from 'pages/drive/wraps/ContextMenuWrap.jsx';
 import ContentsPanel from 'pages/drive/panels/ContentsPanel.jsx';
 
 import ModalWrap from './wraps/ModalWrap';
+import OverlayWrap from './wraps/OverlayWrap';
 
 
 export default function DrivePanels ({ folderUuid }) {
@@ -101,16 +102,18 @@ export default function DrivePanels ({ folderUuid }) {
           <DropzoneWrap>
             <ContextMenuWrap>
               <ModalWrap>
+                <OverlayWrap>
             
-                <TopPanel />   
-                <Box className='w-full h-full overflow-hidden grid grid-cols-[max-content_1fr] overflow-hidden'>
-                  <SidePanel />
-                  <Box className='w-full h-full overflow-hidden relative'>
-                    <ContentsPanel />   
-                    <BottomPanel />
+                  <TopPanel />   
+                  <Box className='w-full h-full overflow-hidden grid grid-cols-[max-content_1fr] overflow-hidden'>
+                    <SidePanel />
+                    <Box className='w-full h-full overflow-hidden relative'>
+                      <ContentsPanel />   
+                      <BottomPanel />
+                    </Box>
                   </Box>
-                </Box>
-
+                  
+                </OverlayWrap>
               </ModalWrap>
             </ContextMenuWrap>
           </DropzoneWrap>
