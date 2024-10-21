@@ -209,7 +209,8 @@ export default function ContextMenuWrap ({ children }) {
     }
   };
 
-  const handleContextMenuLockClick = (event) => {
+  const handleContextMenuLockClick = (event) => { 
+    // Works only for clicks outside of menu. For menu option clicks, check handleOnMouseUp
     if (!isContextMenuOpen) {
       setIsContextMenuLockActive(false); // Disable context menu lock only on mouse up
     }
@@ -373,6 +374,10 @@ export default function ContextMenuWrap ({ children }) {
 
     if (event.button === 0) {
       stopDraggingElement(event)
+
+      if (isContextMenuLockActive && isContextMenuOpen) {
+        setIsContextMenuLockActive(false); // Close context menu on mouse down
+      }
     }
   };
 
@@ -407,7 +412,7 @@ export default function ContextMenuWrap ({ children }) {
     !clickedElements.map(element => element.uuid).includes(element.uuid)) {
       addClickedElement(event, element); // Will get added or appended depending on the ctrl key
     }
-  };console.log(clickedElements)
+  };
 
   const handleOnMouseMove = (event) => {
     updateDragging(event);
@@ -475,7 +480,7 @@ export default function ContextMenuWrap ({ children }) {
 
         { children }  
 
-        <Box className={`z-40 
+        <Box className={`w-full h-full absolute z-40 
         ${isContextMenuLockActive ? 'pointer-events-auto' : 'pointer-events-none'}`}
         onClick={handleContextMenuLockClick}
         onContextMenu={handleContextMenuLockClick}>
