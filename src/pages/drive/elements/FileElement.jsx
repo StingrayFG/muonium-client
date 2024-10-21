@@ -12,7 +12,7 @@ import ImageModal from 'pages/drive//modals/ImageModal';
 import FileElementIcon from 'pages/drive/elements/FileElementIcon';
 
 
-export default function FileElement ({ file, elementSize, index }) {
+export default function FileElement ({ file, index, elementSize }) {
   const dispatch = useDispatch();
 
   const userData = useSelector(state => state.user);

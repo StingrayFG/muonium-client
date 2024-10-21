@@ -55,7 +55,7 @@ export default function ContentsPanel () {
           <FileElement key={file.uuid} 
           file={file} 
           index={currentFolderData.folders.length + index}
-          lementSize={settingsData.elementSize}/>
+          elementSize={settingsData.elementSize}/>
         ))}
       </>}
       

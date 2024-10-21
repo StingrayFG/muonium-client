@@ -181,7 +181,7 @@ export default function FolderElement ({ folder, index, elementSize }) {
           padding: elementSize ? elementSize * 0.1 + 'px' : '1rem'
         }}>
     
-          <Box className={`w-full`}
+          <Box className={`w-full aspect-4-3 grid`}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
