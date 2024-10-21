@@ -136,7 +136,7 @@ export default function ImageModal ({ file }) {
         
       </QuickPinchZoom>
 
-      <button className='h-12 w-12 absolute top-0 right-0 grid place-content-center
+      <button className='h-12 w-12 fixed top-0 right-0 grid place-content-center
       hover:opacity-50 hover:bg-transparent bg-transparent'
       onClick={handleClose}>
         <Box className='h-8 w-8 m-2 grid
