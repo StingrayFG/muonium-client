@@ -45,7 +45,7 @@ export default function RenameModal ({ name, setName, stopNaming, usedNames }) {
   return(
     <Box className='w-full max-w-[360px] px-4'
     onKeyDown={handleOnKeyDown}>
-      <p className='font-semibold'>
+      <p className='font-semibold text-center'>
         {'Enter the new name'}
       </p>
       
