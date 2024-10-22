@@ -187,7 +187,7 @@ export default function TopPanel () {
 
         <Box className='separator-vertical' />
 
-        <Box className='w-full h-8 relative'>
+        <Box className='w-full relative'>
           <Box className={`w-full h-8 flex absolute
           transition-all duration-300
           ${isEditingPath ? 'opacity-100' : 'opacity-0' }`}>
@@ -226,7 +226,7 @@ export default function TopPanel () {
         <Box className='separator-vertical' />
 
         <Box className='ml-auto flex'>
-          <Box className='mr-2'>
+          <Box className='h-8 mr-2'>
             <p className='place-self-center'>{userData.login}</p>
           </Box>
           <button className='w-8 h-8 grid

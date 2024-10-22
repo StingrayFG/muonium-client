@@ -148,7 +148,7 @@ export default function BottomPanel () {
       <Box className='separator-vertical' />
 
       <Box className='flex shrink-0'>
-        <Box className='w-40 relative
+        <Box className='h-8 w-40 relative 
         border-sky-300/20 border rounded-[0.3rem]'>
           <Box className='absolute w-full opacity-0'>
             <Slider 
@@ -165,7 +165,7 @@ export default function BottomPanel () {
             width: (((settingsData.elementSize - config.element.minSize) / (config.element.maxSize - config.element.minSize)) * 100) + '%'
           }}/>
 
-          <p className='px-2 h-8 place-self-center text-center'>
+          <p className='px-2 place-self-center text-center'>
             {getZoomText()} 
           </p>
         </Box>
@@ -174,7 +174,7 @@ export default function BottomPanel () {
       <Box className='separator-vertical' />
 
       <Box className='flex shrink-0'>
-        <Box className='relative
+        <Box className='h-8 relative 
         border-sky-300/20 border rounded-[0.3rem]'>
           <Box className='h-full absolute
           bg-sky-400/20 rounded-[0.2rem]'
