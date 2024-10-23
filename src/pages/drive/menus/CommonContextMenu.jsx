@@ -26,9 +26,9 @@ export default function CommonContextMenu ({ options }) {
 
 
   return (
-    <Box className={`transition-opacity duration-300 animate-fadein-custom-300
+    <Box className={`transition-opacity duration-300 
     bg-gray-950/90 border border-sky-300/20 rounded-[0.3rem]
-    ${contextMenuContext.isContextMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none' }`}
+    ${contextMenuContext.isContextMenuOpen ? 'opacity-100 animate-fadein-custom-300' : 'opacity-0 pointer-events-none' }`}
     onMouseEnter={() => contextMenuContext.setIsHoveredOverMenu(true)}
     onMouseLeave={() => contextMenuContext.setIsHoveredOverMenu(false)}
     style={{
