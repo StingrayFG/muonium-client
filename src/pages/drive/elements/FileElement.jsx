@@ -163,7 +163,7 @@ export default function FileElement ({ file, index, elementSize }) {
   if (file) {
     if (settingsData.viewMode === 'grid') {
       return (
-        <Box className={`w-full h-full p-4 place-self-center border-box
+        <Box className={`h-full place-self-center
         transition-all duration-300`}
         style={{
           width: elementSize ? elementSize + 'px' : '',
