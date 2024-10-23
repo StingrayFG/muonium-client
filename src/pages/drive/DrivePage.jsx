@@ -54,8 +54,10 @@ export default function DrivePanels ({ folderUuid }) {
 
   // UPDATE
   useEffect(() => {
-    dispatch(getDrive(userData));
-    dispatch(getBookmarks(userData));
+    if (userData) {
+      dispatch(getDrive(userData));
+      dispatch(getBookmarks(userData));
+    }
   }, [])
 
   useEffect(() => {
