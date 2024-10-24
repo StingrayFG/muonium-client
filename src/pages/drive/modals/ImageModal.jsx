@@ -39,18 +39,20 @@ export default function ImageModal ({ file }) {
     if (file.thumbnail) {
       FileService.handleGetImageLink(userData, driveData, file)
       .then(res => {
-        setIsLoaded(true);
         setImageSrc(env.REACT_APP_SERVER_URL + res);
       })
       .catch(() => {
-        setIsLoaded(true);
         setImageSrc('');
       })
-    } else {
+    } else if (file.imageBlob) {
       setIsLoaded(true);
       setImageSrc(file.imageBlob);
     }
   }, [file])
+
+  const handleOnLoad = () => {
+    setIsLoaded(true);
+  }
 
 
   // HANDLERS
@@ -118,20 +120,23 @@ export default function ImageModal ({ file }) {
 
         <Box className='w-screen h-screen grid place-items-center'
         ref={boxRef}>
-          {(isLoaded && imageSrc) && 
-            <img className='w-[80%] h-[80%] absolute
-            object-contain'
-            alt=''
-            src={imageSrc} />
-          }
-
           <img className={`w-[80%] h-[80%] absolute
-          transition-all duration-500
+          transition-all duration-500 delay-500
           object-contain blur-sm
           ${(isLoaded && imageSrc) ? 'opacity-0' : 'opacity-100'}`}
           src={'data:image/png;base64,' + file.thumbnail} 
-          alt=''
-          ref={imgRef}/>
+          ref={imgRef}
+          alt=''/>
+
+          {imageSrc && 
+            <img className={`w-[80%] h-[80%] absolute
+            transition-all duration-500
+            object-contain
+            ${(isLoaded && imageSrc) ? 'opacity-100' : 'opacity-0'}`}
+            src={imageSrc} 
+            onLoad={handleOnLoad}
+            alt=''/>
+          }
         </Box>
         
       </QuickPinchZoom>
