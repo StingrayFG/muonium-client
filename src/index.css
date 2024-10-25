@@ -333,6 +333,15 @@ svg {
   background-color: rgba(56, 189, 248, 0.4); /*sky-400*/
 }
 
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none; 
+}
+
 
 
 

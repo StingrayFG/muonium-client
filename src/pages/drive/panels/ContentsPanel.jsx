@@ -24,6 +24,7 @@ export default function ContentsPanel () {
 
   const [isHolding, isDragging, dragDelta, startDragging, updateDragging, stopDragging] = useDragHandler(0);
 
+  const headerRef = useRef(null);
   const contentsRef = useRef(null);
   const [gridGridColumnsCount, setGridColumnsCount] = useState(Math.floor(contentsRef?.current?.clientWidth / settingsData.gridElementWidth));
 
@@ -40,6 +41,10 @@ export default function ContentsPanel () {
     return () => resizeObserver.disconnect();
   }, [settingsData.gridElementWidth]);
 
+  const handleOnScroll = (event) => {
+    headerRef.current.scrollLeft = event?.target?.scrollLeft;
+  }
+
 
   // HANDLERS
   const [resizedColumn, setResizedColumn] = useState({});
@@ -53,7 +58,7 @@ export default function ContentsPanel () {
     stopDragging(event);
     if ((resizedColumn.width + dragDelta.x) > config.column.minWidth) {
       dispatch(setColumnWidth({ ...resizedColumn, width: resizedColumn.width + dragDelta.x }));
-    }
+    } 
     setResizedColumn({});
   } 
 
@@ -66,12 +71,14 @@ export default function ContentsPanel () {
     }
   }
 
-  console.log(settingsData.listElementHeight)
+
   // GETS
   const getListViewHeader = () => {
     return (
       <Box className='h-8 w-full absolute top-0 flex
-      border-b border-sky-300/20 bg-gray-900/60 backdrop-blur'
+      overflow-x-auto scrollbar-hidden
+      border-b border-sky-300/20 bg-gray-900/40'
+      ref={headerRef}
       onContextMenu={contextMenuContext.handleColumnsContextMenuClick}>
 
         {/* MUI Box has a shrinking animation that is impossible to disable, so a div is used */}
@@ -147,31 +154,39 @@ export default function ContentsPanel () {
       )  
   } else if (settingsData.viewMode === 'list') {
     return (<>
-      {getListViewHeader()}
       
-      <Box className={`w-full h-full pb-12 pt-8 
-      overflow-y-auto
-      scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent`}
-      ref={contentsRef}
-      onContextMenu={contextMenuContext.handleDefaultContextMenuClick}>
+      {getListViewHeader()}
 
-        <Box className={`w-full h-fit grid`}>
-          {currentFolderData.uuid && <>
-            {currentFolderData.folders.map((folder, index) => (
-              <FolderElement key={folder.uuid} 
-              folder={folder} 
-              index={index}/>
-            ))}
-            {currentFolderData.files.map((file, index) => (
-              <FileElement key={file.uuid} 
-              file={file} 
-              index={currentFolderData.folders.length + index}/>
-            ))}
-          </>}
+      <Box className='w-full h-full pb-12 pt-8 '>
+
+        <Box className={`w-full h-full
+        overflow-auto 
+        scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent`}
+        ref={contentsRef}
+        onScroll={handleOnScroll}
+        onContextMenu={contextMenuContext.handleDefaultContextMenuClick}>
+
+          <Box className={`w-full h-fit grid`}>
+            {currentFolderData.uuid && <>
+              {currentFolderData.folders.map((folder, index) => (
+                <FolderElement key={folder.uuid} 
+                folder={folder} 
+                index={index}/>
+              ))}
+              {currentFolderData.files.map((file, index) => (
+                <FileElement key={file.uuid} 
+                file={file} 
+                index={currentFolderData.folders.length + index}/>
+              ))}
+            </>}
+          </Box>  
+
         </Box>  
 
-      </Box>  
+      </Box>
+
      </>)  
   }
   
 }
+

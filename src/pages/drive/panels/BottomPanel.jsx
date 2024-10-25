@@ -182,7 +182,7 @@ export default function BottomPanel () {
   return (
     <Box className='w-full px-2 py-2 absolute bottom-0
     overflow-hidden flex
-    bg-gray-900/60 border-sky-300/20 border-t backdrop-blur'
+    bg-gray-900/40 border-sky-300/20 border-t'
     onContextMenu={contextMenuContext.handleBottomPanelContextMenuClick}>
 
       <Box className='flex'>
