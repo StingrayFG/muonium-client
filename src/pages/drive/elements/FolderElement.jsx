@@ -11,10 +11,13 @@ import { ModalContext } from 'contexts/ModalContext.jsx';
 
 import RenameModal from 'pages/drive/modals/RenameModal';
 
-import { ReactComponent as Folder } from 'assets/icons/elements/muonium/folder.svg'
+import { ReactComponent as FolderMu } from 'assets/icons/elements/muonium/folder.svg'
+import { ReactComponent as FolderBs } from 'assets/icons/elements/bootstrap/folder2.svg'
+
+import config from 'config.json';
 
 
-export default function FolderElement ({ folder, index, elementSize }) {
+export default function FolderElement ({ folder, index }) {
   const dispatch = useDispatch();
 
   const userData = useSelector(state => state.user);
@@ -143,18 +146,6 @@ export default function FolderElement ({ folder, index, elementSize }) {
   
 
   // STYLES 
-  const getNameStyle = () => {
-    let res = '';
-    if (getIsClicked()) {
-      res = 'bg-sky-400/20 duration-0';
-    } else {
-      if (getIsHovered()) {
-        res = 'bg-sky-400/10 duration-300';
-      }
-    } 
-    return res;
-  }
-
   const getIconStyle = () => { // Folder icon bg opacity = 0.4
     let res = '';
     if (getIsCut()) {
@@ -173,17 +164,79 @@ export default function FolderElement ({ folder, index, elementSize }) {
     return res;
   }
 
-  
+  const getNameStyle = () => {
+    let res = '';
+    if (getIsClicked()) {
+      res = 'bg-sky-400/20 duration-0';
+    } else {
+      if (getIsHovered()) {
+        res = 'bg-sky-400/10 duration-300';
+      }
+    } 
+    return res;
+  }
+
+  const getRowStyle = () => { 
+    let res = '';
+    if (getIsClicked()) {
+      res = 'bg-sky-400/20 duration-0';
+    } else {
+      if (getIsHovered()) {
+        res = 'bg-sky-400/10 duration-300';
+      } else if ((index % 2) === 1) {
+        res = 'bg-neutral-950/40';
+      }
+    }
+    return res;
+  }
+
+  const getListViewColumns = () => {
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+
+    const parseColumnValue = (column) => {
+      if ((column.name === 'creationDate') || (column.name === 'modificationDate')) {
+        return new Date(folder[column.name]).toLocaleString('en-GB', options);  
+      } else if (column.name === 'size') {
+        if (!folder[column.name]) {
+          return '';
+        } else if (folder[column.name] === 1) {
+          return folder[column.name] + ' item';
+        } else {
+          return folder[column.name] + ' items';
+        }
+      } else if (column.name === 'type') {
+        return folder[column.name].charAt(0).toUpperCase() + folder[column.name].slice(1);
+      } else {
+        return folder[column.name];
+      }
+    }
+
+    return (<>{
+      settingsData.listViewColumns.filter(c => c.isEnabled).map(column => 
+        <p className={`h-8 w-full px-2 my-auto shrink-0
+        text-left text-ellipsis overflow-hidden break-all whitespace-nowrap
+        ${(column.name === 'name') ? 'text-neutral-200' : 'text-neutral-200/60'}`}
+        style={{
+          width: column.width
+        }}
+        key={folder.uuid + '-' + column.name}>
+          {parseColumnValue(column)}
+        </p>
+      )
+    }</>)
+  }
+
+
   // RENDER
   if (folder) {
     if (settingsData.viewMode === 'grid') {
       return (
         <Box className={`h-full place-self-center
-        transition-all duration-300`}
+        transition-all duration-100`}
         style={{
-          width: elementSize ? elementSize + 'px' : '',
-          padding: elementSize ? elementSize * 0.1 + 'px' : '1rem'
-        }}>
+          width: settingsData.gridElementWidth + 'px',
+          padding: settingsData.gridElementWidth * 0.1 + 'px'
+        }}> 
     
           <Box className={`w-full aspect-4-3 grid`}
           onMouseDown={handleOnMouseDown}
@@ -191,7 +244,7 @@ export default function FolderElement ({ folder, index, elementSize }) {
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
-            <Folder className={`w-full h-full place-self-center 
+            <FolderMu className={`w-full h-full place-self-center 
             transition-all
             pointer-events-none select-none 
             ${getIconStyle()}`}/>
@@ -215,7 +268,42 @@ export default function FolderElement ({ folder, index, elementSize }) {
 
         </Box>
       );
-    } 
+    } else if (settingsData.viewMode === 'list') {
+      return (
+        <Box className={`w-full flex
+        transition-all duration-100
+        ${getRowStyle()}`}
+        style={{
+          height: settingsData.listElementHeight + 'px'
+        }}
+        onMouseDown={handleOnMouseDown}
+        onMouseEnter={handleOnMouseEnter}
+        onMouseLeave={handleOnMouseLeave}
+        onContextMenu={handleOnContextMenu}
+        onDoubleClick={handleOnDoubleClick}>
+    
+          <Box className={`h-full ml-2 aspect-4-3 grid`}
+          style={{
+            height: settingsData.listElementHeight + 'px',
+            padding: settingsData.listElementHeight * 0.1 + 'px',
+          }}>
+            {(settingsData.listElementHeight >= config.element.listSmallIconsHeight) ?
+              <FolderMu className={`w-full h-full
+              transition-all
+              pointer-events-none select-none 
+              ${getIconStyle()}`}/>
+              :
+              <FolderBs className={`w-full h-full
+              transition-all
+              pointer-events-none select-none`}/>
+            }
+            </Box>
+    
+          {getListViewColumns()}
+
+        </Box>
+      );
+    }
   }
     
 }

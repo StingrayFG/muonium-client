@@ -57,8 +57,9 @@ export default function SidePanel () {
     updateDragging(event);
     if (isDragging) {
       if (((settingsData.sidePanelWidth + dragDelta.x) > config.sidePanel.minWidth) && 
-      ((windowWidth - (settingsData.sidePanelWidth + dragDelta.x)) > config.contentsPanel.minWidth))
-      setPanelWidth(settingsData.sidePanelWidth + dragDelta.x);
+      ((windowWidth - (settingsData.sidePanelWidth + dragDelta.x)) > config.contentsPanel.minWidth)) {
+        setPanelWidth(settingsData.sidePanelWidth + dragDelta.x);
+      }   
     }
   }
   
@@ -90,12 +91,11 @@ export default function SidePanel () {
     transition-opacity duration-300
     ${isDragging ? 'static' : 'relative'}
     ${usedIsVisible ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
-
     onContextMenu={contextMenuContext.handleSidePanelContextMenuClick}>
 
-      <Box className={`absolute z-20
+      <Box className={`z-20
       cursor-col-resize
-      ${isDragging ? 'h-dvh w-screen top-0 left-0' : 'h-full w-4 right-0'}`}
+      ${isDragging ? 'fixed h-dvh w-screen top-0 left-0' : 'absolute h-full w-4 right-0'}`}
       onMouseDown={handleOnMouseDown}
       onMouseUp={handleOnMouseUp}
       onMouseMove={handleOnMouseMove}/> {/* Used to stop resizing if mouse leaves the window */}

@@ -16,6 +16,8 @@ import { ReactComponent as ArrowClockwise } from 'assets/icons/arrow-clockwise.s
 
 import { ReactComponent as Gear } from 'assets/icons/gear.svg'
 
+import CustomCheckbox from 'components/checkbox/CustomCheckbox';
+
 
 export default function MenuOptionElement ({ option }) {
 
@@ -39,7 +41,12 @@ export default function MenuOptionElement ({ option }) {
     else if (icon === 'trash') { return <Trash className={iconStyle}/> }
     else if (icon === 'recover') { return <ArrowClockwise className={iconStyle}/> }
 
+
     else if (icon === 'settings') { return <Gear className={iconStyle}/> }
+
+    else if (icon === 'checkbox-on') { return <CustomCheckbox defaultValue={true} isContextMenuMode={true}/> }
+    else if (icon === 'checkbox-off') { return <CustomCheckbox defaultValue={false} isContextMenuMode={true}/> }
+
 
     else { return <Box className={iconStyle}/> } 
   }

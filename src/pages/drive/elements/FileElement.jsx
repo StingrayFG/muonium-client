@@ -11,8 +11,10 @@ import RenameModal from 'pages/drive/modals/RenameModal';
 import ImageModal from 'pages/drive//modals/ImageModal';
 import FileElementIcon from 'pages/drive/elements/FileElementIcon';
 
+import config from 'config.json';
 
-export default function FileElement ({ file, index, elementSize }) {
+
+export default function FileElement ({ file, index }) {
   const dispatch = useDispatch();
 
   const userData = useSelector(state => state.user);
@@ -26,15 +28,7 @@ export default function FileElement ({ file, index, elementSize }) {
 
 
   // IMAGE
-  const [imageSrc, setImageSrc] = useState('');
-
-  useEffect(() => {
-    if (file.thumbnail) {
-      setImageSrc('data:image/png;base64,' + file.thumbnail);
-    } else {
-      setImageSrc(file.imageBlob);
-    }
-  }, [file])
+  const imageSrc = file.thumbnail ? 'data:image/png;base64,' + file.thumbnail : file.imageBlob
 
 
   // GETS
@@ -158,16 +152,81 @@ export default function FileElement ({ file, index, elementSize }) {
     return res;
   }
 
+  const getRowStyle = () => { 
+    let res = '';
+    if (getIsClicked()) {
+      res = 'bg-sky-400/20 duration-0';
+    } else {
+      if (getIsHovered()) {
+        res = 'bg-sky-400/10 duration-300';
+      } else if ((index % 2) === 1) {
+        res = 'bg-neutral-950/40';
+      }
+    }
+    return res;
+  }
+
+  const getListViewColumns = () => {
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+
+    const parseSize = (size) => {
+      let res = '';
+      if (size > Math.pow(1024, 3)) { res += (((size / Math.pow(1024, 3)) + '').slice(0.5) + ' GiB') } 
+      else if (size > Math.pow(1024, 2)) { res += (((size / Math.pow(1024, 2)) + '').slice(0,5) + ' MiB') } 
+      else if (size > Math.pow(1024, 1)) { res += (((size / Math.pow(1024, 1)) + '').slice(0,5) + ' KiB') } 
+      else { res += (size + ' B') } 
+      return res;
+    }
+
+    const parseColumnValue = (column) => {
+      if ((column.name === 'creationDate') || (column.name === 'modificationDate')) {
+        return new Date(file[column.name]).toLocaleString('en-GB', options);  
+      } else if (column.name === 'size') {
+        return parseSize(file[column.name]);
+      } else if (column.name === 'type') {
+        return file[column.name].charAt(0).toUpperCase() + file[column.name].slice(1);
+      } else {
+        return file[column.name];
+      }
+    }
+
+    return (<>{
+      settingsData.listViewColumns.filter(c => c.isEnabled).map(column => 
+        <p className={`h-8 w-full px-2 my-auto shrink-0
+        text-left  
+        ${(column.name === 'name') ? 
+        'text-neutral-200 flex' : 
+        'text-neutral-200/60 text-ellipsis overflow-hidden break-all whitespace-nowrap'}`}
+        style={{
+          width: column.width
+        }}
+        key={file.uuid + '-' + column.name}>
+          {column.name === 'name' ? 
+          <>
+            <span className='text-ellipsis overflow-hidden whitespace-nowrap'>
+              {file.name.slice(0, -file.name.split('.').pop().length)}
+            </span>
+            <span>
+              {file.name.split('.').pop()}
+            </span>
+          </>
+          :
+          parseColumnValue(column)}
+        </p>
+      )
+    }</>)
+  }
+
   
   // RENDER
   if (file) {
     if (settingsData.viewMode === 'grid') {
       return (
         <Box className={`h-full place-self-center
-        transition-all duration-300`}
+        transition-all duration-100`}
         style={{
-          width: elementSize ? elementSize + 'px' : '',
-          padding: elementSize ? elementSize * 0.1 + 'px' : '1rem'
+          width: settingsData.gridElementWidth + 'px',
+          padding: settingsData.gridElementWidth * 0.1 + 'px'
         }}> 
     
           <Box className={`w-full aspect-4-3 grid`}
@@ -184,7 +243,7 @@ export default function FileElement ({ file, index, elementSize }) {
               alt=''
               draggable={false} />
               :
-              <Box className={`w-full h-full place-self-center 
+              <Box className={`h-full place-self-center 
               transition-all
               pointer-events-none select-none 
               ${getIconStyle()}`}>
@@ -205,13 +264,53 @@ export default function FileElement ({ file, index, elementSize }) {
             rounded-[0.3rem] overflow-hidden max-w-32
             leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis
             ${getNameStyle()}`}>
-              {file.name}   
+              {file.name}
             </p>
           </Box>
 
         </Box>
       );
-    } 
+    } else if (settingsData.viewMode === 'list') {
+      return (
+        <Box className={`w-full flex
+        transition-all duration-100
+        ${getRowStyle()}`}
+        style={{
+          height: settingsData.listElementHeight + 'px'
+        }}
+        onMouseDown={handleOnMouseDown}
+        onMouseEnter={handleOnMouseEnter}
+        onMouseLeave={handleOnMouseLeave}
+        onContextMenu={handleOnContextMenu}
+        onDoubleClick={handleOnDoubleClick}>
+    
+          <Box className={`h-full ml-2 aspect-4-3 grid`}
+          style={{
+            height: settingsData.listElementHeight + 'px',
+            padding: settingsData.listElementHeight * 0.1 + 'px',
+          }}>
+            {(file.thumbnail || file.imageBlob) ? 
+              <img className={`w-full h-full object-contain 
+              transition-all
+              ${getImageStyle()}`}
+              src={imageSrc} 
+              alt=''
+              draggable={false} />
+              :
+              <Box className={`h-full place-self-center 
+              transition-all
+              pointer-events-none select-none 
+              ${(settingsData.listElementHeight >= config.element.listSmallIconsHeight) && getIconStyle()}`}>
+                <FileElementIcon file={file} isBootstrap={!(settingsData.listElementHeight >= config.element.listSmallIconsHeight)}/>
+              </Box>
+            }
+          </Box>
+    
+          {getListViewColumns()}
+
+        </Box>
+      );
+    }
   }
     
 }

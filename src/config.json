@@ -6,16 +6,31 @@
     "minWidth": 240
   },
   "element": {
-    "minSize": 80,
-    "maxSize": 400
+    "gridMinWidth": 80,
+    "gridMaxWidth": 400,
+    "listMinHeight": 32,
+    "listMaxHeight": 160,
+    "listSmallIconsHeight": 64
   },
   "menu": {
     "defaultWidth": 240
   },
-  "defaultSettings": {
-    "viewMode": "grid",
+  "column": {
+    "minWidth": 100
+  },
+  "defaultSettings": { 
     "sidePanelWidth": 240,
-    "sidePanelIsVisible": false,
-    "elementSize": 200
+    "sidePanelIsVisible": true,
+    
+    "viewMode": "grid",
+    "gridElementWidth": 200,
+    "listElementHeight": 80,
+    "listViewColumns": [
+      { "name": "name", "displayedName": "Name", "width": 200, "isEnabled": true },
+      { "name": "size", "displayedName": "Size", "width": 100, "isEnabled": true },
+      { "name": "creationDate", "displayedName": "Created", "width": 200, "isEnabled": false },
+      { "name": "modificationDate", "displayedName": "Modified", "width": 200, "isEnabled": true },
+      { "name": "type", "displayedName": "Type", "width": 100, "isEnabled": false }  
+    ]
   }
 }

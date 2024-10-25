@@ -19,6 +19,7 @@ import MultipleFolderContextMenu from 'pages/drive/menus/MultipleFolderContextMe
 import BookmarkContextMenu from 'pages/drive/menus/BookmarkContextMenu.jsx';
 import TrashContextMenu from 'pages/drive/menus/TrashContextMenu.jsx';
 import MainMenu from 'pages/drive/menus/MainMenu';
+import ColumnsContextMenu from 'pages/drive/menus/ColumnsContextMenu';
 
 
 export default function ContextMenuWrap ({ children }) {
@@ -251,6 +252,11 @@ export default function ContextMenuWrap ({ children }) {
     clearClickedElements();
   };
 
+  const handleColumnsContextMenuClick = (event) => {
+    handleContextMenuClick(event);
+    setContextMenuType('columns');
+  };
+
   const handleSidePanelContextMenuClick = (event) => {
     clearClickedElements();
   };
@@ -461,6 +467,7 @@ export default function ContextMenuWrap ({ children }) {
         else if (contextMenuType === 'folder-multiple') { return <MultipleFolderContextMenu /> }
         else if (contextMenuType === 'bookmark') { return <BookmarkContextMenu bookmark={clickedElements[0]} /> } 
         else if (contextMenuType === 'main') { return <MainMenu /> } 
+        else if (contextMenuType === 'columns') { return <ColumnsContextMenu /> } 
       } else if (currentFolderData.uuid === 'trash') {
         if (['file', 'folder', 'file-multiple', 'folder-multiple'].includes(contextMenuType)) { return <TrashContextMenu /> }
         else if (contextMenuType === 'bookmark') { return <BookmarkContextMenu bookmark={clickedElements[0]} /> }  
@@ -494,7 +501,7 @@ export default function ContextMenuWrap ({ children }) {
 
       handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick, 
       handleDefaultContextMenuClick, 
-      handleTopPanelContextMenuClick, handleSidePanelContextMenuClick, handleBottomPanelContextMenuClick,
+      handleTopPanelContextMenuClick, handleColumnsContextMenuClick, handleSidePanelContextMenuClick, handleBottomPanelContextMenuClick,
       handleMainMenuClick,
       handleContextMenuLockClick,
       }}> 

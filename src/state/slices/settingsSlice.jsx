@@ -15,10 +15,6 @@ export const settingsSlice = createSlice({
     ...JSON.parse(localStorage.getItem('settings')),
   },
   reducers: {
-    setViewMode: (state, action) => {
-      state.viewMode = action.payload;
-      saveSettings(state); 
-    }, 
     setSidePanelWidth: (state, action) => {
       state.sidePanelWidth = action.payload;
       saveSettings(state); 
@@ -27,11 +23,38 @@ export const settingsSlice = createSlice({
       state.sidePanelIsVisible = action.payload;
       saveSettings(state); 
     }, 
-    setElementSize: (state, action) => {
-      state.elementSize = action.payload;
+
+    setViewMode: (state, action) => {
+      state.viewMode = action.payload;
+      saveSettings(state); 
+    }, 
+    setGridElementWidth: (state, action) => {
+      state.gridElementWidth = action.payload;
+      saveSettings(state); 
+    }, 
+    setListElementHeight: (state, action) => {
+      state.listElementHeight = action.payload;
+      saveSettings(state); 
+    }, 
+    setColumnWidth: (state, action) => {
+      state.listViewColumns.find(column => {
+        if (column.name === action.payload.name) {
+          column.width = action.payload.width
+        }
+      })
+      saveSettings(state); 
+    }, 
+    setColumnIsEnabled: (state, action) => {
+      state.listViewColumns.find(column => {
+        if (column.name === action.payload.name) {
+          column.isEnabled = action.payload.isEnabled
+        }
+      })
       saveSettings(state); 
     }, 
   },
 });
 
-export const { setViewMode, setSidePanelWidth, setSidePanelIsVisible, setElementSize } = settingsSlice.actions;
+export const { setViewMode, setSidePanelWidth, 
+  setSidePanelIsVisible, setGridElementWidth, setListElementHeight, 
+  setColumnWidth, setColumnIsEnabled } = settingsSlice.actions;
