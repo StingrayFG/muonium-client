@@ -287,7 +287,7 @@ export default function FolderElement ({ folder, index }) {
             height: settingsData.listElementHeight + 'px',
             padding: settingsData.listElementHeight * 0.1 + 'px',
           }}>
-            {(settingsData.listElementHeight >= config.element.listSmallIconsHeight) ?
+            {(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) ?
               <FolderMu className={`w-full h-full
               transition-all
               pointer-events-none select-none 

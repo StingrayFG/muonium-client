@@ -5,19 +5,27 @@
   "contentsPanel": {
     "minWidth": 240
   },
-  "element": {
+  "elements": {
     "gridMinWidth": 80,
     "gridMaxWidth": 400,
     "listMinHeight": 32,
     "listMaxHeight": 160,
     "listSmallIconsHeight": 64
   },
-  "menu": {
+  "menus": {
     "defaultWidth": 240
   },
-  "column": {
-    "minWidth": 100
+  "columns": {
+    "minWidth": 100,
+    "displayedNames": {
+      "name": "Name",
+      "size": "Size",
+      "creationDate": "Created",
+      "modificationDate": "Modified",
+      "type": "Type"
+    }
   },
+
   "defaultSettings": { 
     "sidePanelWidth": 240,
     "sidePanelIsVisible": true,
@@ -26,11 +34,11 @@
     "gridElementWidth": 200,
     "listElementHeight": 80,
     "listViewColumns": [
-      { "name": "name", "displayedName": "Name", "width": 200, "isEnabled": true },
-      { "name": "size", "displayedName": "Size", "width": 100, "isEnabled": true },
-      { "name": "creationDate", "displayedName": "Created", "width": 200, "isEnabled": false },
-      { "name": "modificationDate", "displayedName": "Modified", "width": 200, "isEnabled": true },
-      { "name": "type", "displayedName": "Type", "width": 100, "isEnabled": false }  
+      { "name": "name", "width": 200, "isEnabled": true },
+      { "name": "size", "width": 100, "isEnabled": true },
+      { "name": "creationDate", "width": 200, "isEnabled": false },
+      { "name": "modificationDate", "width": 200, "isEnabled": true },
+      { "name": "type", "width": 100, "isEnabled": false }  
     ]
   }
 }

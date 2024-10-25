@@ -300,8 +300,8 @@ export default function FileElement ({ file, index }) {
               <Box className={`h-full place-self-center 
               transition-all
               pointer-events-none select-none 
-              ${(settingsData.listElementHeight >= config.element.listSmallIconsHeight) && getIconStyle()}`}>
-                <FileElementIcon file={file} isBootstrap={!(settingsData.listElementHeight >= config.element.listSmallIconsHeight)}/>
+              ${(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) && getIconStyle()}`}>
+                <FileElementIcon file={file} isBootstrap={!(settingsData.listElementHeight >= config.elements.listSmallIconsHeight)}/>
               </Box>
             }
           </Box>

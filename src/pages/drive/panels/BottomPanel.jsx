@@ -127,14 +127,14 @@ export default function BottomPanel () {
               onChange={handleSlider}
               value={settingsData.gridElementWidth}
               step={10}
-              min={config.element.gridMinWidth}
-              max={config.element.gridMaxWidth} />
+              min={config.elements.gridMinWidth}
+              max={config.elements.gridMaxWidth} />
             </Box>
 
             <Box className='h-full absolute pointer-events-none
             bg-sky-400/20 rounded-[0.2rem]'
             style={{
-              width: (((settingsData.gridElementWidth - config.element.gridMinWidth) / (config.element.gridMaxWidth - config.element.gridMinWidth)) * 100) + '%'
+              width: (((settingsData.gridElementWidth - config.elements.gridMinWidth) / (config.elements.gridMaxWidth - config.elements.gridMinWidth)) * 100) + '%'
             }}/>
 
             <p className='px-2 place-self-center text-center'>
@@ -153,14 +153,14 @@ export default function BottomPanel () {
               onChange={handleSlider}
               value={settingsData.listElementHeight}
               step={4}
-              min={config.element.listMinHeight}
-              max={config.element.listMaxHeight} />
+              min={config.elements.listMinHeight}
+              max={config.elements.listMaxHeight} />
             </Box>
 
             <Box className='h-full absolute pointer-events-none
             bg-sky-400/20 rounded-[0.2rem]'
             style={{
-              width: (((settingsData.listElementHeight - config.element.listMinHeight) / (config.element.listMaxHeight - config.element.listMinHeight)) * 100) + '%'
+              width: (((settingsData.listElementHeight - config.elements.listMinHeight) / (config.elements.listMaxHeight - config.elements.listMinHeight)) * 100) + '%'
             }}/>
 
             <p className='px-2 place-self-center text-center'>

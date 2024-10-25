@@ -56,7 +56,7 @@ export default function ContentsPanel () {
 
   const handleOnMouseUp = (event) => {
     stopDragging(event);
-    if ((resizedColumn.width + dragDelta.x) > config.column.minWidth) {
+    if ((resizedColumn.width + dragDelta.x) > config.columns.minWidth) {
       dispatch(setColumnWidth({ ...resizedColumn, width: resizedColumn.width + dragDelta.x }));
     } 
     setResizedColumn({});
@@ -65,7 +65,7 @@ export default function ContentsPanel () {
   const handleOnMouseMove = (event, column) => {
     updateDragging(event);
     if (isDragging) {
-      if ((resizedColumn.width + dragDelta.x) > config.column.minWidth) {
+      if ((resizedColumn.width + dragDelta.x) > config.columns.minWidth) {
         dispatch(setColumnWidth({ ...resizedColumn, width: resizedColumn.width + dragDelta.x }));
       }
     }
@@ -106,7 +106,7 @@ export default function ContentsPanel () {
             style={{
               width: column.width
             }}>
-              {column.displayedName}
+              {config.columns.displayedNames[column.name]}
             </p> 
 
           </Box>
