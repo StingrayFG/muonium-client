@@ -197,12 +197,12 @@ export default function FolderElement ({ folder, index }) {
       if ((column.name === 'creationDate') || (column.name === 'modificationDate')) {
         return new Date(folder[column.name]).toLocaleString('en-GB', options);  
       } else if (column.name === 'size') {
-        if (!folder[column.name]) {
-          return '';
-        } else if (folder[column.name] === 1) {
+        if (folder[column.name] === 1) {
           return folder[column.name] + ' item';
-        } else {
+        } else if ((folder[column.name] === 0) || (folder[column.name] > 1)) {
           return folder[column.name] + ' items';
+        } else {
+          return '';
         }
       } else if (column.name === 'type') {
         return folder[column.name].charAt(0).toUpperCase() + folder[column.name].slice(1);
@@ -232,7 +232,7 @@ export default function FolderElement ({ folder, index }) {
     if (settingsData.viewMode === 'grid') {
       return (
         <Box className={`h-full place-self-center
-        transition-all duration-100`}
+        transition-all duration-300`}
         style={{
           width: settingsData.gridElementWidth + 'px',
           padding: settingsData.gridElementWidth * 0.1 + 'px'
@@ -270,23 +270,29 @@ export default function FolderElement ({ folder, index }) {
       );
     } else if (settingsData.viewMode === 'list') {
       return (
-        <Box className={`w-full flex
+        <Box className={`w-full
         transition-all duration-100
         ${getRowStyle()}`}
         style={{
           height: settingsData.listElementHeight + 'px'
-        }}
-        onMouseDown={handleOnMouseDown}
-        onMouseEnter={handleOnMouseEnter}
-        onMouseLeave={handleOnMouseLeave}
-        onContextMenu={handleOnContextMenu}
-        onDoubleClick={handleOnDoubleClick}>
-    
-          <Box className={`h-full ml-2 aspect-4-3 grid`}
+        }}>
+
+          <Box className='w-fit flex
+          transition-all duration-100'
           style={{
-            height: settingsData.listElementHeight + 'px',
-            padding: settingsData.listElementHeight * 0.1 + 'px',
-          }}>
+            marginLeft: settingsData.listElementHeight + 'px'
+          }}
+          onMouseDown={handleOnMouseDown}
+          onMouseEnter={handleOnMouseEnter}
+          onMouseLeave={handleOnMouseLeave}
+          onContextMenu={handleOnContextMenu}
+          onDoubleClick={handleOnDoubleClick}>
+
+            <Box className={`h-full ml-2 aspect-4-3 grid`}
+            style={{
+              height: settingsData.listElementHeight + 'px',
+              padding: settingsData.listElementHeight * 0.1 + 'px',
+            }}>
             {(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) ?
               <FolderMu className={`w-full h-full
               transition-all
@@ -299,7 +305,9 @@ export default function FolderElement ({ folder, index }) {
             }
             </Box>
     
-          {getListViewColumns()}
+            {getListViewColumns()}
+
+          </Box>
 
         </Box>
       );

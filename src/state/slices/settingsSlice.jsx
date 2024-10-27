@@ -36,6 +36,7 @@ export const settingsSlice = createSlice({
       state.listElementHeight = action.payload;
       saveSettings(state); 
     }, 
+
     setColumnWidth: (state, action) => {
       state.listViewColumns.find(column => {
         if (column.name === action.payload.name) {
@@ -52,9 +53,23 @@ export const settingsSlice = createSlice({
       })
       saveSettings(state); 
     }, 
+
+    setSortBy: (state, action) => {
+      state.sortBy = action.payload;
+      saveSettings(state); 
+    }, 
+    setSortByAscending: (state, action) => {
+      state.sortByAscending = action.payload;
+      saveSettings(state); 
+    }, 
+    setShowFoldersFirst: (state, action) => {
+      state.showFoldersFirst = action.payload;
+      saveSettings(state); 
+    }, 
   },
 });
 
 export const { setViewMode, setSidePanelWidth, 
   setSidePanelIsVisible, setGridElementWidth, setListElementHeight, 
-  setColumnWidth, setColumnIsEnabled } = settingsSlice.actions;
+  setColumnWidth, setColumnIsEnabled,
+  setSortBy, setSortByAscending, setShowFoldersFirst } = settingsSlice.actions;

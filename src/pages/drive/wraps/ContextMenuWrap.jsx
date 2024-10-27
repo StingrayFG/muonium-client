@@ -432,13 +432,12 @@ export default function ContextMenuWrap ({ children }) {
 
   const handleOnElementMouseDown = (event, element, index) => {
     if ((event.button === 0) && event.shiftKey && !isContextMenuOpen && (clickedElements.length > 0) && !clickedElements.includes(element)) {
-      const mergedElements = [ ...currentFolderData.folders, ...currentFolderData.files ]
-      const firstElementIndex = mergedElements.indexOf(clickedElements[0]);
+      const firstElementIndex = currentFolderData.sortedElements.indexOf(clickedElements[0]);
 
       if (index < firstElementIndex) {
-        setClickedElements([ clickedElements[0], ...mergedElements.slice(index, firstElementIndex) ])
+        setClickedElements([ clickedElements[0], ...currentFolderData.sortedElements.slice(index, firstElementIndex) ])
       } else if (index > firstElementIndex) {
-        setClickedElements([ clickedElements[0], ...mergedElements.slice(firstElementIndex + 1, index + 1) ])
+        setClickedElements([ clickedElements[0], ...currentFolderData.sortedElements.slice(firstElementIndex + 1, index + 1) ])
       }
 
     } else if ((event.button === 0) && !isContextMenuOpen && 

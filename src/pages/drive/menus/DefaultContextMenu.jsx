@@ -16,13 +16,19 @@ export default function DefaultContextMenu () {
     { text: 'Upload a file', icon: 'upload', handleOnClick: contextMenuContext.openUpload },
     { text: 'New folder', icon: 'new-folder', handleOnClick: () => contextMenuContext.setIsCreatingFolder(true) },
     'line',
-    { text: 'Paste', icon: 'paste', handleOnClick: contextMenuContext.pasteClickedElements }
+    { text: 'Paste', icon: 'paste', handleOnClick: contextMenuContext.pasteClickedElements },
+    'line',
+    { text: 'Sort by', icon: '',  },
+    { text: 'View mode', icon: '',  }
   ] 
   :
   [
     { text: 'Upload a file', icon: 'upload', handleOnClick: contextMenuContext.openUpload  },
-    { text: 'New folder', icon: 'new-folder', handleOnClick: () => contextMenuContext.setIsCreatingFolder(true) }
-  ]
+    { text: 'New folder', icon: 'new-folder', handleOnClick: () => contextMenuContext.setIsCreatingFolder(true) },
+    'line',
+    { text: 'Sort by', icon: '',  },
+    { text: 'View mode', icon: '',  }
+  ] 
 
   return (
     <CommonContextMenu options={options} />  

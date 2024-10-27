@@ -3,6 +3,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import FolderService from 'services/FolderService.jsx'
 import FileService from 'services/FileService.jsx'
 
+import config from 'config.json';
+
 
 // THUNKS
 export const getFolder = createAsyncThunk(
@@ -213,27 +215,53 @@ export const deleteElements = createAsyncThunk(
 
 
 // COMMON
+const getSortedElements = (state, folders, files) => {
+  state = parseToObject(state);
+  if (state.showFoldersFirst) {
+    if (state.sortBy === 'name') {
+      return [
+        ...folders.toSorted((a, b) => 
+        state.sortByAscending ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)),
+        ...files.toSorted((a, b) => 
+        state.sortByAscending ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name))
+      ]
+    } else if ((state.sortBy === 'creationDate') || (state.sortBy === 'modificationDate')) {
+      return ([
+        ...folders.toSorted((a, b) => 
+        state.sortByAscending ? !(new Date(b.date) - new Date(a.date)) : (new Date(b.date) - new Date(a.date))),
+        ...files.toSorted((a, b) => 
+        state.sortByAscending ? !(new Date(b.date) - new Date(a.date)) : (new Date(b.date) - new Date(a.date))),
+      ])
+    } else {
+      return ([
+        ...folders.toSorted((a, b) => 
+        state.sortByAscending ? a.size - b.size : b.size - a.size),
+        ...files.toSorted((a, b) => 
+        state.sortByAscending ? a.size - b.size : b.size - a.size),
+      ])
+    }
+  } 
+}
+
 const addElementsOnClient = (state, elements) => {
   state = parseToObject(state);
   if (elements.length > 0) {
-    let reorderedFiles = state.files;
-    let reorderedFolders = state.folders;
+    let updatedFiles = state.files;
+    let updatedFolders = state.folders;
 
     for (const element of elements) {
       if (element.type === 'file') {
-        reorderedFiles.push(element);
+        updatedFiles.push(element);
       } else if (element.type === 'folder') {
-        reorderedFolders.push(element);
+        updatedFolders.push(element);
       }
     }
 
-    reorderedFiles.sort((a, b) => a.name.localeCompare(b.name));
-    reorderedFolders.sort((a, b) => a.name.localeCompare(b.name));
-
     return { 
       ...state, 
-      files: reorderedFiles,
-      folders: reorderedFolders
+      files: updatedFiles,
+      folders: updatedFolders,
+      sortedElements: getSortedElements(state, updatedFolders, updatedFiles) 
     };
   } else {
     return state;
@@ -243,34 +271,32 @@ const addElementsOnClient = (state, elements) => {
 const updateElementsOnClient = (state, elements) => {
   state = parseToObject(state);
   if (elements.length > 0) {
-    let reorderedFiles = state.files;
-    let reorderedFolders = state.folders;
+    let updatedFiles = state.files;
+    let updatedFolders = state.folders;
 
     for (const element of elements) {
       if (element.type === 'file') {
-        reorderedFiles.find((file, index) => {
+        updatedFiles.find((file, index) => {
           if (file.uuid === element.uuid) {
-            delete reorderedFiles[index].originalElement;
-            reorderedFiles[index] = { ...element, originalElement: reorderedFiles[index] };
+            delete updatedFiles[index].originalElement;
+            updatedFiles[index] = { ...element, originalElement: updatedFiles[index] };
           }
         })
       } else if (element.type === 'folder') {
-        reorderedFolders.find((folder, index) => {
+        updatedFolders.find((folder, index) => {
           if (folder.uuid === element.uuid) {
-            delete reorderedFolders[index].originalElement;
-            reorderedFolders[index] = { ...element, originalElement: reorderedFolders[index] };
+            delete updatedFolders[index].originalElement;
+            updatedFolders[index] = { ...element, originalElement: updatedFolders[index] };
           }
         })
       }
     }
 
-    reorderedFiles.sort((a, b) => a.name.localeCompare(b.name));
-    reorderedFolders.sort((a, b) => a.name.localeCompare(b.name));
-
     return { 
       ...state, 
-      files: reorderedFiles,
-      folders: reorderedFolders
+      files: updatedFiles,
+      folders: updatedFolders,
+      sortedElements: getSortedElements(state, updatedFolders, updatedFiles) 
     };
   } else {
     return state;
@@ -280,32 +306,30 @@ const updateElementsOnClient = (state, elements) => {
 const revertUpdateElementsOnClient = (state, elements) => {
   state = parseToObject(state);
   if (elements.length > 0) {
-    let reorderedFiles = state.files;
-    let reorderedFolders = state.folders;
+    let updatedFiles = state.files;
+    let updatedFolders = state.folders;
 
     for (const element of elements) {
       if (element.type === 'file') {
-        reorderedFiles.find((file, index) => {
+        updatedFiles.find((file, index) => {
           if (file.uuid === element.uuid) {
-            reorderedFiles[index] = reorderedFiles[index].originalElement;
+            updatedFiles[index] = updatedFiles[index].originalElement;
           }
         })
       } else if (element.type === 'folder') {
-        reorderedFolders.find((folder, index) => {
+        updatedFolders.find((folder, index) => {
           if (folder.uuid === element.uuid) {
-            reorderedFolders[index] = reorderedFolders[index].originalElement;
+            updatedFolders[index] = updatedFolders[index].originalElement;
           }
         })
       }
     }
 
-    reorderedFiles.sort((a, b) => a.name.localeCompare(b.name));
-    reorderedFolders.sort((a, b) => a.name.localeCompare(b.name));
-
     return { 
       ...state, 
-      files: reorderedFiles,
-      folders: reorderedFolders
+      files: updatedFiles,
+      folders: updatedFolders,
+      sortedElements: getSortedElements(state, updatedFolders, updatedFiles) 
     };
   } else {
     return state;
@@ -315,30 +339,28 @@ const revertUpdateElementsOnClient = (state, elements) => {
 const updateUuidToPermanent = (state, clientElement, serverElement) => {
   state = parseToObject(state);
   if (clientElement && serverElement) {
-    let reorderedFiles = state.files;
-    let reorderedFolders = state.folders;
+    let updatedFiles = state.files;
+    let updatedFolders = state.folders;
 
     if (clientElement.type === 'file') {
-      reorderedFiles.find((file, index) => {
+      updatedFiles.find((file, index) => {
         if (file.uuid === clientElement.uuid) {
-          reorderedFiles[index] = serverElement;
+          updatedFiles[index] = serverElement;
         }
       })
     } else if (clientElement.type === 'folder') {
-      reorderedFolders.find((folder, index) => {
+      updatedFolders.find((folder, index) => {
         if (folder.uuid === clientElement.uuid) { 
-          reorderedFolders[index] = serverElement;
+          updatedFolders[index] = serverElement;
         }
       })
     }
 
-    reorderedFiles.sort((a, b) => a.name.localeCompare(b.name));
-    reorderedFolders.sort((a, b) => a.name.localeCompare(b.name));
-
     return { 
       ...state, 
-      files: reorderedFiles,
-      folders: reorderedFolders
+      files: updatedFiles,
+      folders: updatedFolders,
+      sortedElements: getSortedElements(state, updatedFolders, updatedFiles) 
     };
   } else {
     return state;
@@ -348,18 +370,19 @@ const updateUuidToPermanent = (state, clientElement, serverElement) => {
 const removeElementsOnClient = (state, elements) => {
   state = parseToObject(state);
   if (elements.length > 0) {
-    let reorderedFiles = state.files;
-    let reorderedFolders = state.folders;
+    let updatedFiles = state.files;
+    let updatedFolders = state.folders;
 
     const elementsUuids = elements.map(element => element.uuid);
 
-    reorderedFiles = reorderedFiles.filter(file => (!elementsUuids.includes(file.uuid)))
-    reorderedFolders = reorderedFolders.filter(folder => (!elementsUuids.includes(folder.uuid)))
+    updatedFiles = updatedFiles.filter(file => (!elementsUuids.includes(file.uuid)))
+    updatedFolders = updatedFolders.filter(folder => (!elementsUuids.includes(folder.uuid)))
 
     return { 
       ...state, 
-      files: reorderedFiles,
-      folders: reorderedFolders
+      files: updatedFiles,
+      folders: updatedFolders,
+      sortedElements: getSortedElements(state, updatedFolders, updatedFiles) 
     };
   } else {
     return state;
@@ -377,12 +400,35 @@ export const currentFolderSlice = createSlice({
   initialState: {
     uuid: '',
     files: [],
-    folders: []
+    folders: [],
+    sortedElements: [],
+    sortBy: JSON.parse(localStorage.getItem('settings')) ? 
+    JSON.parse(localStorage.getItem('settings')).sortBy: config.defaultSettings.sortBy,
+    sortByAscending: JSON.parse(localStorage.getItem('settings')) ? 
+    JSON.parse(localStorage.getItem('settings')).sortByAscending : config.defaultSettings.sortByAscending,
+    showFoldersFirst: JSON.parse(localStorage.getItem('settings')) ? 
+    JSON.parse(localStorage.getItem('settings')).showFoldersFirst : config.defaultSettings.showFoldersFirst,
   },
-  reducers: {},
+  reducers: {
+    syncSortingData: (state, action) => {
+      let newState = { 
+        ...parseToObject(state), 
+        ...action.payload,
+      };
+
+      newState.sortedElements = getSortedElements(newState, newState.folders, newState.files)
+      return newState;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getFolder.fulfilled, (state, action) => {
-      return action.payload;
+      let newState = { 
+        ...parseToObject(state), 
+        ...action.payload,
+      };
+
+      newState.sortedElements = getSortedElements(newState, newState.folders, newState.files)
+      return newState;
     });
 
     builder.addCase(uploadElement.pending, (state, action) => {
@@ -461,3 +507,4 @@ export const currentFolderSlice = createSlice({
   },
 });
 
+export const { syncSortingData } = currentFolderSlice.actions;

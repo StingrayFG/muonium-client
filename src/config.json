@@ -39,6 +39,9 @@
       { "name": "creationDate", "width": 200, "isEnabled": false },
       { "name": "modificationDate", "width": 200, "isEnabled": true },
       { "name": "type", "width": 100, "isEnabled": false }  
-    ]
+    ],
+    "sortBy": "name",
+    "sortByAscending": true,
+    "showFoldersFirst": true
   }
 }

@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { setColumnWidth } from 'state/slices/settingsSlice';
+import { setColumnWidth, setSortBy, setSortByAscending } from 'state/slices/settingsSlice';
+import { syncSortingData } from 'state/slices/currentFolderSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
@@ -10,6 +11,8 @@ import { useDragHandler } from 'hooks/UseDragHandler';
 
 import FileElement from 'pages/drive/elements/FileElement.jsx';
 import FolderElement from 'pages/drive/elements/FolderElement.jsx';
+
+import { ReactComponent as ChevronDown } from 'assets/icons/chevron-down.svg';
 
 import config from 'config.json';
 
@@ -71,9 +74,29 @@ export default function ContentsPanel () {
     }
   }
 
+  // SYNC
+  useEffect(() => {
+    dispatch(syncSortingData({
+      sortBy: settingsData.sortBy, 
+      sortByAscending: settingsData.sortByAscending, 
+      showFoldersFirst: settingsData.showFoldersFirst
+    }))
+  }, [settingsData.sortBy, settingsData.sortByAscending, settingsData.showFoldersFirst])
+
 
   // GETS
   const getListViewHeader = () => {
+    const onColumnHeaderClick = (event, name) => {
+      if (event.target === event.currentTarget) {
+        if (settingsData.sortBy === name) {
+          dispatch(setSortByAscending(!settingsData.sortByAscending));
+        } else {
+          dispatch(setSortBy(name));
+        }      
+      }
+      
+    }
+
     return (
       <Box className='h-8 w-full absolute top-0 flex
       overflow-x-auto scrollbar-hidden
@@ -90,9 +113,15 @@ export default function ContentsPanel () {
         }} />
 
         {settingsData.listViewColumns.filter(c => c.isEnabled).map(column => 
-          <Box className={`shrink-0
+          <Box className={`shrink-0 grid grid-cols-[1fr_max-content]
+          border-r border-sky-300/20
           ${(isDragging && (column.name === resizedColumn.name)) ? 'static' : 'relative'}`}
-          key={'header-' + column.name}>
+          style={{
+            width: column.width
+          }}
+          key={'header-' + column.name}
+          onClick={(event) => onColumnHeaderClick(event, column.name)}>
+
 
             <Box className={`-mr-2 z-20
             cursor-col-resize
@@ -101,13 +130,14 @@ export default function ContentsPanel () {
             onMouseUp={handleOnMouseUp}
             onMouseMove={(event) => handleOnMouseMove(event, column)}/> {/* Used to stop resizing if mouse leaves the window */}
 
-            <p className='px-2
-            border-r border-sky-300/20'
-            style={{
-              width: column.width
-            }}>
+            <p className='w-full px-2 pointer-events-none
+            text-ellipsis overflow-hidden'>
               {config.columns.displayedNames[column.name]}
             </p> 
+
+            <ChevronDown className={`h-4 w-4 mt-2 mr-2 pointer-events-none
+            ${(settingsData.sortBy === column.name) ? 'opacity-100' : 'opacity-0'}
+            ${settingsData.sortByAscending ? 'rotate-180' : 'rotate-0'}`}/>
 
           </Box>
         )}
@@ -135,17 +165,22 @@ export default function ContentsPanel () {
             <FolderElement />
           )}
     
-          {currentFolderData.uuid && <>
-            {currentFolderData.folders.map((folder, index) => (
-              <FolderElement key={folder.uuid} 
-              folder={folder} 
-              index={index}/>
-            ))}
-            {currentFolderData.files.map((file, index) => (
-              <FileElement key={file.uuid} 
-              file={file} 
-              index={currentFolderData.folders.length + index}/>
-            ))}
+          {currentFolderData.sortedElements.length > 0 && <>
+            {currentFolderData.sortedElements.map((element, index) => {
+              if (element.type === 'folder') {
+                return (
+                  <FolderElement key={element.uuid} 
+                  folder={element} 
+                  index={index}/>
+                )
+              } else if (element.type === 'file') {
+                return (
+                  <FileElement key={element.uuid} 
+                  file={element} 
+                  index={index}/>
+                )
+              }
+            })}
           </>}
 
         </Box> 
@@ -167,17 +202,22 @@ export default function ContentsPanel () {
         onContextMenu={contextMenuContext.handleDefaultContextMenuClick}>
 
           <Box className={`w-full h-fit grid`}>
-            {currentFolderData.uuid && <>
-              {currentFolderData.folders.map((folder, index) => (
-                <FolderElement key={folder.uuid} 
-                folder={folder} 
-                index={index}/>
-              ))}
-              {currentFolderData.files.map((file, index) => (
-                <FileElement key={file.uuid} 
-                file={file} 
-                index={currentFolderData.folders.length + index}/>
-              ))}
+            {currentFolderData.sortedElements.length > 0 && <>
+              {currentFolderData.sortedElements.map((element, index) => {
+                if (element.type === 'folder') {
+                  return (
+                    <FolderElement key={element.uuid} 
+                    folder={element} 
+                    index={index}/>
+                  )
+                } else if (element.type === 'file') {
+                  return (
+                    <FileElement key={element.uuid} 
+                    file={element} 
+                    index={index}/>
+                  )
+                }
+              })}
             </>}
           </Box>  
 

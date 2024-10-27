@@ -160,7 +160,7 @@ export default function FileElement ({ file, index }) {
       if (getIsHovered()) {
         res = 'bg-sky-400/10 duration-300';
       } else if ((index % 2) === 1) {
-        res = 'bg-neutral-950/40';
+        res = 'bg-neutral-950/40 duration-0';
       }
     }
     return res;
@@ -223,7 +223,7 @@ export default function FileElement ({ file, index }) {
     if (settingsData.viewMode === 'grid') {
       return (
         <Box className={`h-full place-self-center
-        transition-all duration-100`}
+        transition-all duration-300`}
         style={{
           width: settingsData.gridElementWidth + 'px',
           padding: settingsData.gridElementWidth * 0.1 + 'px'
@@ -272,41 +272,49 @@ export default function FileElement ({ file, index }) {
       );
     } else if (settingsData.viewMode === 'list') {
       return (
-        <Box className={`w-full flex
+        <Box className={`w-full
         transition-all duration-100
         ${getRowStyle()}`}
         style={{
           height: settingsData.listElementHeight + 'px'
-        }}
-        onMouseDown={handleOnMouseDown}
-        onMouseEnter={handleOnMouseEnter}
-        onMouseLeave={handleOnMouseLeave}
-        onContextMenu={handleOnContextMenu}
-        onDoubleClick={handleOnDoubleClick}>
-    
-          <Box className={`h-full ml-2 aspect-4-3 grid`}
+        }}>
+
+          <Box className='w-fit flex
+          transition-all duration-100'
           style={{
-            height: settingsData.listElementHeight + 'px',
-            padding: settingsData.listElementHeight * 0.1 + 'px',
-          }}>
-            {(file.thumbnail || file.imageBlob) ? 
-              <img className={`w-full h-full object-contain 
-              transition-all
-              ${getImageStyle()}`}
-              src={imageSrc} 
-              alt=''
-              draggable={false} />
-              :
-              <Box className={`h-full place-self-center 
-              transition-all
-              pointer-events-none select-none 
-              ${(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) && getIconStyle()}`}>
-                <FileElementIcon file={file} isBootstrap={!(settingsData.listElementHeight >= config.elements.listSmallIconsHeight)}/>
-              </Box>
-            }
+            marginLeft: settingsData.listElementHeight + 'px'
+          }}
+          onMouseDown={handleOnMouseDown}
+          onMouseEnter={handleOnMouseEnter}
+          onMouseLeave={handleOnMouseLeave}
+          onContextMenu={handleOnContextMenu}
+          onDoubleClick={handleOnDoubleClick}>
+
+            <Box className={`h-full ml-2 aspect-4-3 grid`}
+            style={{
+              height: settingsData.listElementHeight + 'px',
+              padding: settingsData.listElementHeight * 0.1 + 'px',
+            }}>
+              {(file.thumbnail || file.imageBlob) ? 
+                <img className={`w-full h-full object-contain 
+                transition-all
+                ${getImageStyle()}`}
+                src={imageSrc} 
+                alt=''
+                draggable={false} />
+                :
+                <Box className={`h-full place-self-center 
+                transition-all
+                pointer-events-none select-none 
+                ${(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) && getIconStyle()}`}>
+                  <FileElementIcon file={file} isBootstrap={!(settingsData.listElementHeight >= config.elements.listSmallIconsHeight)}/>
+                </Box>
+              }
+            </Box>
+
+            {getListViewColumns()}
+
           </Box>
-    
-          {getListViewColumns()}
 
         </Box>
       );
