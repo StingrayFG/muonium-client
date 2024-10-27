@@ -201,6 +201,10 @@ export default function ContentsPanel () {
         onScroll={handleOnScroll}
         onContextMenu={contextMenuContext.handleDefaultContextMenuClick}>
 
+          {contextMenuContext.isCreatingFolder && (
+            <FolderElement />
+          )}
+
           <Box className={`w-full h-fit grid`}>
             {currentFolderData.sortedElements.length > 0 && <>
               {currentFolderData.sortedElements.map((element, index) => {

@@ -345,13 +345,13 @@ const updateUuidToPermanent = (state, clientElement, serverElement) => {
     if (clientElement.type === 'file') {
       updatedFiles.find((file, index) => {
         if (file.uuid === clientElement.uuid) {
-          updatedFiles[index] = serverElement;
+          updatedFiles[index] = { ...updatedFiles[index], ...serverElement };
         }
       })
     } else if (clientElement.type === 'folder') {
       updatedFolders.find((folder, index) => {
         if (folder.uuid === clientElement.uuid) { 
-          updatedFolders[index] = serverElement;
+          updatedFolders[index] = { ...updatedFolders[index], ...serverElement };
         }
       })
     }
