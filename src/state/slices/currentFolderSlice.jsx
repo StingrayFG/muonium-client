@@ -434,6 +434,9 @@ export const currentFolderSlice = createSlice({
     builder.addCase(uploadElement.pending, (state, action) => {
       return addElementsOnClient(state, [action.meta.arg.element]);
     });
+    builder.addCase(uploadElement.fulfilled, (state, action) => {
+      return updateUuidToPermanent(state, action.meta.arg.element, action.payload);
+    });
     builder.addCase(uploadElement.rejected, (state, action) => {
       return removeElementsOnClient(state, [action.meta.arg.element]);
     });
