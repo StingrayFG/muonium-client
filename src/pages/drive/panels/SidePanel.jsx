@@ -21,7 +21,7 @@ export default function SidePanel () {
   const bookmarkData = useSelector(state => state.bookmark);
   const settingsData = useSelector(state => state.settings);
 
-  const [isHolding, isDragging, dragDelta, startDragging, updateDragging, stopDragging] = useDragHandler(0);
+  const [isHolding, isDragging, dragDelta, startDragging, updateDragging, stopDragging, updateDelta] = useDragHandler(0);
 
   const [panelWidth, setPanelWidth] = useState(settingsData.sidePanelWidth);
 

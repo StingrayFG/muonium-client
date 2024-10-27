@@ -7,6 +7,8 @@ export function useDragHandler (lowerDeltaLimit = 10) {
   const [isHolding, setIsHolding] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
+  const [usedLowerDeltaLimit, setUsedLowerDeltaLimit] = useState(lowerDeltaLimit);
+
   const startDragging = (event) => {
     setIsHolding(true);
     setMouseDownPosition({ 
@@ -23,7 +25,7 @@ export function useDragHandler (lowerDeltaLimit = 10) {
 
     setDragDelta(newDragDelta);
 
-    if (((newDragDelta.x * newDragDelta.x) + (newDragDelta.y * newDragDelta.y) > (lowerDeltaLimit * lowerDeltaLimit)) && isHolding && !isDragging) {
+    if (((newDragDelta.x * newDragDelta.x) + (newDragDelta.y * newDragDelta.y) > (usedLowerDeltaLimit * usedLowerDeltaLimit)) && isHolding && !isDragging) {
       setIsDragging(true);
     }
   }
@@ -35,8 +37,13 @@ export function useDragHandler (lowerDeltaLimit = 10) {
   useEffect(() => {
     if (!isHolding) {
       setIsDragging(false);
+      setDragDelta({ x: null, y: null });
     }
   }, [isHolding])
 
-  return [isHolding, isDragging, dragDelta, startDragging, updateDragging, stopDragging];
+  const updateDelta = (delta) => {
+    setUsedLowerDeltaLimit(delta);
+  }
+
+  return [isHolding, isDragging, dragDelta, startDragging, updateDragging, stopDragging, updateDelta];
 }
