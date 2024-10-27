@@ -366,7 +366,7 @@ export default function ContextMenuWrap ({ children }) {
 
   const startDraggingElement = (event) => {
     setIsHoldingElement(true);
-    setDraggedElementSize({ x: event.target.offsetWidth, y: event.target.offsetWidth });
+    setDraggedElementSize({ x: event.target.offsetHeight, y: event.target.offsetHeight });
     setDraggingStartEvent(event)
 
     setMousePointInitial({ x: event.pageX, y: event.pageY });
