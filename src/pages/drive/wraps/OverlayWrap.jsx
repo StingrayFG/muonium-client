@@ -15,7 +15,7 @@ export default function OverlayWrap ({ children }) {
     <>
     
       {/* MODAL */}
-      <Box className={`z-20 w-full h-dvh grid place-items-center overflow-hidden fixed
+      <Box className={`z-30 w-full h-dvh grid place-items-center overflow-hidden fixed
       transition-opacity duration-300
       bg-neutral-950/90
       ${modalContext.getBottomModal().isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}

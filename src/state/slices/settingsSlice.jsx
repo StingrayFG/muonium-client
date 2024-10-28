@@ -7,6 +7,10 @@ const saveSettings = (state) => {
   localStorage.setItem('settings', JSON.stringify(state));
 }
 
+const parseToObject = (state) => {
+  return JSON.parse(JSON.stringify(state))
+}
+
 
 export const settingsSlice = createSlice({
   name: 'path',
@@ -53,6 +57,20 @@ export const settingsSlice = createSlice({
       })
       saveSettings(state); 
     }, 
+    setColumnPosition: (state, action) => {
+      let newListViewColumns = parseToObject(state).listViewColumns
+      const columnIndex = state.listViewColumns.findIndex(column => column.name === action.payload.column.name)
+
+      newListViewColumns.splice(columnIndex, 1);
+      newListViewColumns = [
+        ...newListViewColumns.slice(0, action.payload.position),
+        action.payload.column,
+        ...newListViewColumns.slice(action.payload.position),
+      ]
+      
+      state.listViewColumns = newListViewColumns;
+      saveSettings(state); 
+    }, 
 
     setSortBy: (state, action) => {
       state.sortBy = action.payload;
@@ -71,5 +89,5 @@ export const settingsSlice = createSlice({
 
 export const { setViewMode, setSidePanelWidth, 
   setSidePanelIsVisible, setGridElementWidth, setListElementHeight, 
-  setColumnWidth, setColumnIsEnabled,
+  setColumnWidth, setColumnIsEnabled, setColumnPosition,
   setSortBy, setSortByAscending, setShowFoldersFirst } = settingsSlice.actions;
