@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export function useMessageHandler (presetPeriod = 1500) {
+export function useMessageHandler (defaultDuration = 1500) {
 
   const [messageData, setMessageData] = useState({
     text: '',
@@ -11,25 +11,19 @@ export function useMessageHandler (presetPeriod = 1500) {
   const [shallHideMessage, setShallHideMessage] = useState(false);
   const [lastUsedPeriod, setLastUsedPeriod] = useState(0);
 
-  const showMessage = (message, period, type) => {
+  const showMessage = (message, duration, type) => {
     setMessageData({
       message: message,
       type: type,
       isShowing: true,
       lastShown: Date.now()
     });
-    setLastUsedPeriod(period ? period : presetPeriod);
-    setTimeout(() => hideMessage(), period ? period : presetPeriod);
-  }
-
-  const hideMessage = () => {
-    if (Date.now() - messageData.lastShown > lastUsedPeriod) {
-      setShallHideMessage(true);
-    } 
+    setLastUsedPeriod(duration ? duration : defaultDuration);
+    setTimeout(() => setShallHideMessage(true), duration ? duration : defaultDuration);
   }
 
   useEffect(() => {
-    if (shallHideMessage) {
+    if ((shallHideMessage) && ((Date.now() - messageData.lastShown) > lastUsedPeriod)) {
       setMessageData({ ...messageData, isShowing: false });
       setShallHideMessage(false);
     } 
