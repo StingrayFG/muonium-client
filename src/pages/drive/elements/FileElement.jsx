@@ -112,19 +112,7 @@ export default function FileElement ({ file, index }) {
 
 
   // STYLES 
-  const getNameStyle = () => {
-    let res = '';
-    if (getIsClicked()) {
-      res = 'bg-sky-400/20 duration-0';
-    } else {
-      if (getIsHovered()) {
-        res = 'bg-sky-400/10 duration-300';
-      }
-    } 
-    return res;
-  }
-
-  const getIconStyle = () => { // File icon bg opacity = 0.4
+  const getIconStyle = () => { // Folder icon bg opacity = 0.4
     let res = '';
     if (getIsCut()) {
       res = 'opacity-25 duration-0';
@@ -133,12 +121,26 @@ export default function FileElement ({ file, index }) {
         res = 'opacity-100 duration-0';
       } else {
         if (getIsHovered()) {
-          res = 'opacity-75 duration-300';
+          res = 'opacity-75 duration-0';
         } else {
           res = 'opacity-50 duration-300';
         }
       }
     }  
+    return res;
+  }
+
+  const getNameStyle = () => {
+    let res = '';
+    if (getIsClicked()) {
+      res = 'bg-sky-400/20 duration-0';
+    } else {
+      if (getIsHovered()) {
+        res = 'bg-sky-400/10 duration-0';
+      } else {
+        res = 'duration-300';
+      }
+    } 
     return res;
   }
 
@@ -158,9 +160,14 @@ export default function FileElement ({ file, index }) {
       res = 'bg-sky-400/20 duration-0';
     } else {
       if (getIsHovered()) {
-        res = 'bg-sky-400/10 duration-300';
-      } else if ((index % 2) === 1) {
-        res = 'bg-neutral-950/40 duration-0';
+        res = 'bg-sky-400/10 duration-0';
+      } else {
+        if ((index % 2) === 1) {
+          res = 'bg-neutral-950/40 duration-300';
+        } else {
+          res = 'duration-300';
+        }
+        
       }
     }
     return res;

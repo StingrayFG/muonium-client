@@ -155,7 +155,7 @@ export default function FolderElement ({ folder, index }) {
         res = 'opacity-100 duration-0';
       } else {
         if (getIsHovered()) {
-          res = 'opacity-75 duration-300';
+          res = 'opacity-75 duration-0';
         } else {
           res = 'opacity-50 duration-300';
         }
@@ -170,7 +170,9 @@ export default function FolderElement ({ folder, index }) {
       res = 'bg-sky-400/20 duration-0';
     } else {
       if (getIsHovered()) {
-        res = 'bg-sky-400/10 duration-300';
+        res = 'bg-sky-400/10 duration-0';
+      } else {
+        res = 'duration-300';
       }
     } 
     return res;
@@ -182,9 +184,14 @@ export default function FolderElement ({ folder, index }) {
       res = 'bg-sky-400/20 duration-0';
     } else {
       if (getIsHovered()) {
-        res = 'bg-sky-400/10 duration-300';
-      } else if ((index % 2) === 1) {
-        res = 'bg-neutral-950/40';
+        res = 'bg-sky-400/10 duration-0';
+      } else {
+        if ((index % 2) === 1) {
+          res = 'bg-neutral-950/40 duration-300';
+        } else {
+          res = 'duration-300';
+        }
+        
       }
     }
     return res;
