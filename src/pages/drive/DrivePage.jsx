@@ -31,7 +31,7 @@ export default function DrivePanels ({ folderUuid }) {
   const userData = useSelector(state => state.user);
   const driveData = useSelector(state => state.drive);
   const pathData = useSelector(state => state.path);
-  const currentFolderData = useSelector(state => state.currentFolder);
+  const settingsData = useSelector(state => state.settings);
 
   const [isAwaitingNavigation, NavigateWithDelay] = useDelayedNavigate();
 
@@ -93,7 +93,8 @@ export default function DrivePanels ({ folderUuid }) {
     } 
   }, [pathData.currentUuid, usedFolderUuid]);
 
-
+  const overlay = true
+  
   // RENDER
   if (userData) {
     return (
@@ -107,7 +108,8 @@ export default function DrivePanels ({ folderUuid }) {
                 <OverlayWrap>
             
                   <TopPanel />   
-                  <Box className='w-full h-full overflow-hidden grid grid-cols-[max-content_1fr] overflow-hidden'>
+                  <Box className={`w-full h-full overflow-hidden grid grid-cols-[max-content_1fr] overflow-hidden
+                  ${settingsData.sidePanelIsOverlayMode ? 'grid-cols-[100vw]' : 'grid-cols-[max-content_1fr]'}`}>
                     <SidePanel />
                     <Box className='w-full h-full overflow-hidden relative'>
                       <ContentsPanel />   

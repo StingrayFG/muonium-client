@@ -29,6 +29,7 @@
   "defaultSettings": { 
     "sidePanelWidth": 240,
     "sidePanelIsVisible": true,
+    "sidePanelIsOverlayMode": true,
     
     "viewMode": "grid",
     "gridElementWidth": 200,

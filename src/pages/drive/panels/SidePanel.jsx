@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { setSidePanelWidth } from 'state/slices/settingsSlice';
+import { setSidePanelWidth, setSidePanelIsVisible } from 'state/slices/settingsSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
@@ -84,26 +84,38 @@ export default function SidePanel () {
     }
   }
 
+  const handleOverlayPanelClick = () => {
+    dispatch(setSidePanelIsVisible(!settingsData.sidePanelIsVisible))
+  }
+
 
   // RENDER
   return (
-    <Box className={`pr-2 -mr-2 overflow-hidden
+    <Box className={`h-full pr-2 -mr-2 z-20
     transition-opacity duration-300
-    ${isDragging ? 'static' : 'relative'}
-    ${usedIsVisible ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
+    ${settingsData.sidePanelIsOverlayMode ? 'fixed left-0' : isDragging ? 'static' : 'relative'}
+    ${usedIsVisible ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-100'}`}
     onContextMenu={contextMenuContext.handleSidePanelContextMenuClick}>
 
-      <Box className={`z-20
+      <Box className={`z-10
       cursor-col-resize
       ${isDragging ? 'fixed h-dvh w-screen top-0 left-0' : 'absolute h-full w-4 right-0'}`}
       onMouseDown={handleOnMouseDown}
       onMouseUp={handleOnMouseUp}
       onMouseMove={handleOnMouseMove}/> {/* Used to stop resizing if mouse leaves the window */}
 
+
+      <Box className={`w-screen h-full absolute left-0 z-[-10] 
+      backdrop-blur-sm bg-gray-950/40
+      transition-all duration-300
+      ${(usedIsVisible && settingsData.sidePanelIsOverlayMode) ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`} 
+      onClick={handleOverlayPanelClick}/>
+
       <Box className={`h-full overflow-y-auto overflow-x-hidden
       transition-all
       scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
-      bg-neutral-950/40 border-r border-sky-300/20
+      border-r border-sky-300/20
+      ${settingsData.sidePanelIsOverlayMode ? 'bg-gray-950/90' : 'bg-neutral-950/40'}
       ${getSidePanelStyle()}`}
       style={{
         width: usedIsVisible ? panelWidth : '0px'

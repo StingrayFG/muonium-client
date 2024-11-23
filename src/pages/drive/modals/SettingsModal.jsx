@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { setSidePanelIsVisible } from 'state/slices/settingsSlice';
+import { setSidePanelIsVisible, setSidePanelIsOverlayMode } from 'state/slices/settingsSlice';
 
 import { ModalContext } from 'contexts/ModalContext';
 
@@ -36,6 +36,10 @@ export default function SettingsModal ({ }) {
     dispatch(setSidePanelIsVisible(value))
   }
 
+  const changeSidePanelIsOverlayMode = (value) => {
+    dispatch(setSidePanelIsOverlayMode(value))
+  }
+
 
   return(
     <Box className='max-w-full w-[360px] px-4'
@@ -52,6 +56,13 @@ export default function SettingsModal ({ }) {
         <p className='ml-2'>{'Show side panel'}</p>
       </Box>
       
+      <Box className='flex mb-6'>
+        <CustomCheckbox 
+        defaultValue={settingsData.sidePanelIsOverlayMode}
+        setMenuValue={changeSidePanelIsOverlayMode}
+        />
+        <p className='ml-2'>{'Show side panel on top of folder contents'}</p>
+      </Box>
 
       <Box className='mt-4 grid'>
         <button className={`h-8 px-2`}

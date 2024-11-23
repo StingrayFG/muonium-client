@@ -22,7 +22,7 @@ export default function CustomCheckbox ({ defaultValue, setMenuValue, isContextM
   }
 
   return (
-    <Box className={`h-8 relative cursor-default
+    <Box className={`h-8 relative cursor-default shrink-0
     grid place-content-center place-items-center
     ${isContextMenuMode ? 'w-4' : 'w-8'}`}>
 

@@ -27,6 +27,11 @@ export const settingsSlice = createSlice({
       state.sidePanelIsVisible = action.payload;
       saveSettings(state); 
     }, 
+    setSidePanelIsOverlayMode: (state, action) => {
+      state.sidePanelIsOverlayMode = action.payload;
+      saveSettings(state); 
+    }, 
+
 
     setViewMode: (state, action) => {
       state.viewMode = action.payload;
@@ -88,6 +93,7 @@ export const settingsSlice = createSlice({
 });
 
 export const { setViewMode, setSidePanelWidth, 
-  setSidePanelIsVisible, setGridElementWidth, setListElementHeight, 
+  setSidePanelIsVisible, setSidePanelIsOverlayMode, 
+  setGridElementWidth, setListElementHeight, 
   setColumnWidth, setColumnIsEnabled, setColumnPosition,
   setSortBy, setSortByAscending, setShowFoldersFirst } = settingsSlice.actions;
