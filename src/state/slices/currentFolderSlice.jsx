@@ -425,7 +425,6 @@ export const currentFolderSlice = createSlice({
       };
 
       newState.sortedElements = getSortedElements(newState, newState.folders, newState.files) 
-      console.log(newState)
       return newState;
     });
 
