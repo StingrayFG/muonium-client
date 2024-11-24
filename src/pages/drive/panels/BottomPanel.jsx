@@ -95,7 +95,7 @@ export default function BottomPanel () {
       else if (clipboardData.mode === 'cut') { res += ' cut'; } 
       else { res += ' selected'; }
       
-    } else if (contextMenuContext.hoveredElement.uuid) {
+    } else if (contextMenuContext.hoveredElement.uuid && (contextMenuContext.hoveredElement.type !== 'bookmark')) {
       if (contextMenuContext.hoveredElement.type === 'file') {
         res += (
           contextMenuContext.hoveredElement.name + ' (' + 
