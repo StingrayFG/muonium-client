@@ -78,7 +78,6 @@ export default function TopPanel () {
     if (path[path.length - 1] === '/') { path = path.slice(0, path.length - 1); }
     await FolderService.handleGetByPath(userData, driveData, { absolutePath: path })
     .then(res => {
-      console.log(res)
       dispatch(moveToNew({ uuid: res.uuid }));
       dispatch(setAbsolutePath({ currentAbsolutePath: path }));
       setIsEditingPath(false);
@@ -149,7 +148,7 @@ export default function TopPanel () {
     }
   }
 
-
+  
   // RENDER
   return (
     <Box className='w-full px-2 py-2 flex 

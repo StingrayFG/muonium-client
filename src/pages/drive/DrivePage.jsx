@@ -13,7 +13,7 @@ import { getFolder } from 'state/slices/currentFolderSlice';
 
 import { FolderContext } from 'contexts/FolderContext';
 
-import TopPanel from 'pages/drive/panels/TopPanel.jsx';
+import TopPanel from 'pages/drive/panels/TopPanel/TopPanel.jsx';
 import BottomPanel from 'pages/drive/panels/BottomPanel.jsx';
 import SidePanel from 'pages/drive/panels/SidePanel/SidePanel.jsx';
 import DropzoneWrap from 'pages/drive/wraps/DropzoneWrap.jsx';
