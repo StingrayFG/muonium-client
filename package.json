@@ -54,5 +54,10 @@
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
     "react-inject-env": "^2.1.0"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^axios$": "axios/dist/node/axios.cjs"
+    }
   }
 }

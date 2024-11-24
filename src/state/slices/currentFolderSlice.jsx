@@ -402,12 +402,9 @@ export const currentFolderSlice = createSlice({
     files: [],
     folders: [],
     sortedElements: [],
-    sortBy: JSON.parse(localStorage.getItem('settings')) ? 
-    JSON.parse(localStorage.getItem('settings')).sortBy: config.defaultSettings.sortBy,
-    sortByAscending: JSON.parse(localStorage.getItem('settings')) ? 
-    JSON.parse(localStorage.getItem('settings')).sortByAscending : config.defaultSettings.sortByAscending,
-    showFoldersFirst: JSON.parse(localStorage.getItem('settings')) ? 
-    JSON.parse(localStorage.getItem('settings')).showFoldersFirst : config.defaultSettings.showFoldersFirst,
+    sortBy: JSON.parse(localStorage.getItem('settings'))?.sortBy | config.defaultSettings.sortBy,
+    sortByAscending: JSON.parse(localStorage.getItem('settings'))?.sortByAscending | config.defaultSettings.sortByAscending,
+    showFoldersFirst: JSON.parse(localStorage.getItem('settings'))?.showFoldersFirst | config.defaultSettings.showFoldersFirst,
   },
   reducers: {
     syncSortingData: (state, action) => {
@@ -427,7 +424,8 @@ export const currentFolderSlice = createSlice({
         ...action.payload,
       };
 
-      newState.sortedElements = getSortedElements(newState, newState.folders, newState.files)
+      newState.sortedElements = getSortedElements(newState, newState.folders, newState.files) 
+      console.log(newState)
       return newState;
     });
 

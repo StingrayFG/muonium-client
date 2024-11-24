@@ -220,7 +220,8 @@ export default function FolderElement ({ folder, index }) {
 
     return (<>{
       settingsData.listViewColumns.filter(c => c.isEnabled).map(column => 
-        <p className={`h-8 w-full px-2 my-auto shrink-0
+        <p data-testid={'file-' + column.name}
+        className={`h-8 w-full px-2 my-auto shrink-0
         text-left text-ellipsis overflow-hidden break-all whitespace-nowrap
         ${(column.name === 'name') ? 'text-neutral-200' : 'text-neutral-200/60'}`}
         style={{
@@ -238,7 +239,8 @@ export default function FolderElement ({ folder, index }) {
   if (folder) {
     if (settingsData.viewMode === 'grid') {
       return (
-        <Box className={`h-full place-self-center
+        <Box data-testid='folder-element'
+        className={`h-full place-self-center
         transition-all duration-300`}
         style={{
           width: settingsData.gridElementWidth + 'px',
@@ -251,7 +253,8 @@ export default function FolderElement ({ folder, index }) {
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
-            <FolderMu className={`w-full h-full place-self-center 
+            <FolderMu data-testid='folder-icon'
+            className={`w-full h-full place-self-center 
             transition-all
             pointer-events-none select-none 
             ${getIconStyle()}`}/>
@@ -263,7 +266,8 @@ export default function FolderElement ({ folder, index }) {
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
-            <p className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
+            <p data-testid='folder-name'
+            className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
             select-none pointer-events-none
             transition-all
             rounded-[0.3rem] overflow-hidden max-w-32
@@ -277,7 +281,8 @@ export default function FolderElement ({ folder, index }) {
       );
     } else if (settingsData.viewMode === 'list') {
       return (
-        <Box className={`w-full
+        <Box data-testid='folder-element'
+        className={`w-full
         transition-all duration-100
         ${getRowStyle()}`}
         style={{
@@ -301,12 +306,14 @@ export default function FolderElement ({ folder, index }) {
               padding: settingsData.listElementHeight * 0.1 + 'px',
             }}>
             {(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) ?
-              <FolderMu className={`w-full h-full
+              <FolderMu data-testid='folder-icon'
+              className={`w-full h-full
               transition-all
               pointer-events-none select-none 
               ${getIconStyle()}`}/>
               :
-              <FolderBs className={`w-full h-full
+              <FolderBs data-testid='folder-icon'
+              className={`w-full h-full
               transition-all
               pointer-events-none select-none`}/>
             }

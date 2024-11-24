@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { userSlice } from 'state/slices/userSlice';
 import { driveSlice } from 'state/slices/driveSlice';
 import { currentFolderSlice } from 'state/slices/currentFolderSlice';
@@ -19,3 +19,20 @@ export const store = configureStore({
     settings: settingsSlice.reducer,
   },
 });
+
+const rootReducer = combineReducers({
+  user: userSlice.reducer,
+    drive: driveSlice.reducer,
+    currentFolder: currentFolderSlice.reducer,
+    path: pathSlice.reducer,
+    clipboard: clipboardSlice.reducer,
+    bookmark: bookmarkSlice.reducer,
+    settings: settingsSlice.reducer,
+})
+
+export function setupStore(preloadedState) {
+  return configureStore({
+    reducer: rootReducer,
+    preloadedState
+  })
+}

@@ -9,8 +9,8 @@ import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import { useDragHandler } from 'hooks/UseDragHandler';
 
-import FileElement from 'pages/drive/elements/FileElement.jsx';
-import FolderElement from 'pages/drive/elements/FolderElement.jsx';
+import FileElement from 'pages/drive/elements/FileElement/FileElement.jsx';
+import FolderElement from 'pages/drive/elements/FolderElement/FolderElement.jsx';
 
 import { ReactComponent as ChevronDown } from 'assets/icons/chevron-down.svg';
 
@@ -247,7 +247,7 @@ export default function ContentsPanel () {
     )
   }
 
-
+  
   // RENDER
   if (settingsData.viewMode === 'grid') {
     return (
@@ -257,7 +257,8 @@ export default function ContentsPanel () {
       ref={contentsRef}
       onContextMenu={contextMenuContext.handleDefaultContextMenuClick}>
 
-        <Box className={`w-full h-fit grid`}
+        <Box data-testid='content-box'
+        className={`w-full h-fit grid`}
         style={{
           gridTemplateColumns: `repeat(${gridGridColumnsCount}, minmax(0, 1fr))`
         }}>
@@ -295,18 +296,20 @@ export default function ContentsPanel () {
 
       <Box className='w-full h-full pb-12 pt-8 '>
 
-        <Box className={`w-full h-full
+        <Box data-testid='content-box'
+        className={`w-full h-full
         overflow-auto 
         scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent`}
         ref={contentsRef}
         onScroll={handleOnScroll}
         onContextMenu={contextMenuContext.handleDefaultContextMenuClick}>
-
-          {contextMenuContext.isCreatingFolder && (
-            <FolderElement />
-          )}
-
+          
+          
           <Box className={`w-full h-fit grid`}>
+            {contextMenuContext.isCreatingFolder && (
+              <FolderElement />
+            )}
+
             {currentFolderData.sortedElements.length > 0 && <>
               {currentFolderData.sortedElements.map((element, index) => {
                 if (element.type === 'folder') {

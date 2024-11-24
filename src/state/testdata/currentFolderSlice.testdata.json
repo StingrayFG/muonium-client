@@ -1,0 +1,76 @@
+{
+  "uuid": "696b5d09-e26c-479a-8e15-e964d5eeff47",
+  "files": [
+    {
+      "name": "gear.svg",
+      "nameExtension": "1732391711071",
+      "size": 1507,
+      "creationDate": "2024-11-23T19:55:11.074Z",
+      "modificationDate": "2024-11-23T19:55:11.074Z",
+      "uuid": "a5f3456b-54f1-4df3-83fb-f71f4272f355",
+      "ownerUuid": "3c6ef54d-d5e2-41dd-bfab-4e1e80d1d424",
+      "driveUuid": "c808eb64-8970-4a5d-a7e1-571f6cad4ac5",
+      "parentUuid": "696b5d09-e26c-479a-8e15-e964d5eeff47",
+      "isRemoved": false,
+      "type": "file"
+    }
+  ],
+  "folders": [
+    {
+      "name": "icons",
+      "size": 0,
+      "creationDate": "2024-11-23T19:55:25.991Z",
+      "modificationDate": "2024-11-23T19:55:25.991Z",
+      "uuid": "4c947c53-2a62-4415-9d6d-e8d06a43d1b6",
+      "ownerUuid": "3c6ef54d-d5e2-41dd-bfab-4e1e80d1d424",
+      "driveUuid": "c808eb64-8970-4a5d-a7e1-571f6cad4ac5",
+      "parentUuid": "696b5d09-e26c-479a-8e15-e964d5eeff47",
+      "absolutePath": "/home/test/icons",
+      "isRemoved": false,
+      "isRemovedAsChild": false,
+      "type": "folder"
+    }
+  ],
+  "sortedElements": [
+    {
+      "name": "icons",
+      "size": 0,
+      "creationDate": "2024-11-23T19:55:25.991Z",
+      "modificationDate": "2024-11-23T19:55:25.991Z",
+      "uuid": "4c947c53-2a62-4415-9d6d-e8d06a43d1b6",
+      "ownerUuid": "3c6ef54d-d5e2-41dd-bfab-4e1e80d1d424",
+      "driveUuid": "c808eb64-8970-4a5d-a7e1-571f6cad4ac5",
+      "parentUuid": "696b5d09-e26c-479a-8e15-e964d5eeff47",
+      "absolutePath": "/home/test/icons",
+      "isRemoved": false,
+      "isRemovedAsChild": false,
+      "type": "folder"
+    },
+    {
+      "name": "gear.svg",
+      "nameExtension": "1732391711071",
+      "size": 1507,
+      "creationDate": "2024-11-23T19:55:11.074Z",
+      "modificationDate": "2024-11-23T19:55:11.074Z",
+      "uuid": "a5f3456b-54f1-4df3-83fb-f71f4272f355",
+      "ownerUuid": "3c6ef54d-d5e2-41dd-bfab-4e1e80d1d424",
+      "driveUuid": "c808eb64-8970-4a5d-a7e1-571f6cad4ac5",
+      "parentUuid": "696b5d09-e26c-479a-8e15-e964d5eeff47",
+      "isRemoved": false,
+      "type": "file"
+    }
+  ],
+  "sortBy": "modificationDate",
+  "sortByAscending": false,
+  "showFoldersFirst": true,
+  "name": "test",
+  "size": 2,
+  "creationDate": "2024-11-23T19:54:52.523Z",
+  "modificationDate": "2024-11-23T19:54:52.523Z",
+  "ownerUuid": "3c6ef54d-d5e2-41dd-bfab-4e1e80d1d424",
+  "driveUuid": "c808eb64-8970-4a5d-a7e1-571f6cad4ac5",
+  "parentUuid": "home",
+  "absolutePath": "/home/test",
+  "isRemoved": false,
+  "isRemovedAsChild": false
+}

@@ -110,7 +110,7 @@ export default function FileElement ({ file, index }) {
     }
   }
 
-
+  
   // STYLES 
   const getIconStyle = () => { // Folder icon bg opacity = 0.4
     let res = '';
@@ -199,7 +199,8 @@ export default function FileElement ({ file, index }) {
 
     return (<>{
       settingsData.listViewColumns.filter(c => c.isEnabled).map(column => 
-        <p className={`h-8 w-full px-2 my-auto shrink-0
+        <p data-testid={'file-' + column.name}
+        className={`h-8 w-full px-2 my-auto shrink-0
         text-left  
         ${(column.name === 'name') ? 
         'text-neutral-200 flex' : 
@@ -224,18 +225,18 @@ export default function FileElement ({ file, index }) {
     }</>)
   }
 
-  
+
   // RENDER
   if (file) {
     if (settingsData.viewMode === 'grid') {
       return (
-        <Box className={`h-full place-self-center
+        <Box data-testid='file-element' className={`h-full place-self-center
         transition-all duration-300`}
         style={{
           width: settingsData.gridElementWidth + 'px',
           padding: settingsData.gridElementWidth * 0.1 + 'px'
         }}> 
-    
+        
           <Box className={`w-full aspect-4-3 grid`}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
@@ -243,14 +244,16 @@ export default function FileElement ({ file, index }) {
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
             {(file.thumbnail || file.imageBlob) ? 
-              <img className={`w-full h-full object-contain 
+              <img data-testid='file-icon'
+              className={`w-full h-full object-contain 
               transition-all
               ${getImageStyle()}`}
               src={imageSrc} 
               alt=''
               draggable={false} />
               :
-              <Box className={`h-full place-self-center 
+              <Box data-testid='file-icon'
+              className={`h-full place-self-center 
               transition-all
               pointer-events-none select-none 
               ${getIconStyle()}`}>
@@ -265,7 +268,8 @@ export default function FileElement ({ file, index }) {
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
-            <p className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
+            <p data-testid='file-name'
+            className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
             select-none pointer-events-none
             transition-all
             rounded-[0.3rem] overflow-hidden max-w-32
@@ -279,7 +283,7 @@ export default function FileElement ({ file, index }) {
       );
     } else if (settingsData.viewMode === 'list') {
       return (
-        <Box className={`w-full
+        <Box data-testid='file-element' className={`w-full
         transition-all duration-100
         ${getRowStyle()}`}
         style={{
@@ -303,14 +307,16 @@ export default function FileElement ({ file, index }) {
               padding: settingsData.listElementHeight * 0.1 + 'px',
             }}>
               {(file.thumbnail || file.imageBlob) ? 
-                <img className={`w-full h-full object-contain 
+                <img data-testid='file-icon' 
+                className={`w-full h-full object-contain 
                 transition-all
                 ${getImageStyle()}`}
                 src={imageSrc} 
                 alt=''
                 draggable={false} />
                 :
-                <Box className={`h-full place-self-center 
+                <Box data-testid='file-icon' 
+                className={`h-full place-self-center 
                 transition-all
                 pointer-events-none select-none 
                 ${(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) && getIconStyle()}`}>

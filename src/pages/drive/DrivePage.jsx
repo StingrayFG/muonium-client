@@ -18,7 +18,7 @@ import BottomPanel from 'pages/drive/panels/BottomPanel.jsx';
 import SidePanel from 'pages/drive/panels/SidePanel.jsx';
 import DropzoneWrap from 'pages/drive/wraps/DropzoneWrap.jsx';
 import ContextMenuWrap from 'pages/drive/wraps/ContextMenuWrap.jsx';
-import ContentsPanel from 'pages/drive/panels/ContentsPanel.jsx';
+import ContentsPanel from 'pages/drive/panels/ContentsPanel/ContentsPanel.jsx';
 
 import ModalWrap from './wraps/ModalWrap';
 import OverlayWrap from './wraps/OverlayWrap';
