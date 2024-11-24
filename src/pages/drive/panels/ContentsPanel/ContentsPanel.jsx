@@ -257,8 +257,7 @@ export default function ContentsPanel () {
       ref={contentsRef}
       onContextMenu={contextMenuContext.handleDefaultContextMenuClick}>
 
-        <Box data-testid='content-box'
-        className={`w-full h-fit grid`}
+        <Box className={`w-full h-fit grid`}
         style={{
           gridTemplateColumns: `repeat(${gridGridColumnsCount}, minmax(0, 1fr))`
         }}>
@@ -296,8 +295,7 @@ export default function ContentsPanel () {
 
       <Box className='w-full h-full pb-12 pt-8 '>
 
-        <Box data-testid='content-box'
-        className={`w-full h-full
+        <Box className={`w-full h-full
         overflow-auto 
         scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent`}
         ref={contentsRef}
