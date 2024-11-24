@@ -32,7 +32,6 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(loginUser.fulfilled, (state, action) => {
-      console.log(action.payload)
       localStorage.setItem('user', JSON.stringify(action.payload.userData));  
       return action.payload.userData;
     });
