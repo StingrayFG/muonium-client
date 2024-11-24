@@ -90,7 +90,8 @@ export default function BookmarkElement ({ bookmark }) {
   // RENDER
   if (bookmark) {
     return (
-      <button className={`w-full h-8 px-2 flex 
+      <button data-testid='bookmark-element'
+      className={`w-full h-8 px-2 flex 
       ${getButtonStyle()}`}
       onMouseDown={handleOnMouseDown}
       onMouseEnter={handleOnMouseEnter}
@@ -107,7 +108,8 @@ export default function BookmarkElement ({ bookmark }) {
             <ArrowLeft className='w-4 h-4 mt-2 mr-1' style={{color: 'rgb(244 63 94)'}}/>
           </>}
 
-          <p className='w-full
+          <p data-testid='bookmark-name'
+          className='w-full
           text-left text-ellipsis overflow-hidden'>
             { bookmark.folder.name }
           </p>

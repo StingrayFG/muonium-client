@@ -8,7 +8,7 @@ import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import { useDragHandler } from 'hooks/UseDragHandler';
 
-import BookmarkElement from 'pages/drive/elements/BookmarkElement.jsx';
+import BookmarkElement from 'pages/drive/elements/BookmarkElement/BookmarkElement.jsx';
 
 import config from 'config.json';
 
