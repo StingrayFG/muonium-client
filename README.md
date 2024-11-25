@@ -1,7 +1,10 @@
 # About
 
-muonium is a cloud storage app. 
-muonium-client is built with React+RTK, Jest+RTL, TailwindCSS, MUI.
+muonium is a crossplatform cloud storage web app, built with a variety of modern tools and libraries
+
+muonium-client is built with React+RTK, Jest+RTL, TailwindCSS, MUI
+
+Server repo: https://github.com/StingrayFG/muonium-server/
 
 ### Real world example
 
