@@ -255,7 +255,7 @@ export default function FolderElement ({ folder, index }) {
           onDoubleClick={handleOnDoubleClick}>
             <FolderMu data-testid='folder-icon'
             className={`w-full h-full place-self-center 
-            transition-all
+            transition-opacity
             pointer-events-none select-none 
             ${getIconStyle()}`}/>
           </Box>
@@ -289,8 +289,7 @@ export default function FolderElement ({ folder, index }) {
           height: settingsData.listElementHeight + 'px'
         }}>
 
-          <Box className='w-fit flex
-          transition-all duration-100'
+          <Box className='w-fit flex'
           style={{
             marginLeft: settingsData.listElementHeight + 'px'
           }}
@@ -308,13 +307,13 @@ export default function FolderElement ({ folder, index }) {
             {(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) ?
               <FolderMu data-testid='folder-icon'
               className={`w-full h-full
-              transition-all
+              transition-opacity
               pointer-events-none select-none 
               ${getIconStyle()}`}/>
               :
               <FolderBs data-testid='folder-icon'
               className={`w-full h-full
-              transition-all
+              transition-opacity
               pointer-events-none select-none`}/>
             }
             </Box>

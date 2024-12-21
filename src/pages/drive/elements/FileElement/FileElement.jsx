@@ -246,7 +246,7 @@ export default function FileElement ({ file, index }) {
             {(file.thumbnail || file.imageBlob) ? 
               <img data-testid='file-icon'
               className={`w-full h-full object-contain 
-              transition-all
+              transition-opacity
               ${getImageStyle()}`}
               src={imageSrc} 
               alt=''
@@ -254,7 +254,7 @@ export default function FileElement ({ file, index }) {
               :
               <Box data-testid='file-icon'
               className={`h-full place-self-center 
-              transition-all
+              transition-opacity
               pointer-events-none select-none 
               ${getIconStyle()}`}>
                 <FileElementIcon file={file}/>
@@ -290,8 +290,7 @@ export default function FileElement ({ file, index }) {
           height: settingsData.listElementHeight + 'px'
         }}>
 
-          <Box className='w-fit flex
-          transition-all duration-100'
+          <Box className='w-fit flex'
           style={{
             marginLeft: settingsData.listElementHeight + 'px'
           }}
@@ -309,7 +308,7 @@ export default function FileElement ({ file, index }) {
               {(file.thumbnail || file.imageBlob) ? 
                 <img data-testid='file-icon' 
                 className={`w-full h-full object-contain 
-                transition-all
+                
                 ${getImageStyle()}`}
                 src={imageSrc} 
                 alt=''
@@ -317,7 +316,7 @@ export default function FileElement ({ file, index }) {
                 :
                 <Box data-testid='file-icon' 
                 className={`h-full place-self-center 
-                transition-all
+                transition-opacity
                 pointer-events-none select-none 
                 ${(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) && getIconStyle()}`}>
                   <FileElementIcon file={file} isBootstrap={!(settingsData.listElementHeight >= config.elements.listSmallIconsHeight)}/>
