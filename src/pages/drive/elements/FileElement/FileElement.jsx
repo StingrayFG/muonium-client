@@ -162,12 +162,7 @@ export default function FileElement ({ file, index }) {
       if (getIsHovered()) {
         res = 'bg-sky-400/10 duration-0';
       } else {
-        if ((index % 2) === 1) {
-          res = 'bg-neutral-950/40 duration-300';
-        } else {
-          res = 'duration-300';
-        }
-        
+        res = 'duration-300'; 
       }
     }
     return res;
@@ -230,7 +225,8 @@ export default function FileElement ({ file, index }) {
   if (file) {
     if (settingsData.viewMode === 'grid') {
       return (
-        <Box data-testid='file-element' className={`h-full place-self-center
+        <Box data-testid='file-element' 
+        className={`h-full place-self-center
         transition-all duration-300`}
         style={{
           width: settingsData.gridElementWidth + 'px',
@@ -283,12 +279,16 @@ export default function FileElement ({ file, index }) {
       );
     } else if (settingsData.viewMode === 'list') {
       return (
-        <Box data-testid='file-element' className={`w-full
-        transition-all duration-100
+        <Box data-testid='file-element' 
+        className={`w-full relative
+        transition-all
         ${getRowStyle()}`}
         style={{
           height: settingsData.listElementHeight + 'px'
         }}>
+          {((index % 2) === 1) &&
+            <Box className='w-full h-full absolute z-[-10] bg-neutral-950/40' />
+          }
 
           <Box className='w-fit flex'
           style={{

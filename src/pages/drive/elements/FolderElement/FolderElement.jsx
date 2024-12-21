@@ -186,12 +186,7 @@ export default function FolderElement ({ folder, index }) {
       if (getIsHovered()) {
         res = 'bg-sky-400/10 duration-0';
       } else {
-        if ((index % 2) === 1) {
-          res = 'bg-neutral-950/40 duration-300';
-        } else {
-          res = 'duration-300';
-        }
-        
+        res = 'duration-300'; 
       }
     }
     return res;
@@ -282,12 +277,15 @@ export default function FolderElement ({ folder, index }) {
     } else if (settingsData.viewMode === 'list') {
       return (
         <Box data-testid='folder-element'
-        className={`w-full
-        transition-all duration-100
+        className={`w-full relative
+        transition-all
         ${getRowStyle()}`}
         style={{
           height: settingsData.listElementHeight + 'px'
         }}>
+          {((index % 2) === 1) &&
+            <Box className='w-full h-full absolute z-[-10] bg-neutral-950/40' />
+          }
 
           <Box className='w-fit flex'
           style={{
