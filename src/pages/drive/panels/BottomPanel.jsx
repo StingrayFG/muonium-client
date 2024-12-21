@@ -120,7 +120,7 @@ export default function BottomPanel () {
     if (settingsData.viewMode === 'grid') {
       return (
         <Box className='flex shrink-0'>
-          <Box className='h-8 w-40 relative 
+          <Box className='h-8 w-48 relative 
           border-sky-300/20 border rounded-[0.3rem]'>
             <Box className='absolute w-full opacity-0'>
               <Slider 
@@ -146,7 +146,7 @@ export default function BottomPanel () {
     } else if (settingsData.viewMode === 'list') {
       return (
         <Box className='flex shrink-0'>
-          <Box className='h-8 w-40 relative 
+          <Box className='h-8 w-48 relative 
           border-sky-300/20 border rounded-[0.3rem]'>
             <Box className='absolute w-full opacity-0'>
               <Slider 
@@ -196,8 +196,10 @@ export default function BottomPanel () {
 
       <Box className='separator-vertical' />
 
-      <p className='w-full h-8 pr-2
-      text-left text-ellipsis whitespace-nowrap overflow-hidden'>
+      <p className={`w-full h-8 pr-2
+      transition-all duration-300
+      text-left text-ellipsis whitespace-nowrap overflow-hidden
+      ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}>
         {getSelectionText()}
       </p>  
 
@@ -208,7 +210,7 @@ export default function BottomPanel () {
       <Box className='separator-vertical' />
 
       <Box className='flex shrink-0'>
-        <Box className='h-8 relative 
+        <Box className='min-w-[12rem] h-8 relative 
         border-sky-300/20 border rounded-[0.3rem]'>
           <Box className='h-full absolute
           bg-sky-400/20 rounded-[0.2rem]'
@@ -216,7 +218,9 @@ export default function BottomPanel () {
             width: ((driveData.spaceUsed / driveData.spaceTotal) * 100) + '%'
           }}/>
 
-          <p className='px-4 h-8'>
+          <p className={`px-2 h-8 text-center
+          transition-all duration-300
+          ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}>
             {getUsageText()} 
           </p>
         </Box>

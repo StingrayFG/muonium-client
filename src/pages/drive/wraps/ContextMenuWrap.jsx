@@ -318,6 +318,27 @@ export default function ContextMenuWrap ({ children }) {
     }
   };
 
+  
+  // WINDOW SIZE
+  const getWindowSize = () => {
+    const {innerWidth, innerHeight} = window;
+    return {innerWidth, innerHeight};
+  }
+
+  const [windowSize, setWindowSize] = useState(getWindowSize());
+
+  useEffect(() => {
+    function handleWindowResize() {
+      setWindowSize(getWindowSize());
+    }
+
+    window.addEventListener('resize', handleWindowResize);
+
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, []);
+
 
   // DRAGGING
   const [draggingStartEvent, setDraggingStartEvent] = useState({});
@@ -327,9 +348,6 @@ export default function ContextMenuWrap ({ children }) {
 
   const [mousePointInitial, setMousePointInitial] = useState({ x: 0, y: 0 });
   const [containerPoint, setContainerPoint] = useState({ x: 0, y: 0 });
-
-  const windowWidth = useRef(window.innerWidth).current;
-  const windowHeight = useRef(window.innerHeight).current;
 
   const clearHoveredElement = () => {
     setHoveredElement({ uuid: '' });
@@ -344,16 +362,16 @@ export default function ContextMenuWrap ({ children }) {
       const movementDelta = { x: event.clientX - mousePointInitial.x, y: event.clientY - mousePointInitial.y }
       let newContainerPoint = {};
 
-      if ((mousePointInitial.x + movementDelta.x + draggedElementSize.x) >= windowWidth) { // Prevent overflow on the right
-        newContainerPoint.x = windowWidth - draggedElementSize.y;
+      if ((mousePointInitial.x + movementDelta.x + draggedElementSize.x) >= windowSize.innerWidth) { // Prevent overflow on the right
+        newContainerPoint.x = windowSize.innerWidth - draggedElementSize.y;
       } else if ((mousePointInitial.x + movementDelta.x) < 0) { // Prevent overflow on the left
         newContainerPoint.x = 0;
       } else {
         newContainerPoint.x = event.clientX;
       }
 
-      if ((mousePointInitial.y + movementDelta.y + draggedElementSize.y) >= windowHeight) { // Prevent overflow on the bottom
-        newContainerPoint.y = windowHeight - draggedElementSize.x;
+      if ((mousePointInitial.y + movementDelta.y + draggedElementSize.y) >= windowSize.innerHeight) { // Prevent overflow on the bottom
+        newContainerPoint.y = windowSize.innerHeight - draggedElementSize.x;
       } else if ((mousePointInitial.y + movementDelta.y) < 0) { // Prevent overflow on the top
         newContainerPoint.y = 0;
       } else {

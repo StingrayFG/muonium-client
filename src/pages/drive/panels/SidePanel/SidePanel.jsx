@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
 import { setSidePanelWidth, setSidePanelIsVisible } from 'state/slices/settingsSlice';
+import { getBookmarks } from 'state/slices/bookmarkSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
@@ -18,6 +19,7 @@ export default function SidePanel () {
 
   const contextMenuContext = useContext(ContextMenuContext);
 
+  const userData = useSelector(state => state.user);
   const bookmarkData = useSelector(state => state.bookmark);
   const settingsData = useSelector(state => state.settings);
 
@@ -25,7 +27,18 @@ export default function SidePanel () {
 
   const [panelWidth, setPanelWidth] = useState(settingsData.sidePanelWidth);
 
-  
+  // UPDATE
+  const [hasLoadedInitially, setHasLoadedInitially] = useState(false);
+
+  useEffect(() => {
+    if (userData) {
+      dispatch(getBookmarks(userData))
+      .then(() => { setHasLoadedInitially(true) })
+      .catch(() => { setHasLoadedInitially(true) })
+    }
+  }, [])
+
+
   // CONFIG
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -91,7 +104,8 @@ export default function SidePanel () {
 
   // RENDER
   return (
-    <Box className={`h-full pr-2 -mr-2 z-20
+    <Box className={`h-full pr-2 -mr-2 z-20 
+    animate-fadein-custom
     transition-opacity duration-300
     ${settingsData.sidePanelIsOverlayMode ? 'fixed left-0' : isDragging ? 'static' : 'relative'}
     ${usedIsVisible ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-100'}`}

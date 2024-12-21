@@ -92,6 +92,7 @@ export default function BookmarkElement ({ bookmark }) {
     return (
       <button data-testid='bookmark-element'
       className={`w-full h-8 px-2 flex 
+      animate-fadein-custom
       ${getButtonStyle()}`}
       onMouseDown={handleOnMouseDown}
       onMouseEnter={handleOnMouseEnter}

@@ -152,6 +152,7 @@ export default function TopPanel () {
   // RENDER
   return (
     <Box className='w-full px-2 py-2 flex 
+    animate-fadein-custom
     bg-neutral-950/40 border-sky-300/20 border-b'
     onContextMenu={contextMenuContext.handleTopPanelContextMenuClick}>
 
@@ -204,7 +205,7 @@ export default function TopPanel () {
 
           <Box className={`w-full h-8 px-2 flex 
           transition-all duration-300
-          ${isEditingPath ? 'opacity-0 pointer-events-none' : 'opacity-100' }`}>
+          ${isEditingPath ? 'opacity-0 pointer-events-none' : pathData.currentAbsolutePath ? 'opacity-100' : 'opacity-0' }`}>
             <ChevronRight className='mt-2 h-4 w-4' />
             <p className='h-8 ml-1'>
               {getCurrentFolderName()}
@@ -226,7 +227,11 @@ export default function TopPanel () {
 
         <Box className='ml-auto flex'>
           <Box className='h-8 mr-2'>
-            <p className='place-self-center'>{userData.login}</p>
+            <p className={`place-self-center
+            transition-all duration-300
+            ${userData.login ? 'opacity-100' : 'opacity-0'}`}>
+              {userData.login}
+            </p>
           </Box>
           <button className='w-8 h-8 grid
           button-small'

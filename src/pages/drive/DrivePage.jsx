@@ -56,7 +56,6 @@ export default function DrivePanels ({ folderUuid }) {
   useEffect(() => {
     if (userData) {
       dispatch(getDrive(userData));
-      dispatch(getBookmarks(userData));
     }
   }, [])
 
@@ -98,8 +97,8 @@ export default function DrivePanels ({ folderUuid }) {
   // RENDER
   if (userData) {
     return (
-      <Box className={`w-screen h-dvh
-      animate-fadein-custom
+      <Box className={`w-screen h-dvh 
+      transition-all duration-300
       ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}>
         <FolderContext.Provider value={{ handleLogout }}> 
           <DropzoneWrap>

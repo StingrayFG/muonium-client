@@ -170,9 +170,10 @@ export default function ContentsPanel () {
   const getListViewHeader = () => {
 
     return (
-      <Box className='h-8 w-full absolute top-0 flex
+      <Box className={`h-8 w-full absolute top-0 flex
       overflow-x-auto scrollbar-hidden
-      border-b border-sky-300/20 bg-gray-900/40'
+      border-b border-sky-300/20 bg-gray-900/40
+      ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}
       ref={headerRef}
       onContextMenu={contextMenuContext.handleColumnsContextMenuClick}>
 
@@ -252,6 +253,7 @@ export default function ContentsPanel () {
   if (settingsData.viewMode === 'grid') {
     return (
       <Box className={`w-full h-full pb-12
+      animate-fadein-custom
       overflow-y-auto overflow-x-hidden
       scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent`}
       ref={contentsRef}
@@ -293,7 +295,8 @@ export default function ContentsPanel () {
       
       {getListViewHeader()}
 
-      <Box className='w-full h-full pb-12 pt-8 '>
+      <Box className='w-full h-full pb-12 pt-8 
+      animate-fadein-custom'>
 
         <Box className={`w-full h-full
         overflow-auto 
