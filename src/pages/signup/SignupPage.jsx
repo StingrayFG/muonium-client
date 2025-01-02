@@ -156,6 +156,7 @@ export default function SignupPage() {
     <Box className='w-full h-dvh grid place-content-center'>
 
       <Box className={`max-w-[360px] w-full px-4 h-full grid place-items-center overflow-hidden
+      transition-all duration-300
       animate-fadein-custom
       ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}>
 
