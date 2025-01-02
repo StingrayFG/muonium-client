@@ -108,7 +108,7 @@ export default function DrivePanels ({ folderUuid }) {
             
                   <TopPanel />   
                   <Box className={`w-full h-full overflow-hidden grid grid-cols-[max-content_1fr] overflow-hidden
-                  ${settingsData.sidePanelIsOverlayMode ? 'grid-cols-[1fr]' : 'grid-cols-[max-content_1fr]'}`}>
+                  ${settingsData.sidePanelIsOverlayMode ? 'grid-cols-[100vw]' : 'grid-cols-[max-content_1fr]'}`}>
                     <SidePanel />
                     <Box className='w-full h-full overflow-hidden relative'>
                       <ContentsPanel />   

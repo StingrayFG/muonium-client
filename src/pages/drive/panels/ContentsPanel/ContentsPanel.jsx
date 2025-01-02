@@ -353,54 +353,60 @@ export default function ContentsPanel () {
   // RENDER
   if (settingsData.viewMode === 'grid') {
     return (
-      <Box className={`w-full h-full pb-12
+      <Box className={`w-full h-full pb-12 
       transition-opacity duration-300
-      overflow-y-auto overflow-x-hidden
-      scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
-      ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}
-      ref={contentsRef}
-      onContextMenu={contextMenuContext.handleDefaultContextMenuClick}>
+      ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}>
 
-        <Box className={`w-full h-fit grid`}
-        style={{
-          gridTemplateColumns: `repeat(${gridGridColumnsCount}, minmax(0, 1fr))`
-        }}>
+        <Box className={`w-full h-full
+        overflow-auto 
+        scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent`}
+        ref={contentsRef}
+        onContextMenu={contextMenuContext.handleDefaultContextMenuClick}>
 
-          {contextMenuContext.isCreatingFolder && (
-            <FolderElement folder={{ 
-              uuid: '', 
-              name: '',
-              type: 'folder', 
-              parentUuid: currentFolderData.uuid 
-            }} />
-          )}
-    
-          {currentFolderData.sortedElements.length > 0 && <>
-            {currentFolderData.sortedElements.map((element, index) => {
-               if (element.type === 'folder') {
-                return (
-                  <FolderElement key={element.uuid}
-                  index={index}
-                  folder={element} 
-                  isClicked={contextMenuContext.clickedElements.includes(element)}
-                  isCut={clipboardData.cutElementsUuids.includes(element.uuid)}/>
-                )
-              } else if (element.type === 'file') {
-                return (
-                  <FileElement key={element.uuid} 
-                  index={index}
-                  file={element} 
-                  isClicked={contextMenuContext.clickedElements.includes(element)}                  
-                  isCut={clipboardData.cutElementsUuids.includes(element.uuid)}/>
-                )
-              }
-            })}
-          </>}
+          <Box className={`w-full h-fit grid`}
+          style={{
+            gridTemplateColumns: `repeat(${gridGridColumnsCount}, minmax(0, 1fr))`
+          }}>
+
+            {contextMenuContext.isCreatingFolder && (
+              <FolderElement folder={{ 
+                uuid: '', 
+                name: '',
+                type: 'folder', 
+                parentUuid: currentFolderData.uuid 
+              }} />
+            )}
+      
+            {currentFolderData.sortedElements.length > 0 && <>
+              {currentFolderData.sortedElements.map((element, index) => {
+                if (element.type === 'folder') {
+                  return (
+                    <FolderElement key={element.uuid}
+                    index={index}
+                    folder={element} 
+                    isClicked={contextMenuContext.clickedElements.includes(element)}
+                    isCut={clipboardData.cutElementsUuids.includes(element.uuid)}/>
+                  )
+                } else if (element.type === 'file') {
+                  return (
+                    <FileElement key={element.uuid} 
+                    index={index}
+                    file={element} 
+                    isClicked={contextMenuContext.clickedElements.includes(element)}                  
+                    isCut={clipboardData.cutElementsUuids.includes(element.uuid)}/>
+                  )
+                }
+              })}
+            </>}
+
+          </Box> 
 
         </Box> 
 
-      </Box>  
-      )  
+      </Box> 
+
+    ) 
+
   } else if (settingsData.viewMode === 'list') {
     return (<>
       
@@ -452,7 +458,8 @@ export default function ContentsPanel () {
 
       </Box>
 
-     </>)  
+    </>)  
+
   }
   
 }

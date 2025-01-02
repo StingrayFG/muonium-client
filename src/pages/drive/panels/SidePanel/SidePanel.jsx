@@ -138,7 +138,7 @@ export default function SidePanel () {
 
 
       <Box className={`w-screen h-full absolute left-0 z-[-10] 
-      backdrop-blur-sm bg-gray-950/40
+      backdrop-blur-sm bg-gray-950/60
       transition-all duration-300
       ${(usedIsVisible && settingsData.sidePanelIsOverlayMode) ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`} 
       onClick={handleOverlayPanelClick}/>
@@ -146,8 +146,9 @@ export default function SidePanel () {
       <Box className={`h-full overflow-y-auto overflow-x-hidden
       transition-all
       scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
-      border-r border-sky-300/20
-      ${settingsData.sidePanelIsOverlayMode ? 'bg-gray-950/90' : 'bg-neutral-950/40'}
+      border-r
+      ${settingsData.sidePanelIsOverlayMode ? 'bg-gray-950/60' : 'bg-neutral-950/40'}
+      ${(usedIsVisible || !settingsData.sidePanelIsOverlayMode) ? 'border-sky-300/20' : 'border-transparent'}
       ${getSidePanelStyle()}`}
       style={{
         width: usedIsVisible ? panelWidth : '0px'
