@@ -5,7 +5,7 @@ FROM base AS deps
 
 WORKDIR /app
 COPY package.json ./
-RUN npm install --production
+RUN npm install --omit-dev
 
 
 FROM base AS builder
