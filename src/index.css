@@ -284,6 +284,106 @@ svg {
 
 
 
+/* ELEMENTS */
+.element-box-cut .element-icon {
+  opacity: 25%;
+  transition-duration: 0ms;
+}
+
+.element-box-cut .element-image {
+  opacity: 50%;
+}
+
+.element-box-cut .element-name {
+  background-color: transparent;
+  transition-duration: 0ms;
+}
+
+
+.element-box-clicked .element-icon {
+  opacity: 100%;
+  transition-duration: 0ms;
+}
+
+.element-box-clicked .element-name {
+  background-color: rgba(56, 189, 248, 0.2);
+  transition-duration: 0ms;
+}
+
+
+.element-box:hover .element-icon {
+  opacity: 75%;
+  transition-duration: 0ms;
+}
+
+.element-box:hover .element-name {
+  background-color: rgba(56, 189, 248, 0.1);
+  transition-duration: 0ms;
+}
+
+
+.element-box .element-icon {
+  opacity: 50%;
+}
+
+.element-box .element-name {
+  background-color: transparent;
+  transition-duration: 300ms;
+}
+
+
+
+
+.element-row-cut .element-icon {
+  opacity: 25%;
+  transition-duration: 0ms;
+}
+
+.element-row-cut .element-icon-small {
+  opacity: 50%;
+  transition-duration: 0ms;
+}
+
+.element-row-cut .element-image {
+  opacity: 50%;
+}
+
+.element-row-cut .element-name {
+  background-color: transparent;
+  transition-duration: 0ms;
+}
+
+
+.element-row-clicked {
+  background-color: rgba(56, 189, 248, 0.2);
+  transition-duration: 0ms;
+}
+
+.element-row-clicked .element-icon {
+  opacity: 100%;
+  transition-duration: 0ms;
+}
+
+
+.element-row {
+  background-color: transparent;
+  transition-duration: 300ms;
+}
+
+.element-row:hover {
+  background-color: rgba(56, 189, 248, 0.1);
+  transition-duration: 0ms;
+}
+
+
+.element-row .element-icon {
+  opacity: 50%;
+  transition-duration: 0ms;
+}
+
+
+
+
 /*CUSTOM*/
 .separator-vertical {
   margin-left: 0.5rem;
@@ -389,22 +489,24 @@ svg {
   }
 }
 
+.animate-fadein-custom-100 {
+  animation: fadeInAnimation cubic-bezier(0.4, 0, 0.6, 1) 0.1s;
+}
+
 .animate-fadein-custom-300 {
   animation: fadeInAnimation cubic-bezier(0.4, 0, 0.6, 1) 0.3s;
-  transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .animate-fadein-custom {
   animation: fadeInAnimation cubic-bezier(0.4, 0, 0.6, 1) 0.5s;
-  transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes fadeInAnimation {
   0% {
-      opacity: 0;
+    opacity: 0;
   }
 
   100% {
-      opacity: 1;
+    opacity: 1;
   }
 }

@@ -3,14 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
 import { setColumnWidth, setColumnPosition, setSortBy, setSortByAscending } from 'state/slices/settingsSlice';
-import { syncSortingData } from 'state/slices/currentFolderSlice';
+import { syncSortingData, createElement, renameElements } from 'state/slices/currentFolderSlice';
+import { updateBookmarksOnClient, revertUpdateBookmarksOnClient } from 'state/slices/bookmarkSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
+import { ModalContext } from 'contexts/ModalContext.jsx'
 
 import { useDragHandler } from 'hooks/UseDragHandler';
 
 import FileElement from 'pages/drive/elements/FileElement/FileElement.jsx';
 import FolderElement from 'pages/drive/elements/FolderElement/FolderElement.jsx';
+import RenameModal from 'pages/drive/modals/RenameModal';
 
 import { ReactComponent as ChevronDown } from 'assets/icons/chevron-down.svg';
 
@@ -21,8 +24,12 @@ export default function ContentsPanel () {
   const dispatch = useDispatch();
 
   const contextMenuContext = useContext(ContextMenuContext);
+  const modalContext = useContext(ModalContext);
 
+  const userData = useSelector(state => state.user);
+  const driveData = useSelector(state => state.drive);
   const currentFolderData = useSelector(state => state.currentFolder);
+  const clipboardData = useSelector(state => state.clipboard);
   const settingsData = useSelector(state => state.settings);
 
   const headerRef = useRef(null);
@@ -58,7 +65,7 @@ export default function ContentsPanel () {
   }
 
 
-  // STATE SYNC
+  // LIST VIEW SETTINGS SYNC
   useEffect(() => {
     dispatch(syncSortingData({
       sortBy: settingsData.sortBy, 
@@ -166,18 +173,72 @@ export default function ContentsPanel () {
   } 
 
   
+  // ELEMENT FUNCTIONS
+  useEffect(() => {
+    if (contextMenuContext.isRenaming || contextMenuContext.isCreatingFolder) {
+      if (contextMenuContext.clickedElements.length > 0) {
+        modalContext.openModal(<RenameModal name={contextMenuContext.clickedElements[0].name} setName={handleNaming} stopNaming={stopNaming} 
+        usedNames={currentFolderData.folders.map(f => f.name)}/>)
+      } else {
+        modalContext.openModal(<RenameModal name={''} setName={handleNaming} stopNaming={stopNaming} 
+        usedNames={currentFolderData.folders.map(f => f.name)}/>)
+      }
+      
+    }
+  }, [contextMenuContext.isCreatingFolder, contextMenuContext.isRenaming])
+
+  const stopNaming = () => {
+    contextMenuContext.setIsCreatingFolder(false);
+    contextMenuContext.setIsRenaming(false);
+  }
+
+  const handleNaming = async (name) => {
+    if ((contextMenuContext.clickedElements.length === 0) || 
+    (name && (name !== contextMenuContext.clickedElements[0].name))) {
+      modalContext.closeModal();
+
+      if (contextMenuContext.isCreatingFolder) {
+        console.log(contextMenuContext.clickedElements)
+        contextMenuContext.setIsCreatingFolder(false);
+        const newFolder = { uuid: 'temp-' + Date.now(), name: name, type: 'folder', parentUuid: currentFolderData.uuid };
+        dispatch(createElement({ userData, driveData, element: newFolder }))
+      } else {
+        contextMenuContext.setIsRenaming(false);
+        const newFolder = { ...contextMenuContext.clickedElements[0], name: name };
+        dispatch(updateBookmarksOnClient([{
+          uuid: userData.uuid + newFolder.uuid,
+          folder: newFolder
+        }]))
+        dispatch(renameElements({userData, driveData, elements: [newFolder] }))
+        .then(res => {
+          if (res.type === 'elements/rename/rejected') {
+            dispatch(revertUpdateBookmarksOnClient([{
+              uuid: userData.uuid + newFolder.uuid,
+              folder: newFolder
+            }]))
+          }
+        })
+      }
+
+    } else if (name === currentFolderData.clickedElements[0].name) {
+      modalContext.closeModal();
+      contextMenuContext.setIsRenaming(false);
+    }
+  }
+
+  
   // GETS
   const getListViewHeader = () => {
-
     return (
       <Box className={`h-8 w-full absolute top-0 flex
+      transition-opacity duration-300
       overflow-x-auto scrollbar-hidden
       border-b border-sky-300/20 bg-gray-900/40
       ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}
       ref={headerRef}
       onContextMenu={contextMenuContext.handleColumnsContextMenuClick}>
 
-        {/* MUI Box has a shrinking animation that is impossible to disable, so a div is used */}
+        {/* MUI Box has a bug, which results in shrinking animation that is impossible to disable, so a div is used */}
         <div className={`ml-2 shrink-0
         transition-all duration-100
         border-r border-sky-300/20`}
@@ -188,8 +249,11 @@ export default function ContentsPanel () {
         {settingsData.listViewColumns.filter(c => c.isEnabled).map(column => 
           <Box className={`shrink-0 
           grid grid-cols-[1fr_max-content]
-          border-r border-sky-300/20
-          ${(isDragging && (column.name === resizedColumn.name)) ? 'static' : 'relative'}`}
+          transition-all duration-300
+          hover:bg-sky-400/10 hover:duration-0
+          border-r border-sky-300/20     
+          ${(isDragging && (column.name === resizedColumn.name)) ? 'static' : 'relative'}
+          ${(column.name === movedColumn.name) ? 'bg-sky-400/10' : 'bg-transparent'}`}
           style={{
             width: column.width
           }}
@@ -224,11 +288,12 @@ export default function ContentsPanel () {
 
         {(isDragging && movedColumn.name) && 
           <Box className={`absolute z-10
+          animate-fadein-custom-150 animate-fadeout-custom-150
           shrink-0 grid grid-cols-[1fr_max-content]
           bg-gray-700/80`}
           style={{
             width: movedColumn.width + 'px',
-            left: movedColumnOffset + 'px'
+            transform: `translateX(${movedColumnOffset + 'px'})`
           }}
           key={'header-' + movedColumn.name}>
 
@@ -243,9 +308,45 @@ export default function ContentsPanel () {
 
           </Box>
         }
-
       </Box>
     )
+  }
+
+  const getListViewColumns = (element) => {
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+
+    const parseColumnValue = (column) => {
+      if ((column.name === 'creationDate') || (column.name === 'modificationDate')) {
+        return new Date(element[column.name]).toLocaleString('en-GB', options);  
+      } else if (column.name === 'size') {
+        if (element[column.name] === 1) {
+          return element[column.name] + ' item';
+        } else if ((element[column.name] === 0) || (element[column.name] > 1)) {
+          return element[column.name] + ' items';
+        } else {
+          return '';
+        }
+      } else if (column.name === 'type') {
+        return element[column.name].charAt(0).toUpperCase() + element[column.name].slice(1);
+      } else {
+        return element[column.name];
+      }
+    }
+
+    return (<>{
+      settingsData.listViewColumns.filter(c => c.isEnabled).map(column => 
+        <p data-testid={'file-' + column.name}
+        className={`h-8 w-full px-2 my-auto shrink-0
+        text-left text-ellipsis overflow-hidden break-all whitespace-nowrap
+        ${(column.name === 'name') ? 'text-neutral-200' : 'text-neutral-200/60'}`}
+        style={{
+          width: column.width
+        }}
+        key={element.uuid + '-' + column.name}>
+          {parseColumnValue(column)}
+        </p>
+      )
+    }</>)
   }
 
   
@@ -253,9 +354,10 @@ export default function ContentsPanel () {
   if (settingsData.viewMode === 'grid') {
     return (
       <Box className={`w-full h-full pb-12
-      animate-fadein-custom
+      transition-opacity duration-300
       overflow-y-auto overflow-x-hidden
-      scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent`}
+      scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
+      ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}
       ref={contentsRef}
       onContextMenu={contextMenuContext.handleDefaultContextMenuClick}>
 
@@ -265,22 +367,31 @@ export default function ContentsPanel () {
         }}>
 
           {contextMenuContext.isCreatingFolder && (
-            <FolderElement />
+            <FolderElement folder={{ 
+              uuid: '', 
+              name: '',
+              type: 'folder', 
+              parentUuid: currentFolderData.uuid 
+            }} />
           )}
     
           {currentFolderData.sortedElements.length > 0 && <>
             {currentFolderData.sortedElements.map((element, index) => {
-              if (element.type === 'folder') {
+               if (element.type === 'folder') {
                 return (
-                  <FolderElement key={element.uuid} 
+                  <FolderElement key={element.uuid}
+                  index={index}
                   folder={element} 
-                  index={index}/>
+                  isClicked={contextMenuContext.clickedElements.includes(element)}
+                  isCut={clipboardData.cutElementsUuids.includes(element.uuid)}/>
                 )
               } else if (element.type === 'file') {
                 return (
                   <FileElement key={element.uuid} 
+                  index={index}
                   file={element} 
-                  index={index}/>
+                  isClicked={contextMenuContext.clickedElements.includes(element)}                  
+                  isCut={clipboardData.cutElementsUuids.includes(element.uuid)}/>
                 )
               }
             })}
@@ -295,8 +406,9 @@ export default function ContentsPanel () {
       
       {getListViewHeader()}
 
-      <Box className='w-full h-full pb-12 pt-8 
-      animate-fadein-custom'>
+      <Box className={`w-full h-full pb-12 pt-8 
+      transition-opacity duration-300
+      ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}>
 
         <Box className={`w-full h-full
         overflow-auto 
@@ -308,22 +420,28 @@ export default function ContentsPanel () {
           
           <Box className={`w-full h-fit grid`}>
             {contextMenuContext.isCreatingFolder && (
-              <FolderElement />
+              <FolderElement isCreating={true}/>
             )}
 
             {currentFolderData.sortedElements.length > 0 && <>
               {currentFolderData.sortedElements.map((element, index) => {
                 if (element.type === 'folder') {
                   return (
-                    <FolderElement key={element.uuid} 
+                    <FolderElement key={element.uuid}
+                    index={index}
                     folder={element} 
-                    index={index}/>
+                    listViewColumns={getListViewColumns(element)}
+                    isClicked={contextMenuContext.clickedElements.includes(element)}
+                    isCut={clipboardData.cutElementsUuids.includes(element.uuid)}/>
                   )
                 } else if (element.type === 'file') {
                   return (
                     <FileElement key={element.uuid} 
-                    file={element} 
-                    index={index}/>
+                    index={index}
+                    file={element}
+                    listViewColumns={getListViewColumns(element)} 
+                    isClicked={contextMenuContext.clickedElements.includes(element)}                  
+                    isCut={clipboardData.cutElementsUuids.includes(element.uuid)}/>
                   )
                 }
               })}

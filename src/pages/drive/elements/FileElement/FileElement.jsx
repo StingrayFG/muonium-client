@@ -1,27 +1,19 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { renameElements } from 'state/slices/currentFolderSlice';
-
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
-import { ModalContext } from 'contexts/ModalContext.jsx';
+import { ModalContext } from 'contexts/ModalContext';
 
-import RenameModal from 'pages/drive/modals/RenameModal';
-import ImageModal from 'pages/drive//modals/ImageModal';
+import ImageModal from 'pages/drive/modals/ImageModal';
+
 import FileElementIcon from 'pages/drive/elements/FileElementIcon';
 
 import config from 'config.json';
 
 
-export default function FileElement ({ file, index }) {
-  const dispatch = useDispatch();
-
-  const userData = useSelector(state => state.user);
-  const driveData = useSelector(state => state.drive);
-  const clipboardData = useSelector(state => state.clipboard);
+export default function FileElement ({ index, file, listViewColumns, isClicked, isCut }) {
   const settingsData = useSelector(state => state.settings);
-  const currentFolderData = useSelector(state => state.currentFolder);
 
   const contextMenuContext = useContext(ContextMenuContext);
   const modalContext = useContext(ModalContext);
@@ -31,63 +23,7 @@ export default function FileElement ({ file, index }) {
   const imageSrc = file.thumbnail ? 'data:image/png;base64,' + file.thumbnail : file.imageBlob
 
 
-  // GETS
-  const getIsHovered = () => {
-    if (contextMenuContext.hoveredElement) {
-      return contextMenuContext.hoveredElement.uuid === file.uuid;
-    } else {
-      return false;
-    }
-  }
-
-  const getIsClicked = () => {
-    if (contextMenuContext.clickedElements.includes(file)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  const getIsRenaming = () => {
-    if (contextMenuContext.isRenaming && contextMenuContext.clickedElements.includes(file)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  const getIsCut = () => {
-    return clipboardData.cutElementsUuids.includes(file.uuid);
-  }
-
-
   // HANDLERS
-  useEffect(() => {
-    if (getIsRenaming()) {
-      modalContext.openModal(<RenameModal name={file.name} setName={handleNaming} stopNaming={stopNaming} 
-        usedNames={currentFolderData.files.map(f => f.name)} />)
-    }
-  }, [getIsRenaming()])
-
-  const stopNaming = () => {
-    modalContext.closeModal();
-    contextMenuContext.setIsRenaming(false);
-  }
-
-  const handleNaming = async (name) => {
-    if (name && (name !== file.name)) {
-      modalContext.closeModal();
-      contextMenuContext.setIsRenaming(false);
-
-      const newFile = { ...file, name: name };
-      dispatch(renameElements({ userData, driveData, elements: [newFile] }))
-
-    } else if (name === file.name) {
-      modalContext.closeModal();
-      contextMenuContext.setIsRenaming(false);
-    }
-  }
-
   const handleOnMouseDown = (event) => {
     contextMenuContext.handleOnElementMouseDown(event, file, index);
   }
@@ -112,112 +48,32 @@ export default function FileElement ({ file, index }) {
 
   
   // STYLES 
-  const getIconStyle = () => { // Folder icon bg opacity = 0.4
+  const getBoxStyle = () => {
     let res = '';
-    if (getIsCut()) {
-      res = 'opacity-25 duration-0';
+    if (isCut) {
+      res = 'element-box-cut';
     } else {
-      if (getIsClicked()) {
-        res = 'opacity-100 duration-0';
+      if (isClicked) {
+        res = 'element-box-clicked';
       } else {
-        if (getIsHovered()) {
-          res = 'opacity-75 duration-0';
-        } else {
-          res = 'opacity-50 duration-300';
-        }
+        res = 'element-box';
       }
-    }  
-    return res;
-  }
-
-  const getNameStyle = () => {
-    let res = '';
-    if (getIsClicked()) {
-      res = 'bg-sky-400/20 duration-0';
-    } else {
-      if (getIsHovered()) {
-        res = 'bg-sky-400/10 duration-0';
-      } else {
-        res = 'duration-300';
-      }
-    } 
-    return res;
-  }
-
-  const getImageStyle = () => { // File icon bg opacity = 0.4
-    let res = '';
-    if (getIsCut()) {
-      res = 'opacity-50';
-    } else {
-      res = 'opacity-100';
     }  
     return res;
   }
 
   const getRowStyle = () => { 
     let res = '';
-    if (getIsClicked()) {
-      res = 'bg-sky-400/20 duration-0';
+    if (isCut) {
+      res = 'element-row-cut';
     } else {
-      if (getIsHovered()) {
-        res = 'bg-sky-400/10 duration-0';
+      if (isClicked) {
+        res = 'element-row-clicked';
       } else {
-        res = 'duration-300'; 
+        res = 'element-row';
       }
-    }
+    }  
     return res;
-  }
-
-  const getListViewColumns = () => {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-
-    const parseSize = (size) => {
-      let res = '';
-      if (size > Math.pow(1024, 3)) { res += (((size / Math.pow(1024, 3)) + '').slice(0.5) + ' GiB') } 
-      else if (size > Math.pow(1024, 2)) { res += (((size / Math.pow(1024, 2)) + '').slice(0,5) + ' MiB') } 
-      else if (size > Math.pow(1024, 1)) { res += (((size / Math.pow(1024, 1)) + '').slice(0,5) + ' KiB') } 
-      else { res += (size + ' B') } 
-      return res;
-    }
-
-    const parseColumnValue = (column) => {
-      if ((column.name === 'creationDate') || (column.name === 'modificationDate')) {
-        return new Date(file[column.name]).toLocaleString('en-GB', options);  
-      } else if (column.name === 'size') {
-        return parseSize(file[column.name]);
-      } else if (column.name === 'type') {
-        return file[column.name].charAt(0).toUpperCase() + file[column.name].slice(1);
-      } else {
-        return file[column.name];
-      }
-    }
-
-    return (<>{
-      settingsData.listViewColumns.filter(c => c.isEnabled).map(column => 
-        <p data-testid={'file-' + column.name}
-        className={`h-8 w-full px-2 my-auto shrink-0
-        text-left  
-        ${(column.name === 'name') ? 
-        'text-neutral-200 flex' : 
-        'text-neutral-200/60 text-ellipsis overflow-hidden break-all whitespace-nowrap'}`}
-        style={{
-          width: column.width
-        }}
-        key={file.uuid + '-' + column.name}>
-          {column.name === 'name' ? 
-          <>
-            <span className='text-ellipsis overflow-hidden whitespace-nowrap'>
-              {file.name.slice(0, -file.name.split('.').pop().length)}
-            </span>
-            <span>
-              {file.name.split('.').pop()}
-            </span>
-          </>
-          :
-          parseColumnValue(column)}
-        </p>
-      )
-    }</>)
   }
 
 
@@ -226,13 +82,14 @@ export default function FileElement ({ file, index }) {
     if (settingsData.viewMode === 'grid') {
       return (
         <Box data-testid='file-element' 
-        className={`h-full place-self-center
-        transition-all duration-300`}
+        className={`h-full
+        transition-all
+        ${getBoxStyle()}`}
         style={{
-          width: settingsData.gridElementWidth + 'px',
-          padding: settingsData.gridElementWidth * 0.1 + 'px'
+          width: (settingsData.gridElementWidth * 0.8) + 'px',
+          margin: (settingsData.gridElementWidth * 0.1) + 'px'
         }}> 
-        
+      
           <Box className={`w-full aspect-4-3 grid`}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
@@ -241,18 +98,17 @@ export default function FileElement ({ file, index }) {
           onDoubleClick={handleOnDoubleClick}>
             {(file.thumbnail || file.imageBlob) ? 
               <img data-testid='file-icon'
-              className={`w-full h-full object-contain 
-              transition-opacity
-              ${getImageStyle()}`}
+              className={`element-image
+              w-full h-full object-contain 
+              transition-opacity`}
               src={imageSrc} 
               alt=''
               draggable={false} />
               :
               <Box data-testid='file-icon'
-              className={`h-full place-self-center 
+              className={`element-icon]h-full place-self-center 
               transition-opacity
-              pointer-events-none select-none 
-              ${getIconStyle()}`}>
+              pointer-events-none select-none`}>
                 <FileElementIcon file={file}/>
               </Box>
             }
@@ -269,8 +125,7 @@ export default function FileElement ({ file, index }) {
             select-none pointer-events-none
             transition-all
             rounded-[0.3rem] overflow-hidden max-w-32
-            leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis
-            ${getNameStyle()}`}>
+            leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis`}>
               {file.name}
             </p>
           </Box>
@@ -307,24 +162,27 @@ export default function FileElement ({ file, index }) {
             }}>
               {(file.thumbnail || file.imageBlob) ? 
                 <img data-testid='file-icon' 
-                className={`w-full h-full object-contain 
-                
-                ${getImageStyle()}`}
+                className={`element-image
+                w-full h-full object-contain`}
                 src={imageSrc} 
                 alt=''
                 draggable={false} />
                 :
                 <Box data-testid='file-icon' 
-                className={`h-full place-self-center 
+                className={`
+                h-full place-self-center 
                 transition-opacity
                 pointer-events-none select-none 
-                ${(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) && getIconStyle()}`}>
-                  <FileElementIcon file={file} isBootstrap={!(settingsData.listElementHeight >= config.elements.listSmallIconsHeight)}/>
+                ${(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) ?
+                'element-icon' : 'element-small-icon'}`}>
+                  <FileElementIcon 
+                  file={file} 
+                  shallBeSmall={!(settingsData.listElementHeight >= config.elements.listSmallIconsHeight)}/>
                 </Box>
               }
             </Box>
 
-            {getListViewColumns()}
+            {listViewColumns}
 
           </Box>
 

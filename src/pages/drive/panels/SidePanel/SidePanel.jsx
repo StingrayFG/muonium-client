@@ -22,6 +22,7 @@ export default function SidePanel () {
   const userData = useSelector(state => state.user);
   const bookmarkData = useSelector(state => state.bookmark);
   const settingsData = useSelector(state => state.settings);
+  const pathData = useSelector(state => state.pathData);
 
   const [isHolding, isDragging, dragDelta, startDragging, updateDragging, stopDragging, updateDelta] = useDragHandler(0);
 
@@ -75,6 +76,23 @@ export default function SidePanel () {
       }   
     }
   }
+
+
+  // ELEMENT FUNCTIONS
+  const getIsSelected = (bookmark) => {
+    if ((bookmark.folder.uuid === pathData.currentUuid) && (contextMenuContext.clickedElements.length === 0)) {
+      return true;
+    } else if (contextMenuContext.clickedElements.length > 0) {
+      if (((contextMenuContext.clickedElements[0].type === 'folder') || (contextMenuContext.clickedElements[0].type === 'file')) && 
+      (bookmark.folder.uuid === pathData.currentUuid)) {
+        return true;
+      } else {
+        return false;
+      }     
+    } else {
+      return false;
+    }
+  }
   
 
   // GETS
@@ -104,11 +122,11 @@ export default function SidePanel () {
 
   // RENDER
   return (
-    <Box className={`h-full pr-2 -mr-2 z-20 
+    <Box className={`h-full pr-2 -mr-2 z-20
     animate-fadein-custom
     transition-opacity duration-300
     ${settingsData.sidePanelIsOverlayMode ? 'fixed left-0' : isDragging ? 'static' : 'relative'}
-    ${usedIsVisible ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-100'}`}
+    ${usedIsVisible ? 'pointer-events-auto' : 'pointer-events-none'}`}
     onContextMenu={contextMenuContext.handleSidePanelContextMenuClick}>
 
       <Box className={`z-10
@@ -134,7 +152,10 @@ export default function SidePanel () {
       style={{
         width: usedIsVisible ? panelWidth : '0px'
       }}>
+        <Box className={`transition-all duration-300
+        ${hasLoadedInitially ? 'opacity-100' : 'opacity-0'}`}> 
 
+        </Box>
         <Box className='w-full h-8 px-2 flex
         opacity-50
         select-none pointer-events-none'>
@@ -152,7 +173,10 @@ export default function SidePanel () {
         </Box>
 
         {bookmarkData.bookmarks.map((bookmark) => (
-          <BookmarkElement key={bookmark.uuid} bookmark={bookmark}/>
+          <BookmarkElement key={bookmark.uuid} 
+          bookmark={bookmark}
+          isActive={contextMenuContext.clickedElements.includes(bookmark)}
+          isSelected={getIsSelected(bookmark)}/>
         ))}
       </Box>
 

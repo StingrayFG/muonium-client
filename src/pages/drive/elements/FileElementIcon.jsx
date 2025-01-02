@@ -13,7 +13,7 @@ import { ReactComponent as FileArchiveBs } from 'assets/icons/elements/bootstrap
 import { ReactComponent as FileAppBs } from 'assets/icons/elements/bootstrap/terminal.svg'
 
 
-export default function FileElement ({ file, isBootstrap }) { 
+export default function FileElement ({ file, shallBeSmall }) { 
  
   const iconStyle = 'h-full w-full';
 
@@ -25,20 +25,20 @@ export default function FileElement ({ file, isBootstrap }) {
   const archiveExtensions = ['zip', '7z', 'rar', 'gz'];
   const appExtensions = ['x86_64', 'sh', 'AppImage', 'exe' ];
 
-  if (!isBootstrap) {
-    if (textExtensions.includes(ext)) { return <FileTextMu className={iconStyle}/> } 
-    else if (musicExtensions.includes(ext)) { return <FileMusicMu className={iconStyle}/> } 
-    else if (videoExtensions.includes(ext)) { return <FileVideoMu className={iconStyle}/>  } 
-    else if (archiveExtensions.includes(ext)) { return <FileArchiveMu className={iconStyle}/> } 
-    else if (appExtensions.includes(ext)) { return <FileAppMu className={iconStyle}/> } 
-    else { return <FileEmptyMu className={iconStyle}/> }
-  } else {
+  if (shallBeSmall) {
     if (textExtensions.includes(ext)) { return <FileTextBs className={iconStyle}/> } 
     else if (musicExtensions.includes(ext)) { return <FileMusicBs className={iconStyle}/> } 
     else if (videoExtensions.includes(ext)) { return <FileVideoBs className={iconStyle}/>  } 
     else if (archiveExtensions.includes(ext)) { return <FileArchiveBs className={iconStyle}/> } 
     else if (appExtensions.includes(ext)) { return <FileAppBs className={iconStyle}/> } 
     else { return <FileEmptyBs className={iconStyle}/> }
+  } else {
+    if (textExtensions.includes(ext)) { return <FileTextMu className={iconStyle}/> } 
+    else if (musicExtensions.includes(ext)) { return <FileMusicMu className={iconStyle}/> } 
+    else if (videoExtensions.includes(ext)) { return <FileVideoMu className={iconStyle}/>  } 
+    else if (archiveExtensions.includes(ext)) { return <FileArchiveMu className={iconStyle}/> } 
+    else if (appExtensions.includes(ext)) { return <FileAppMu className={iconStyle}/> } 
+    else { return <FileEmptyMu className={iconStyle}/> }
   }
 
 
