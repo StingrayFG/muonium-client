@@ -92,7 +92,6 @@ export default function DrivePanels ({ folderUuid }) {
     } 
   }, [pathData.currentUuid, usedFolderUuid]);
 
-  const overlay = true
   
   // RENDER
   if (userData) {

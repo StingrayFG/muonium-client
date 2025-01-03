@@ -188,6 +188,7 @@ export default function ContextMenuWrap ({ children }) {
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
   const [isContextMenuLockActive, setIsContextMenuLockActive] = useState(false);
   const [isHoveredOverMenu, setIsHoveredOverMenu] = useState(false);
+  const [isOpeningStaticMenu, setIsOpeningStaticMenu] = useState(false);
 
   const [contextMenuType, setContextMenuType] = useState('default');
   const [contextMenuClickPosition, setContextMenuClickPosition] = useState({
@@ -240,6 +241,7 @@ export default function ContextMenuWrap ({ children }) {
       });
       setIsContextMenuOpen(true);
       setIsContextMenuLockActive(true);
+      setIsOpeningStaticMenu(true);
     }
 
     if (!isContextMenuOpen) {
@@ -419,15 +421,14 @@ export default function ContextMenuWrap ({ children }) {
     event.preventDefault();
 
     if (event.button === 0) {
-      stopDraggingElement(event)
+      stopDraggingElement(event);
+      setIsOpeningStaticMenu(false);
 
-      const staticMenuTypes = ['main']
-
-      if (isContextMenuLockActive && isContextMenuOpen && !staticMenuTypes.includes(contextMenuType)) { 
+      if (isContextMenuLockActive && isContextMenuOpen && !isOpeningStaticMenu) { 
         // Used to deactivate on menu option click
         // Used for options in context menus which open a modal
-        // Does not apply to static menus
         setIsContextMenuLockActive(false);
+        setIsContextMenuOpen(false);
       }
     }
   };
@@ -494,6 +495,7 @@ export default function ContextMenuWrap ({ children }) {
 
   return (
     <Box className='w-full h-full grid grid-rows-[max-content_1fr] overflow-hidden'
+    tabIndex={0}
     onKeyDown={handleOnKeyDown}
     onMouseUp={handleOnMouseUp}
     onMouseDown={handleOnWrapMouseDown}

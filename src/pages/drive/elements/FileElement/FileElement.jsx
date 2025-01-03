@@ -106,7 +106,7 @@ export default function FileElement ({ index, file, listViewColumns, isClicked, 
               draggable={false} />
               :
               <Box data-testid='file-icon'
-              className={`element-icon]h-full place-self-center 
+              className={`element-icon h-full place-self-center 
               transition-opacity
               pointer-events-none select-none`}>
                 <FileElementIcon file={file}/>
@@ -121,7 +121,8 @@ export default function FileElement ({ index, file, listViewColumns, isClicked, 
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
             <p data-testid='file-name'
-            className={`w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
+            className={`element-name
+            w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
             select-none pointer-events-none
             transition-all
             rounded-[0.3rem] overflow-hidden max-w-32

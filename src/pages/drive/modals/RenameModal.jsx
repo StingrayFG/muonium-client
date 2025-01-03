@@ -50,12 +50,13 @@ export default function RenameModal ({ name, setName, stopNaming, usedNames }) {
 
   return(
     <Box className='max-w-full w-[360px] px-4'
+    tabIndex={0}
     onKeyDown={handleOnKeyDown}>
-      <p className='mb-4 leading-6 font-semibold text-center'>
+      <p className='leading-6 font-semibold text-center'>
         {'Enter the new name'}
       </p>
       
-      <TextareaAutosize className={`w-full py-1 px-2
+      <TextareaAutosize className={`w-full mt-4 py-1 px-2
       bg-transparent border border-sky-300/20 rounded-[0.3rem]
       leading-6 text-center`}
       name='name'

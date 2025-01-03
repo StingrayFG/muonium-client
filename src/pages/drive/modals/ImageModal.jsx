@@ -100,10 +100,10 @@ export default function ImageModal ({ file }) {
   // RENDER
   return(
     <Box className='w-screen h-dvh'
+    tabIndex={0}
     onKeyDown={handleOnKeyDown}
     onMouseUp={handleOnMouseUp}
     onMouseDown={handleOnMouseDown}
-    tabIndex={0}
     ref={modalRef}> 
 
       <QuickPinchZoom className='' 

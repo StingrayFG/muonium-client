@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
@@ -23,6 +23,7 @@ export default function SettingsModal ({ }) {
   }
 
   const handleOnKeyDown = (event) => {
+    console.log(event)  
     if (event.code === 'Escape') { 
       handleClose();
     }
@@ -41,8 +42,18 @@ export default function SettingsModal ({ }) {
   }
 
 
+  // FOCUS
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    modalRef.current?.focus()
+  }, [])
+
+
   return(
     <Box className='max-w-full w-[360px] px-4'
+    ref={modalRef}
+    tabIndex={0}
     onKeyDown={handleOnKeyDown}>
       <p className='mb-4 leading-6 font-semibold text-center'>
         {'Settings'}
@@ -61,7 +72,7 @@ export default function SettingsModal ({ }) {
         defaultValue={settingsData.sidePanelIsOverlayMode}
         setMenuValue={changeSidePanelIsOverlayMode}
         />
-        <p className='ml-2'>{'Show side panel on top of folder contents'}</p>
+        <p className='ml-2'>{'Overlay side panel'}</p>
       </Box>
 
       <Box className='mt-4 grid'>
