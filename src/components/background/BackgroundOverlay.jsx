@@ -5,7 +5,7 @@ export default function BackgroundOverlay() {
   return (
     <>
       <Box className='w-full h-full z-[-40]
-      fixed bg-neutral-950/80' />
+      fixed bg-neutral-950/70' />
 
       <Box className='w-full h-full z-[-40]
       fixed bg-sky-950/10' />
