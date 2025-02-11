@@ -79,7 +79,7 @@ export default function FolderElement ({ index, folder, listViewColumns, isClick
     if (settingsData.viewMode === 'grid') {
       return (
         <Box data-testid='folder-element'
-        className={`h-full
+        className={`
         transition-all
         ${getBoxStyle()}`}
         style={{
@@ -100,18 +100,19 @@ export default function FolderElement ({ index, folder, listViewColumns, isClick
             pointer-events-none select-none`}/>
           </Box>
     
-          <Box className='w-full pt-2 place-self-center overflow-visible'
+          <Box className='w-full h-[3.5rem] pt-2 place-self-center overflow-visible'
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
             <p data-testid='folder-name'
-            className={`element-name
-            w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
+            className={`element-name bg-blue-600
+            w-fit max-w-full h-fit max-h-12
+            mx-auto px-1 place-self-center 
             select-none pointer-events-none
             transition-all
-            rounded-[0.3rem] overflow-hidden max-w-32
+            rounded-[0.3rem] overflow-hidden
             leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis`}>
               {folder.name}   
             </p>

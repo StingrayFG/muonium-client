@@ -82,7 +82,7 @@ export default function FileElement ({ index, file, listViewColumns, isClicked, 
     if (settingsData.viewMode === 'grid') {
       return (
         <Box data-testid='file-element' 
-        className={`h-full
+        className={`
         transition-all
         ${getBoxStyle()}`}
         style={{
@@ -114,7 +114,7 @@ export default function FileElement ({ index, file, listViewColumns, isClicked, 
             }
           </Box>
     
-          <Box className='w-full pt-2 place-self-center overflow-visible'
+          <Box className='w-full h-[3.5rem] pt-2 place-self-center overflow-visible'
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
@@ -122,10 +122,11 @@ export default function FileElement ({ index, file, listViewColumns, isClicked, 
           onDoubleClick={handleOnDoubleClick}>
             <p data-testid='file-name'
             className={`element-name
-            w-fit max-w-full h-full min-h-6 mx-auto px-1 place-self-center 
+            w-fit max-w-full h-fit max-h-12
+            mx-auto px-1 place-self-center 
             select-none pointer-events-none
             transition-all
-            rounded-[0.3rem] overflow-hidden max-w-32
+            rounded-[0.3rem] overflow-hidden
             leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis`}>
               {file.name}
             </p>
