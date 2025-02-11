@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 export function useMessageHandler (defaultDuration = 1500) {
 
   const [messageData, setMessageData] = useState({
-    text: '',
+    message: '',
     type: undefined,
     isShowing: false,
     lastShown: 0
@@ -11,7 +11,7 @@ export function useMessageHandler (defaultDuration = 1500) {
   const [shallHideMessage, setShallHideMessage] = useState(false);
   const [lastUsedPeriod, setLastUsedPeriod] = useState(0);
 
-  const showMessage = (message, duration, type) => {
+  const showMessage = (message, type, duration) => {
     setMessageData({
       message: message,
       type: type,
