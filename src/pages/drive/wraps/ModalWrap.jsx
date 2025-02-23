@@ -41,7 +41,7 @@ export default function ModalWrap ({ children }) {
       if (modalStates.length > 0) {
         setModalStates([...modalStates, { ...awaitingOpenNextModal, isOpen: false }])
         setTimeout(() => {
-          setModalStates([...modalStates, { ...modalStates[modalStates.length - 1], isOpen: true }]);
+          setModalStates([...modalStates, { ...awaitingOpenNextModal, isOpen: false }]);
         }, 300);
       } else {
         setModalStates([awaitingOpenNextModal]);  

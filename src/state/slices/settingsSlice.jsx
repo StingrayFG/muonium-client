@@ -13,7 +13,7 @@ const parseToObject = (state) => {
 
 
 export const settingsSlice = createSlice({
-  name: 'path',
+  name: 'settings',
   initialState: {
     ...config.defaultSettings,
     ...JSON.parse(localStorage.getItem('settings')),

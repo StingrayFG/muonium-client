@@ -18,7 +18,7 @@ export default function LoginPage() {
   const userData = useSelector(state => state.user);
 
   const [isAwaitingNavigation, NavigateWithDelay] = useDelayedNavigate();
-  const [messageData, showMessage] = useMessageHandler(1500);
+  const [messageData, showMessage, hideMessage] = useMessageHandler(1500);
 
   const [formData, setFormData] = useState({
     login: { value: '', shallMoveLabel: false, isCorrect: false },

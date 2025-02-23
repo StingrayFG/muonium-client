@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 
 
-export function useDragHandler (lowerDeltaLimit = 10) {
+export function useDragHandler (lowerDeltaLimit = 10, doNotResetDelta = false) {
   const [mouseDownPosition, setMouseDownPosition] = useState({ x: null, y: null });
   const [dragDelta, setDragDelta] = useState({ x: null, y: null });
   const [isHolding, setIsHolding] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
   const [usedLowerDeltaLimit, setUsedLowerDeltaLimit] = useState(lowerDeltaLimit);
-
+  
   const startDragging = (event) => {
     setIsHolding(true);
     setMouseDownPosition({ 
@@ -18,15 +18,18 @@ export function useDragHandler (lowerDeltaLimit = 10) {
   }
 
   const updateDragging = (event) => {
-    const newDragDelta = { 
-      x: event.clientX - mouseDownPosition.x,
-      y: event.clientY - mouseDownPosition.y
-    }
-
-    setDragDelta(newDragDelta);
-
-    if (((newDragDelta.x * newDragDelta.x) + (newDragDelta.y * newDragDelta.y) > (usedLowerDeltaLimit * usedLowerDeltaLimit)) && isHolding && !isDragging) {
-      setIsDragging(true);
+    if (isHolding) {
+      const newDragDelta = { 
+        x: event.clientX - mouseDownPosition.x,
+        y: event.clientY - mouseDownPosition.y
+      }
+  
+      setDragDelta(newDragDelta);
+  
+      if (((newDragDelta.x * newDragDelta.x) + (newDragDelta.y * newDragDelta.y) > 
+      (usedLowerDeltaLimit * usedLowerDeltaLimit)) && isHolding && !isDragging) {
+        setIsDragging(true);
+      }
     }
   }
 
@@ -37,7 +40,9 @@ export function useDragHandler (lowerDeltaLimit = 10) {
   useEffect(() => {
     if (!isHolding) {
       setIsDragging(false);
-      setDragDelta({ x: null, y: null });
+      if (!doNotResetDelta) { 
+        setDragDelta({ x: null, y: null }) 
+      };
     }
   }, [isHolding])
 
