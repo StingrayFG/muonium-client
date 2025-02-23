@@ -152,6 +152,7 @@ export default function TopPanel () {
   // RENDER
   return (
     <Box className='w-full px-2 py-2 flex 
+    shadow-md
     animate-fadein-custom
     bg-neutral-950/40 border-sky-300/20 border-b'
     onContextMenu={contextMenuContext.handleTopPanelContextMenuClick}>

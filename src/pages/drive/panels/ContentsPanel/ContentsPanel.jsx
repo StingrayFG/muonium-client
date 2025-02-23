@@ -198,29 +198,34 @@ export default function ContentsPanel () {
       modalContext.closeModal();
 
       if (contextMenuContext.isCreatingFolder) {
-        console.log(contextMenuContext.clickedElements)
         contextMenuContext.setIsCreatingFolder(false);
+
         const newFolder = { uuid: 'temp-' + Date.now(), name: name, type: 'folder', parentUuid: currentFolderData.uuid };
         dispatch(createElement({ userData, driveData, element: newFolder }))
+
+        contextMenuContext.addClickedElement(null, newFolder);
       } else {
         contextMenuContext.setIsRenaming(false);
-        const newFolder = { ...contextMenuContext.clickedElements[0], name: name };
+
+        const newElement = { ...contextMenuContext.clickedElements[0], name: name };
         dispatch(updateBookmarksOnClient([{
-          uuid: userData.uuid + newFolder.uuid,
-          folder: newFolder
+          uuid: userData.uuid + newElement.uuid,
+          folder: newElement
         }]))
-        dispatch(renameElements({userData, driveData, elements: [newFolder] }))
+        dispatch(renameElements({userData, driveData, elements: [newElement] }))
         .then(res => {
           if (res.type === 'elements/rename/rejected') {
             dispatch(revertUpdateBookmarksOnClient([{
-              uuid: userData.uuid + newFolder.uuid,
-              folder: newFolder
+              uuid: userData.uuid + newElement.uuid,
+              folder: newElement
             }]))
           }
         })
+
+        contextMenuContext.updateClickedElement(newElement)
       }
 
-    } else if (name === currentFolderData.clickedElements[0].name) {
+    } else if (name === contextMenuContext.clickedElements[0].name) {
       modalContext.closeModal();
       contextMenuContext.setIsRenaming(false);
     }
@@ -233,7 +238,7 @@ export default function ContentsPanel () {
       <Box className={`h-8 w-full absolute top-0 flex
       transition-opacity duration-300
       overflow-x-auto scrollbar-hidden
-      border-b border-sky-300/20 bg-gray-900/40
+      border-b border-sky-300/20 bg-gray-900/40 shadow-md
       ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}
       ref={headerRef}
       onContextMenu={contextMenuContext.handleColumnsContextMenuClick}>
@@ -354,8 +359,10 @@ export default function ContentsPanel () {
   if (settingsData.viewMode === 'grid') {
     return (
       <Box className={`w-full h-full pb-12 
+      shadow-md
       transition-opacity duration-300
-      ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}>
+      ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}
+      onMouseDown={contextMenuContext.handleOnWrapMouseDown}>
 
         <Box className={`w-full h-full
         overflow-auto 
@@ -384,7 +391,7 @@ export default function ContentsPanel () {
                     <FolderElement key={element.uuid}
                     index={index}
                     folder={element} 
-                    isClicked={contextMenuContext.clickedElements.includes(element)}
+                    isClicked={contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)}     
                     isCut={clipboardData.cutElementsUuids.includes(element.uuid)}/>
                   )
                 } else if (element.type === 'file') {
@@ -392,7 +399,7 @@ export default function ContentsPanel () {
                     <FileElement key={element.uuid} 
                     index={index}
                     file={element} 
-                    isClicked={contextMenuContext.clickedElements.includes(element)}                  
+                    isClicked={contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)}                  
                     isCut={clipboardData.cutElementsUuids.includes(element.uuid)}/>
                   )
                 }
@@ -413,8 +420,10 @@ export default function ContentsPanel () {
       {getListViewHeader()}
 
       <Box className={`w-full h-full pb-12 pt-8 
+      shadow-md
       transition-opacity duration-300
-      ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}>
+      ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}
+      onMouseDown={contextMenuContext.handleOnWrapMouseDown}>
 
         <Box className={`w-full h-full
         overflow-auto 
@@ -437,7 +446,7 @@ export default function ContentsPanel () {
                     index={index}
                     folder={element} 
                     listViewColumns={getListViewColumns(element)}
-                    isClicked={contextMenuContext.clickedElements.includes(element)}
+                    isClicked={contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)}     
                     isCut={clipboardData.cutElementsUuids.includes(element.uuid)}/>
                   )
                 } else if (element.type === 'file') {
@@ -446,7 +455,7 @@ export default function ContentsPanel () {
                     index={index}
                     file={element}
                     listViewColumns={getListViewColumns(element)} 
-                    isClicked={contextMenuContext.clickedElements.includes(element)}                  
+                    isClicked={contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)}           
                     isCut={clipboardData.cutElementsUuids.includes(element.uuid)}/>
                   )
                 }

@@ -113,6 +113,14 @@ export default function ContextMenuWrap ({ children }) {
     }))
   }
 
+  const updateClickedElement = async (updatedElement) => {
+    clickedElements.find((element, index) => {
+      if (element.uuid === updatedElement.uuid) { 
+        clickedElements[index] = updatedElement;
+      }
+    })
+  }
+
   // TRASH
   const removeClickedElements = async () => {
     setIsContextMenuOpen(false);
@@ -408,7 +416,6 @@ export default function ContextMenuWrap ({ children }) {
     }
   }
 
-
   // EVENTS HANDLERS
   const handleOnKeyDown = (event) => {
     if (event.code === 'Escape') { 
@@ -438,7 +445,7 @@ export default function ContextMenuWrap ({ children }) {
       setIsContextMenuOpen(false);   
     } 
 
-    if (event.button === 0) {
+    if ((event.button === 0)) {
       if (!hoveredElement.uuid && !isContextMenuOpen && !event.ctrlKey) { // Deselect elements if context menu is not open
         clearClickedElements();  
       }
@@ -498,13 +505,12 @@ export default function ContextMenuWrap ({ children }) {
     tabIndex={0}
     onKeyDown={handleOnKeyDown}
     onMouseUp={handleOnMouseUp}
-    onMouseDown={handleOnWrapMouseDown}
     onMouseMove={handleOnMouseMove}
     onContextMenu={handleOnWrapContextMenu}>
 
       <ContextMenuContext.Provider value={{ 
       hoveredElement, setHoveredElement, clearHoveredElement,
-      clickedElements, addClickedElement, clearClickedElements,  
+      clickedElements, addClickedElement, updateClickedElement, clearClickedElements,  
       downloadClickedElements, openUpload,
       removeClickedElements, recoverClickedElements, deleteClickedElements,
       copyClickedElements, cutClickedElements, pasteClickedElements, 
@@ -516,7 +522,7 @@ export default function ContextMenuWrap ({ children }) {
       isContextMenuOpen, setIsContextMenuOpen, isContextMenuLockActive, setIsContextMenuLockActive, 
       isHoveredOverMenu, setIsHoveredOverMenu,
       getMenu, contextMenuType, contextMenuClickPosition,
-      handleOnElementMouseDown,
+      handleOnElementMouseDown, handleOnWrapMouseDown,
 
       handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick, 
       handleDefaultContextMenuClick, 

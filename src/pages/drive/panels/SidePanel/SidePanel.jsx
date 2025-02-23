@@ -123,11 +123,13 @@ export default function SidePanel () {
   // RENDER
   return (
     <Box className={`h-full pr-2 -mr-2 z-20
-    animate-fadein-custom
+    shadow-md
+    animate-fadein-custom 
     transition-opacity duration-300
     ${settingsData.sidePanelIsOverlayMode ? 'fixed left-0' : isDragging ? 'static' : 'relative'}
     ${usedIsVisible ? 'pointer-events-auto' : 'pointer-events-none'}`}
-    onContextMenu={contextMenuContext.handleSidePanelContextMenuClick}>
+    onContextMenu={contextMenuContext.handleSidePanelContextMenuClick}
+    onMouseDown={contextMenuContext.handleOnWrapMouseDown}>
 
       <Box className={`z-10
       cursor-col-resize
