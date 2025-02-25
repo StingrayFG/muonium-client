@@ -45,9 +45,9 @@ export default function OverlayWrap ({ children }) {
 
       {/* MENU */}
       {contextMenuContext.isDraggingElement && 
-        <Box className='bg-sky-400/20 rounded-[0.3rem]' 
+        <Box className='bg-sky-400/20 rounded
+        hidden md:block absolute' 
         style={{ 
-          position: 'absolute', 
           top: contextMenuContext.containerPoint.y, 
           left: contextMenuContext.containerPoint.x, 
           width: contextMenuContext.draggedElementSize.y, 
@@ -56,7 +56,8 @@ export default function OverlayWrap ({ children }) {
         </Box>
       }
 
-      <Box className={`w-full h-full absolute z-40 
+      <Box className={`w-screen h-dvh fixed z-40
+      overflow-hidden
       ${contextMenuContext.isContextMenuLockActive ? 'pointer-events-auto' : 'pointer-events-none'}`}
       onClick={contextMenuContext.handleContextMenuLockClick}
       onContextMenu={contextMenuContext.handleContextMenuLockClick}>

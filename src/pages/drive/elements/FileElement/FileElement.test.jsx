@@ -1,4 +1,5 @@
 import { render, screen, cleanup } from "@testing-library/react";
+import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 
 import { renderWithProviders } from 'utils/test-utils';
@@ -13,11 +14,10 @@ import config from 'config.json';
 
 describe('file element', () => {
 
-
-  const fileTestData = {
-    "name": "gear.svg",
+  const testFile = {
+    "name": "gear.jpg",
     "nameExtension": "1732391711071",
-    "size": 1507,
+    "size": 15007,
     "creationDate": "2024-11-23T19:55:11.074Z",
     "modificationDate": "2024-11-23T19:55:11.074Z",
     "uuid": "a5f3456b-54f1-4df3-83fb-f71f4272f355",
@@ -28,13 +28,19 @@ describe('file element', () => {
     "type": "file"
   }
 
+  const testGeneratedData = {
+    "type": "image"
+  }
+
   const defaultRender = () => {
     renderWithProviders(
       <ContextMenuContext.Provider value={{
         clickedElements: [],
         hoveredElement: {}
       }}>
-        <FileElement file={fileTestData}/>
+        <FileElement 
+        file={testFile}
+        generatedData={testGeneratedData}/>
       </ContextMenuContext.Provider>,
       {
         preloadedState: {
@@ -47,12 +53,15 @@ describe('file element', () => {
 
   test('file icon', () => {
     defaultRender();
+
     expect(screen.getByTestId('file-icon')).toBeInTheDocument();
   });
 
   test('file name', () => {
     defaultRender();
+
     expect(screen.getByTestId('file-name')).toBeInTheDocument();
-    expect(screen.getByText(fileTestData.name)).toBeInTheDocument();
+    expect(screen.getByText(testFile.name)).toBeInTheDocument();
   });
+  
 })

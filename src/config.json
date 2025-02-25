@@ -1,6 +1,6 @@
 {
   "sidePanel": {
-    "minWidth": 120
+    "minWidth": 160
   },
   "contentsPanel": {
     "minWidth": 240
@@ -28,8 +28,7 @@
 
   "defaultSettings": { 
     "sidePanelWidth": 240,
-    "sidePanelIsVisible": true,
-    "sidePanelIsOverlayMode": false,
+    "sidePanelIsEnabled": true,
     
     "viewMode": "grid",
     "gridElementWidth": 200,

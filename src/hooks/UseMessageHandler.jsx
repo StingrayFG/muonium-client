@@ -55,7 +55,6 @@ export function useMessageHandler (defaultDuration = 1500) {
       setShallHideMessage(false);
       if ((Date.now() - messageData.lastShown) > (lastUsedPeriod - 100)) {
         setMessageData({ ...messageData, isShowing: false });
-        setShallHideMessage(false);
       } 
     } 
   }, [shallHideMessage])

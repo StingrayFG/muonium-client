@@ -9,7 +9,7 @@ import CommonContextMenu from 'pages/drive/menus/CommonContextMenu';
 
 
 
-export default function FolderContextMenu ({ point, folder }) {
+export default function DrivePageContextMenu ({ point, folder }) {
   const dispatch = useDispatch();
 
   const contextMenuContext = useContext(ContextMenuContext);

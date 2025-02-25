@@ -21,17 +21,18 @@ import TrashContextMenu from 'pages/drive/menus/TrashContextMenu.jsx';
 import MainMenu from 'pages/drive/menus/MainMenu';
 import ColumnsContextMenu from 'pages/drive/menus/ColumnsContextMenu';
 
+import { env } from 'env.js'
+
 
 export default function ContextMenuWrap ({ children }) {
   const dispatch = useDispatch();
-
-  const dropzoneContext = useContext(DropzoneContext);
   
+  const dropzoneContext = useContext(DropzoneContext);
+
   const userData = useSelector(state => state.user);
   const driveData = useSelector(state => state.drive);
   const clipboardData = useSelector(state => state.clipboard);
   const currentFolderData = useSelector(state => state.currentFolder);
-
 
   const [clickedElements, setClickedElements] = useState([]);
   const [hoveredElement, setHoveredElement] = useState({ uuid: '' });
@@ -39,7 +40,7 @@ export default function ContextMenuWrap ({ children }) {
 
   // SELECTION
   const addClickedElement = (event, element) => {
-    if (event.ctrlKey) {
+    if (event?.ctrlKey) {
       if (!clickedElements.includes(element)) {
         setClickedElements([ ...clickedElements, element ]);
       }   
@@ -63,7 +64,11 @@ export default function ContextMenuWrap ({ children }) {
     setIsContextMenuOpen(false);
 
     for await (const element of clickedElements) {
-      await FileService.handleDownload(userData, driveData, element);
+      await FileService.handleDownload(userData, driveData, element)
+      .then(res => {
+        //console.log(res, env.REACT_APP_SERVER_URL + '/file/download/' + element.uuid + '/' + res.downloadToken)
+        window.location.href = (env.REACT_APP_SERVER_URL + '/file/download/' + element.uuid + '/' + res.downloadToken);
+      })
     }
   }
 
@@ -221,9 +226,13 @@ export default function ContextMenuWrap ({ children }) {
   };
 
   const handleContextMenuLockClick = (event) => { 
+    console.log(event)
     // Works only for clicks outside of menu. For menu option clicks, check handleOnMouseUp
     if (!isContextMenuOpen) {
       setIsContextMenuLockActive(false); // Disable context menu lock only on mouse up
+    } else if (getIsOnMobile()) {
+      setIsContextMenuOpen(false);
+      setIsContextMenuLockActive(false);
     }
   }
 
@@ -243,6 +252,7 @@ export default function ContextMenuWrap ({ children }) {
     if (isContextMenuOpen && !isHoveredOverMenu) {
       setIsContextMenuOpen(false); // Close context menu on mouse down
     } else if (!isContextMenuOpen) {
+      console.log(event.target)
       setContextMenuClickPosition({
         x: event.target.offsetLeft + event.target.offsetWidth + 8,
         y: event.target.offsetTop + event.target.offsetHeight + 8,
@@ -417,6 +427,17 @@ export default function ContextMenuWrap ({ children }) {
   }
 
   // EVENTS HANDLERS
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    window.addEventListener('resize', () => setWindowWidth(window.innerWidth));
+    return () => window.removeEventListener('resize', setWindowWidth);
+  }, [])
+
+  const getIsOnMobile = () => {
+    return (windowWidth < 768)
+  }
+
   const handleOnKeyDown = (event) => {
     if (event.code === 'Escape') { 
       clearClickedElements();
@@ -427,48 +448,45 @@ export default function ContextMenuWrap ({ children }) {
   const handleOnMouseUp = (event) => {
     event.preventDefault();
 
-    if (event.button === 0) {
-      stopDraggingElement(event);
-      setIsOpeningStaticMenu(false);
-
-      if (isContextMenuLockActive && isContextMenuOpen && !isOpeningStaticMenu) { 
-        // Used to deactivate on menu option click
-        // Used for options in context menus which open a modal
-        setIsContextMenuLockActive(false);
-        setIsContextMenuOpen(false);
-      }
+    if (!getIsOnMobile()) {
+      if (event.button === 0) {
+        stopDraggingElement(event);
+        setIsOpeningStaticMenu(false);
+  
+        if (isContextMenuLockActive && isContextMenuOpen && !isOpeningStaticMenu) { 
+          // Used to deactivate on menu option click
+          // Used for options in context menus which open a modal
+          setIsContextMenuLockActive(false);
+          setIsContextMenuOpen(false);
+        }
+      } 
+      // TEMPORARY: DO NOT CLOSE THE MENU ON RMB CLICK
     }
   };
+  
+  const clickableElementBoxesIds = ['folder-icon-box', 'folder-name-box', 'folder-row-box', 'file-icon-box', 'file-name-box', 'file-row-box'];
 
   const handleOnWrapMouseDown = (event) => {
-    if (isContextMenuOpen && !isHoveredOverMenu) { // LMB only, the RMB clicks are handled in context menu handler functions
-      setIsContextMenuOpen(false);   
-    } 
-
-    if ((event.button === 0)) {
-      if (!hoveredElement.uuid && !isContextMenuOpen && !event.ctrlKey) { // Deselect elements if context menu is not open
-        clearClickedElements();  
+    if (getIsOnMobile()) {
+      //console.log(event.target, event.currentTarget)
+      if (!clickableElementBoxesIds.includes(event.target.id)) {
+        clearClickedElements()
       }
 
-      if (hoveredElement.uuid) { // Get ready for dragging
-        startDraggingElement(event);
+    } else {
+      if (isContextMenuOpen && !isHoveredOverMenu) { // LMB only, the RMB clicks are handled in context menu handler functions
+        setIsContextMenuOpen(false);   
+      } 
+  
+      if ((event.button === 0)) {
+        if (!hoveredElement.uuid && !isContextMenuOpen && !event.ctrlKey) { // Deselect elements if context menu is not open
+          clearClickedElements();  
+        }
+  
+        if (hoveredElement.uuid) { // Get ready for dragging
+          startDraggingElement(event);
+        }
       }
-    }
-  };
-
-  const handleOnElementMouseDown = (event, element, index) => {
-    if ((event.button === 0) && event.shiftKey && !isContextMenuOpen && (clickedElements.length > 0) && !clickedElements.includes(element)) {
-      const firstElementIndex = currentFolderData.sortedElements.indexOf(clickedElements[0]);
-
-      if (index < firstElementIndex) {
-        setClickedElements([ clickedElements[0], ...currentFolderData.sortedElements.slice(index, firstElementIndex) ])
-      } else if (index > firstElementIndex) {
-        setClickedElements([ clickedElements[0], ...currentFolderData.sortedElements.slice(firstElementIndex + 1, index + 1) ])
-      }
-
-    } else if ((event.button === 0) && !isContextMenuOpen && 
-    !clickedElements.map(element => element.uuid).includes(element.uuid)) {
-      addClickedElement(event, element); // Will get added or appended depending on the ctrl key
     }
   };
 
@@ -476,10 +494,6 @@ export default function ContextMenuWrap ({ children }) {
     updateDragging(event);
   }
 
-  const handleOnWrapContextMenu = (event) => {
-    event.preventDefault();
-  }
-  
 
   // RENDER 
   const getMenu = () => {
@@ -506,11 +520,13 @@ export default function ContextMenuWrap ({ children }) {
     onKeyDown={handleOnKeyDown}
     onMouseUp={handleOnMouseUp}
     onMouseMove={handleOnMouseMove}
-    onContextMenu={handleOnWrapContextMenu}>
+    onContextMenu={e => e.preventDefault()}>
 
       <ContextMenuContext.Provider value={{ 
+      getIsOnMobile, 
+
       hoveredElement, setHoveredElement, clearHoveredElement,
-      clickedElements, addClickedElement, updateClickedElement, clearClickedElements,  
+      clickedElements, setClickedElements, addClickedElement, updateClickedElement, clearClickedElements,  
       downloadClickedElements, openUpload,
       removeClickedElements, recoverClickedElements, deleteClickedElements,
       copyClickedElements, cutClickedElements, pasteClickedElements, 
@@ -522,7 +538,7 @@ export default function ContextMenuWrap ({ children }) {
       isContextMenuOpen, setIsContextMenuOpen, isContextMenuLockActive, setIsContextMenuLockActive, 
       isHoveredOverMenu, setIsHoveredOverMenu,
       getMenu, contextMenuType, contextMenuClickPosition,
-      handleOnElementMouseDown, handleOnWrapMouseDown,
+      handleOnWrapMouseDown,
 
       handleFileContextMenuClick, handleFolderContextMenuClick, handleBookmarkContextMenuClick, 
       handleDefaultContextMenuClick, 

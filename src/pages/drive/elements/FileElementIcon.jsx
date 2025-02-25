@@ -13,31 +13,23 @@ import { ReactComponent as FileArchiveBs } from 'assets/icons/elements/bootstrap
 import { ReactComponent as FileAppBs } from 'assets/icons/elements/bootstrap/terminal.svg'
 
 
-export default function FileElement ({ file, shallBeSmall }) { 
+export default function FileElement ({ type, isSmall }) { 
  
   const iconStyle = 'h-full w-full';
 
-  const ext = file.name.split('.').pop();
-
-  const textExtensions = ['txt', 'cfg', 'log', 'conf'];
-  const musicExtensions = ['mp3', 'wav', 'flac'];
-  const videoExtensions = ['mp4', 'webm', 'avi', 'mkv', ];
-  const archiveExtensions = ['zip', '7z', 'rar', 'gz'];
-  const appExtensions = ['x86_64', 'sh', 'AppImage', 'exe' ];
-
-  if (shallBeSmall) {
-    if (textExtensions.includes(ext)) { return <FileTextBs className={iconStyle}/> } 
-    else if (musicExtensions.includes(ext)) { return <FileMusicBs className={iconStyle}/> } 
-    else if (videoExtensions.includes(ext)) { return <FileVideoBs className={iconStyle}/>  } 
-    else if (archiveExtensions.includes(ext)) { return <FileArchiveBs className={iconStyle}/> } 
-    else if (appExtensions.includes(ext)) { return <FileAppBs className={iconStyle}/> } 
+  if (isSmall) {
+    if (type === 'text') { return <FileTextBs className={iconStyle}/> } 
+    else if (type === 'audio') { return <FileMusicBs className={iconStyle}/> } 
+    else if (type === 'video') { return <FileVideoBs className={iconStyle}/>  } 
+    else if (type === 'archive') { return <FileArchiveBs className={iconStyle}/> } 
+    else if (type === 'app') { return <FileAppBs className={iconStyle}/> } 
     else { return <FileEmptyBs className={iconStyle}/> }
   } else {
-    if (textExtensions.includes(ext)) { return <FileTextMu className={iconStyle}/> } 
-    else if (musicExtensions.includes(ext)) { return <FileMusicMu className={iconStyle}/> } 
-    else if (videoExtensions.includes(ext)) { return <FileVideoMu className={iconStyle}/>  } 
-    else if (archiveExtensions.includes(ext)) { return <FileArchiveMu className={iconStyle}/> } 
-    else if (appExtensions.includes(ext)) { return <FileAppMu className={iconStyle}/> } 
+    if (type === 'text') { return <FileTextMu className={iconStyle}/> } 
+    else if (type === 'audio') { return <FileMusicMu className={iconStyle}/> } 
+    else if (type === 'video') { return <FileVideoMu className={iconStyle}/>  } 
+    else if (type === 'archive') { return <FileArchiveMu className={iconStyle}/> } 
+    else if (type === 'app') { return <FileAppMu className={iconStyle}/> } 
     else { return <FileEmptyMu className={iconStyle}/> }
   }
 

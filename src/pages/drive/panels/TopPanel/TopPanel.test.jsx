@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 
 import { renderWithProviders } from 'utils/test-utils';
 
-import { FolderContext } from "contexts/FolderContext";
+import { DrivePageContext } from "contexts/DrivePageContext";
 import { ContextMenuContext } from 'contexts/ContextMenuContext';
 
 import TopPanel from './TopPanel';
@@ -16,7 +16,7 @@ describe('contents panel', () => {
 
   const defaultRender = () => {
     renderWithProviders(
-      <FolderContext.Provider value={{
+      <DrivePageContext.Provider value={{
         handleLogout: jest.fn()
       }}>
         <ContextMenuContext.Provider value={{
@@ -25,7 +25,7 @@ describe('contents panel', () => {
         }}>
           <TopPanel />
         </ContextMenuContext.Provider>
-      </FolderContext.Provider>,
+      </DrivePageContext.Provider>,
       {
         preloadedState: {
           path: pathSliceTestData,

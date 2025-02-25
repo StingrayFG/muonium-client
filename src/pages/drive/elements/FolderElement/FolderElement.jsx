@@ -12,7 +12,9 @@ import { ReactComponent as FolderBs } from 'assets/icons/elements/bootstrap/fold
 import config from 'config.json';
 
 
-export default function FolderElement ({ index, folder, listViewColumns, isClicked, isCut }) {
+export default function FolderElement ({ index, folder, generatedData,
+  handleOnElementMouseDown, handleOnElementContextMenu, handleOnElementDoubleClick }) {
+
   const dispatch = useDispatch();
 
   const settingsData = useSelector(state => state.settings);
@@ -21,10 +23,6 @@ export default function FolderElement ({ index, folder, listViewColumns, isClick
 
 
   // HANDLERS
-  const handleOnMouseDown = (event) => {
-    contextMenuContext.handleOnElementMouseDown(event, folder, index);
-  }
-
   const handleOnMouseEnter = () => {
     contextMenuContext.setHoveredElement(folder);
   }
@@ -32,45 +30,17 @@ export default function FolderElement ({ index, folder, listViewColumns, isClick
   const handleOnMouseLeave = () => {
     contextMenuContext.clearHoveredElement();
   }
-  
+
+  const handleOnMouseDown = (event) => {
+    handleOnElementMouseDown(event, folder, index);
+  }
+
   const handleOnContextMenu = (event) => {
-    contextMenuContext.handleFolderContextMenuClick(event, folder);
+    handleOnElementContextMenu(event, folder);
   }
 
-  const handleOnDoubleClick = () => {
-    if (!folder.isRemoved) {
-      dispatch(moveToNew({ uuid: folder.uuid }));
-    }
-  }
-  
-
-  // STYLES
-  const getBoxStyle = () => {
-    let res = '';
-    if (isCut) {
-      res = 'element-box-cut';
-    } else {
-      if (isClicked) {
-        res = 'element-box-clicked';
-      } else {
-        res = 'element-box';
-      }
-    }  
-    return res;
-  }
-
-  const getRowStyle = () => { 
-    let res = '';
-    if (isCut) {
-      res = 'element-row-cut';
-    } else {
-      if (isClicked) {
-        res = 'element-row-clicked';
-      } else {
-        res = 'element-row';
-      }
-    }  
-    return res;
+  const handleOnDoubleClick = (event) => {
+    handleOnElementDoubleClick(event, folder, index);
   }
 
   
@@ -80,27 +50,30 @@ export default function FolderElement ({ index, folder, listViewColumns, isClick
       return (
         <Box data-testid='folder-element'
         className={`
-        transition-all
-        ${getBoxStyle()}`}
+        transition-colors
+        ${generatedData?.boxStyle}`}
         style={{
-          width: (settingsData.gridElementWidth * 0.8) + 'px',
-          margin: (settingsData.gridElementWidth * 0.1) + 'px'
+          width: (generatedData?.gridSize * 0.8) + 'px',
+          margin: (generatedData?.gridSize * 0.1) + 'px'
         }}> 
     
-          <Box className={`w-full aspect-4-3 grid`}
+          <Box id='folder-icon-box'
+          className={`w-full aspect-4-3 grid`}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
-            <FolderMu data-testid='folder-icon'
+            <FolderMu
+            data-testid='folder-icon'
             className={`element-icon
             w-full h-full place-self-center 
             transition-opacity
             pointer-events-none select-none`}/>
           </Box>
     
-          <Box className='w-full h-[3.5rem] pt-2 place-self-center overflow-visible'
+          <Box id='folder-name-box'
+          className='w-full h-12 pt-2 mb-2 place-self-center overflow-visible'
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
@@ -112,7 +85,7 @@ export default function FolderElement ({ index, folder, listViewColumns, isClick
             mx-auto px-1 place-self-center 
             select-none pointer-events-none
             transition-all
-            rounded-[0.3rem] overflow-hidden
+            rounded overflow-hidden
             leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis`}>
               {folder.name}   
             </p>
@@ -123,19 +96,19 @@ export default function FolderElement ({ index, folder, listViewColumns, isClick
     } else if (settingsData.viewMode === 'list') {
       return (
         <Box data-testid='folder-element'
-        className={`w-full relative
-        transition-all
-        ${getRowStyle()}`}
+        className={`
+        w-full relative
+        transition-colors
+        ${generatedData?.rowStyle}`}
         style={{
-          height: settingsData.listElementHeight + 'px'
+          height: generatedData?.listSize + 'px'
         }}>
-          {((index % 2) === 1) &&
-            <Box className='w-full h-full absolute z-[-10] bg-neutral-950/40' />
-          }
+          {generatedData?.rowBackground && generatedData?.rowBackground}
 
-          <Box className='w-fit flex'
+          <Box id='folder-row-box' 
+          className='w-fit flex'
           style={{
-            marginLeft: settingsData.listElementHeight + 'px'
+            marginLeft: generatedData?.listSize + 'px'
           }}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
@@ -145,8 +118,8 @@ export default function FolderElement ({ index, folder, listViewColumns, isClick
 
             <Box className={`h-full ml-2 aspect-4-3 grid`}
             style={{
-              height: settingsData.listElementHeight + 'px',
-              padding: settingsData.listElementHeight * 0.1 + 'px',
+              height: generatedData?.listSize+ 'px',
+              padding: generatedData?.listSize * 0.1 + 'px',
             }}>
             {(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) ?
               <FolderMu data-testid='folder-icon'
@@ -163,7 +136,7 @@ export default function FolderElement ({ index, folder, listViewColumns, isClick
             }
             </Box>
     
-            {listViewColumns}
+            {generatedData?.rowColumns}
 
           </Box>
 

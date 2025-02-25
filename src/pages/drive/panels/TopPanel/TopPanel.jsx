@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import { setAbsolutePath, moveToNew, moveToNext, moveToPrevious } from 'state/slices/pathSlice';
 import { setViewMode } from 'state/slices/settingsSlice';
 
-import { FolderContext } from 'contexts/FolderContext.jsx';
+import { DrivePageContext } from 'contexts/DrivePageContext.jsx';
 import { ContextMenuContext } from 'contexts/ContextMenuContext';
 
 import FolderService from 'services/FolderService.jsx';
@@ -17,7 +17,7 @@ import { ReactComponent as ListUl } from 'assets/icons/list-ul.svg'
 import { ReactComponent as List } from 'assets/icons/list.svg'
 import { ReactComponent as BoxArrowRight } from 'assets/icons/box-arrow-right.svg'
 import { ReactComponent as FolderTwo } from 'assets/icons/elements/bootstrap/folder2.svg'
-
+import { ReactComponent as Gear } from 'assets/icons/gear.svg'
 
 export default function TopPanel () {
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ export default function TopPanel () {
   const pathData = useSelector(state => state.path);
   const settingsData = useSelector(state => state.settings);
 
-  const folderContext = useContext(FolderContext);
+  const drivePageContext = useContext(DrivePageContext);
   const contextMenuContext = useContext(ContextMenuContext);
 
 
@@ -153,93 +153,99 @@ export default function TopPanel () {
   return (
     <Box className='w-full px-2 py-2 flex 
     shadow-md
-    animate-fadein-custom
-    bg-neutral-950/40 border-sky-300/20 border-b'
+    bg-neutral-950/60 border-sky-300/20 border-b'
     onContextMenu={contextMenuContext.handleTopPanelContextMenuClick}>
 
-        <Box className='flex'>
-          <button className={`w-8 h-8 grid
-          ${(pathData.positionInHistory > 0) ? 'button-small' : 'button-small-inactive'}`}
-          onClick={handlePreviousPath}>
-            <ChevronLeft className={`place-self-center h-5 w-5
-            ${(pathData.positionInHistory > 0) ? 'opacity-100' : 'opacity-40'}`}/>
-          </button>
+      <Box className='flex'>
+        <Box className={`button-small
+        ${(pathData.positionInHistory > 0) ? '' : 'button-small-inactive'}`}
+        onClick={handlePreviousPath}>
+          <ChevronLeft className={`place-self-center h-5 w-5
+          ${(pathData.positionInHistory > 0) ? 'opacity-100' : 'opacity-40'}`}/>
+        </Box>
 
-          <button className={`w-8 h-8 ml-1 grid
-          ${(pathData.positionInHistory < (pathData.pathHistory.length - 1)) ? 'button-small' : 'button-small-inactive'}`}
-          onClick={handleNextPath}>
-            <ChevronRight className={`place-self-center h-5 w-5
-            ${(pathData.positionInHistory < (pathData.pathHistory.length - 1)) ? 'opacity-100' : 'opacity-40'}`}/>
-          </button>
-
+        <Box className={`button-small ml-2
+        ${(pathData.positionInHistory < (pathData.pathHistory.length - 1)) ? '' : 'button-small-inactive'}`}
+        onClick={handleNextPath}>
+          <ChevronRight className={`place-self-center h-5 w-5
+          ${(pathData.positionInHistory < (pathData.pathHistory.length - 1)) ? 'opacity-100' : 'opacity-40'}`}/>
+        </Box>
+        
+        <Box className='hidden md:flex'>
           <Box className='separator-vertical' />
 
-          <button className={`w-8 h-8 grid 
-          ${(settingsData.viewMode === 'grid') ? 'button-small-selected' : 'button-small'}`}
+          <Box className={`button-small
+          ${(settingsData.viewMode === 'grid') ? 'button-small-selected' : ''}`}
           onClick={handleGridView}>
-            <Grid className={`place-self-center h-5 w-5`} />
-          </button>
-          <button className={`w-8 h-8 grid ml-1
-          ${(settingsData.viewMode === 'list') ? 'button-small-selected' : 'button-small'}`}
+            <Grid className='button-small-icon'/>
+          </Box>
+
+          <Box className={`button-small ml-2
+          ${(settingsData.viewMode === 'list') ? 'button-small-selected' : ''}`}
           onClick={handleListView}>
-            <ListUl className={`place-self-center h-5 w-5`} />      
-          </button>
-        </Box> 
+            <ListUl className='button-small-icon'/>
+          </Box>
+        </Box>
 
+      </Box> 
+
+      <Box className='separator-vertical' />
+
+      <Box className='w-full relative'>
+        <Box className={`w-full h-8 flex absolute
+        transition-all duration-300
+        ${isEditingPath ? 'opacity-100' : 'opacity-0' }`}>
+          <FolderTwo className='mt-2 ml-2 h-4 w-4' />
+          <input className={`w-full -ml-6 pl-7 pr-2 place-self-center
+          rounded-lg`}   
+          name='path'
+          value={pathInputValue}
+          onChange={handleOnPathChange}
+          onBlur={handleOnPathBlur}
+          onFocus={handleOnPathFocus}
+          onKeyDown={handleOnPathKeyDown} />
+        </Box>
+
+        <Box className={`w-full h-8 px-2 flex 
+        transition-all duration-300
+        ${isEditingPath ? 'opacity-0 pointer-events-none' : pathData.currentAbsolutePath ? 'opacity-100' : 'opacity-0' }`}>
+          <ChevronRight className='mt-2 h-4 w-4' />
+          <p className='my-auto ml-1'>
+            {getCurrentFolderName()}
+          </p>
+        </Box>
+      </Box>
+
+      <Box className='separator-vertical' />
+
+      <Box className='flex'>
+        <Box className={`button-small
+        ${getMenuButtonStyle()}`}
+        onMouseDown={handleOnMenuMouseDown}>
+          <List className='button-small-icon pointer-events-none'/>
+        </Box>
+      </Box>
+
+      
+
+      <Box className='ml-auto
+      hidden md:flex'>
         <Box className='separator-vertical' />
 
-        <Box className='w-full relative'>
-          <Box className={`w-full h-8 flex absolute
+        <Box className='h-8 mr-2 
+        grid 
+        animate-fadein-custom'>
+          <p className={`place-self-center
           transition-all duration-300
-          ${isEditingPath ? 'opacity-100' : 'opacity-0' }`}>
-            <FolderTwo className='mt-2 ml-2 h-4 w-4' />
-            <input className={`w-full -ml-6 pl-7 pr-2 place-self-center
-            outline-none resize-none
-            bg-black/20 border-sky-300/20 focus:bg-black/20 focus:border-sky-300/20 rounded-lg`}   
-            name='path'
-            value={pathInputValue}
-            onChange={handleOnPathChange}
-            onBlur={handleOnPathBlur}
-            onFocus={handleOnPathFocus}
-            onKeyDown={handleOnPathKeyDown} />
-          </Box>
-
-          <Box className={`w-full h-8 px-2 flex 
-          transition-all duration-300
-          ${isEditingPath ? 'opacity-0 pointer-events-none' : pathData.currentAbsolutePath ? 'opacity-100' : 'opacity-0' }`}>
-            <ChevronRight className='mt-2 h-4 w-4' />
-            <p className='h-8 ml-1'>
-              {getCurrentFolderName()}
-            </p>
-          </Box>
+          ${userData.login ? 'opacity-100' : 'opacity-0'}`}>
+            {userData.login}
+          </p>
         </Box>
-
-        <Box className='separator-vertical' />
-
-        <Box className='flex'>
-          <button className={`w-8 h-8 grid 
-          ${getMenuButtonStyle()}`}
-          onMouseDown={handleOnMenuMouseDown}>
-            <List className={`place-self-center h-5 w-5 pointer-events-none`}/>
-          </button>
-        </Box>
-
-        <Box className='separator-vertical' />
-
-        <Box className='ml-auto flex'>
-          <Box className='h-8 mr-2'>
-            <p className={`place-self-center
-            transition-all duration-300
-            ${userData.login ? 'opacity-100' : 'opacity-0'}`}>
-              {userData.login}
-            </p>
-          </Box>
-          <button className='w-8 h-8 grid
-          button-small'
-          onClick={folderContext.handleLogout}>
-            <BoxArrowRight className='place-self-center h-5 w-5' />
-          </button >    
-        </Box>
+        <Box className='button-small'
+        onClick={drivePageContext.handleLogout}>
+          <BoxArrowRight className='button-small-icon' />
+        </Box >    
+      </Box>
         
     </Box>
   );

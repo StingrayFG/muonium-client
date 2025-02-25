@@ -25,6 +25,8 @@ body {
 /*COMMON*/
 p {
   color: rgb(229 229 229); /*neutral-200*/
+  font-size: 1rem; /* 16px */
+  line-height: 1.5rem; /* 24px */
 }
 
 a {
@@ -38,17 +40,29 @@ a:hover {
   text-decoration-color: rgb(14, 165, 233);
 }
 
+svg {
+  fill: currentColor;
+  color: rgb(229 229 229); /*neutral-200*/
+}
+
 input {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
+  outline: none;
+
+  line-height: 1.5rem; /* 24px */
+
   background-color: transparent;
   color: rgb(229 229 229); /*neutral-200*/
+  border-style: solid;
+  border-width: 1px ;
   border-color: rgba(125, 211, 252, 0.2); /*sky-300*/
+  border-radius: 0.25rem;
+
   transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
 
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 0.3rem; /* 8px */
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 
 input:-webkit-autofill,
@@ -58,35 +72,51 @@ input:-webkit-autofill:active{
   -webkit-background-clip: text;
   -webkit-text-fill-color: #ffffff;
   transition: background-color 5000s ease-in-out 0s;
-  box-shadow: inset 0 0 20px 20px rgba(255, 255, 255, 0.05);
 }
 
 input:focus {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
+  outline: none;
   background-color: rgba(125, 211, 252, 0.1); /*sky-300*/
 }
 
 textarea {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
+  line-height: 1.5rem; /* 24px */
+
   resize: none;
+  outline: none;
+
+  background-color: transparent;
+  color: rgb(229 229 229); /*neutral-200*/
+  border-style: solid;
+  border-width: 1px ;
+  border-color: rgba(125, 211, 252, 0.2); /*sky-300*/
+  border-radius: 0.25rem;
+
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 
 textarea:focus {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  resize: none;
+  outline: none;
+  background-color: rgba(125, 211, 252, 0.1); /*sky-300*/
 }
 
 
 button {
   cursor: default;
+
   background-color: rgb(55, 65, 81, 0.8); /*gray-700*/
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); /*gray-800*/
+
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
   border-radius: 0.3rem;
   border-width: 1px;
   border-color: transparent;
+  border-radius: 0.25rem;
 }
 
 button:hover {
@@ -115,8 +145,21 @@ button:active {
 
 
 .button-small {
-  background-color: transparent;
+  cursor: pointer;
+
   transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  min-height: 2rem;
+  min-width: 2rem;
+  padding: 0.25rem;
+
+  border-radius: 0.25rem;
+  border-width: 1px;
+  border-color: transparent;
+
+  display: flex;
+  place-content: center;
+  gap: 0.5rem;
 }
 
 .button-small:hover {
@@ -129,6 +172,18 @@ button:active {
   background-color: rgba(56, 189, 248, 0.2); /*sky-400*/
   transition: all 0ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.button-small-icon {
+  height: 1.25rem;
+  width: 1.25rem;
+  place-self: center;
+}
+
+.button-small-text {
+  line-height: 1.25rem;
+  place-self: center;
+}
+
 
 .button-small-selected {
   background-color: rgba(255, 255, 255, 0.1);
@@ -146,6 +201,7 @@ button:active {
   background-color: rgba(56, 189, 248, 0.2); /*sky-400*/
   transition: all 0ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 
 .button-small-active {
   border-color: rgba(56, 189, 248, 0.4); /*sky-400*/
@@ -183,6 +239,58 @@ button:active {
 }
 
 
+
+.button-common {
+  width: fit-content;
+  min-height: 2rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  flex-shrink: 0;
+  display: flex;
+  place-content: center;
+  gap: 0.5rem;
+
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgba(71, 85, 105, 0.2);
+  border-radius: 0.25rem; /* 8px */
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.button-common-inactive {
+  opacity: 0.5;
+  cursor: default;
+  user-select: none;
+  pointer-events: none;
+}
+
+.button-common:hover {
+  background-color: rgba(7, 89, 133, 0.4);
+}
+
+.button-common-filled:hover {
+  background-color: rgba(7, 89, 133, 0.4);
+}
+
+.button-common-text {
+  place-self: center;
+}
+
+
+
+.button-common-icon {
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  height: 1rem;
+  width: 1rem;
+  place-self: center;
+  color: rgba(229, 229, 229);
+}
+
+
 .button-sidebar {
   border: none;
   border-radius: 0;
@@ -193,6 +301,7 @@ button:active {
 
 .button-sidebar:hover {
   background-color: rgba(56, 189, 248, 0.1); /*sky-400*/
+  transition-duration: 0ms;
 }
 
 .button-sidebar:active {
@@ -265,23 +374,6 @@ button:active {
 
 .button-menu-active:active {
   background-color: rgba(56, 189, 248, 0.4); /*sky-400*/
-}
-
-
-
-textarea {
-  border-radius: 0.3rem;
-  color: rgb(229 229 229); /*neutral-200*/
-}
-
-textarea:focus {
-  border-radius: 0.3rem;
-  color: rgb(229 229 229); /*neutral-200*/
-}
-
-svg {
-  fill: currentColor;
-  color: rgb(229 229 229); /*neutral-200*/
 }
 
 
@@ -386,6 +478,18 @@ svg {
 
 
 
+/*MODAL*/
+.modal-body {
+  max-width: 400px;
+  width: 100vw;
+  padding: 1rem; /* 8px */
+  padding-bottom: 1rem;
+  place-self: center;
+
+  outline: none;
+}
+
+
 
 /*CUSTOM*/
 .separator-vertical {
@@ -393,6 +497,7 @@ svg {
   margin-right: 0.5rem;
   background-color: rgba(125, 211, 252, 0.2); /*sky-300*/
   width: 1px;
+  flex-shrink: 0;
 }
 
 .separator-vertical-extra {
@@ -400,6 +505,7 @@ svg {
   margin-right: 1rem;
   background-color: rgba(125, 211, 252, 0.2); /*sky-300*/
   width: 1px;
+  flex-shrink: 0;
 }
 
 .separator-horizontal {
@@ -409,6 +515,7 @@ svg {
   margin-bottom: 0.25rem;
   background-color: rgba(125, 211, 252, 0.2); /*sky-300*/
   height: 1px;
+  flex-shrink: 0;
 }
 
 

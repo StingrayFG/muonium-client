@@ -1,4 +1,4 @@
-import { useRef, useContext } from 'react';
+import { useRef, useState, useEffect, useContext } from 'react';
 import { Box } from '@mui/material';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
@@ -15,27 +15,43 @@ export default function CommonContextMenu ({ options }) {
   const menuWidth = config.menus.defaultWidth;
   const menuHeight = 2 + (32 * (options.length - linesCount)) + linesCount * 9;
 
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+  
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      setWindowWidth(window.innerWidth)
+      setWindowHeight(window.innerHeight)
+    });
+    return () => window.removeEventListener('resize', setWindowWidth);
+  }, [])
 
-  const windowWidth = useRef(window.innerWidth).current;
-  const windowHeight = useRef(window.innerHeight).current;
+  const getPosition = () => {
+    let position = { ...contextMenuContext.contextMenuClickPosition };
+    //console.log(position.y, menuHeight, windowHeight)
+    if (!contextMenuContext.getIsOnMobile()) {
+      if (position.x + menuWidth > windowWidth) { position.x -= menuWidth; }
+      if (position.y + menuHeight > windowHeight) { position.y -= menuHeight; }
+    } else {
+      if (position.x + menuWidth > windowWidth) { position.x = windowWidth - menuWidth; }
+      if (position.y + menuHeight > windowHeight) { position.y -= windowHeight - menuHeight; }
+    }
 
-  let position = contextMenuContext.contextMenuClickPosition;
-
-  if (position.x + menuWidth > windowWidth) { position.x -= menuWidth; }
-  if (position.y + menuHeight > windowHeight) { position.y -= menuHeight; }
+    return position
+  }
 
 
   return (
     <Box className={`transition-opacity duration-300 
-    bg-gray-950/90 border border-sky-300/20 rounded-[0.3rem]
+    bg-gray-950/90 border border-sky-300/20 rounded
     ${contextMenuContext.isContextMenuOpen ? 'opacity-100 animate-fadein-custom-300' : 'opacity-0 pointer-events-none' }`}
     onMouseEnter={() => contextMenuContext.setIsHoveredOverMenu(true)}
     onMouseLeave={() => contextMenuContext.setIsHoveredOverMenu(false)}
     style={{
       width: menuWidth + 'px',
       position: 'absolute', 
-      top: position.y, 
-      left: position.x
+      top: getPosition().y, 
+      left: getPosition().x
     }}>
 
       {options.map((option, index) => (typeof(option) === 'object' ? 

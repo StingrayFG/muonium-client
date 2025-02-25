@@ -155,7 +155,7 @@ export default function SignupPage() {
   return (
     <Box className='w-full h-dvh grid place-content-center'>
 
-      <Box className={`max-w-[360px] w-full px-4 h-full grid place-items-center overflow-hidden
+      <Box className={`max-w-[400px] w-screen px-4 h-full grid place-items-center overflow-hidden
       transition-all duration-300
       animate-fadein-custom
       ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}>
@@ -168,68 +168,80 @@ export default function SignupPage() {
         onFocus={updateInputLabel}
         onBlur={updateInputLabel}>
 
-          <Box>
-            <p className={`absolute pointer-events-none
+          <Box className='relative mt-8'>
+            <p className={`absolute pointer-events-none 
             ${awaitingAutofill ? '' : 'transition-all duration-300'}
-            ${formData.login.shallMoveLabel ? 'font-semibold' : 'mt-8 ml-2 opacity-50'}`}>{'Login'}</p>
+            ${formData.login.shallMoveLabel ? '-top-7 left-0 font-semibold' : 'top-1 left-2 opacity-50'}`}>
+              {'Login'}
+            </p>
 
-            <p className={`absolute pointer-events-none right-0
+            <p className={`absolute pointer-events-none right-0 -top-7
             transition-all duration-300
             text-rose-500
             ${(formData.login.isCorrect || !formData.login.value) ? 'opacity-0' : 'opacity-100'}`}>{'At least 4 characters'}</p>
 
-            <input className='w-full px-2 mt-8'
-              name='login'
-              type='text'/>
+            <input className='w-full px-2'
+            name='login'
+            type='text'/>
+          </Box>
 
-
+          <Box className='relative mt-8'>
             <p className={`absolute pointer-events-none 
             ${awaitingAutofill ? '' : 'transition-all duration-300'}
-            ${formData.password.shallMoveLabel ? 'font-semibold' : 'mt-8 ml-2 opacity-50'}`}>{'Password'}</p>
+            ${formData.password.shallMoveLabel ? '-top-7 left-0 font-semibold' : 'top-1 left-2 opacity-50'}`}>
+              {'Password'}
+            </p>
 
-            <p className={`absolute pointer-events-none right-0
+            <p className={`absolute pointer-events-none right-0 -top-7
             transition-all duration-300
             text-rose-500
             ${(formData.password.isCorrect || !formData.password.value) ? 'opacity-0' : 'opacity-100'}`}>{'At least 8 characters'}</p>
 
-            <input className='w-full px-2 mt-8'
-              name='password'
-              type='password'/>
+            <input className='w-full px-2'
+            name='password'
+            type='password'/>
+          </Box>
 
-
+          <Box className='relative mt-8'>
             <p className={`absolute pointer-events-none 
             ${awaitingAutofill ? '' : 'transition-all duration-300'}
-            ${formData.confirmpassword.shallMoveLabel ? 'font-semibold' : 'mt-8 ml-2 opacity-50'}`}>{'Confirm password'}</p>
+            ${formData.confirmpassword.shallMoveLabel ? '-top-7 left-0 font-semibold' : 'top-1 left-2 opacity-50'}`}>
+              {'Confirm password'}
+            </p>
 
-            <p className={`absolute pointer-events-none right-0
+            <p className={`absolute pointer-events-none right-0 -top-7
             transition-all duration-300
             text-rose-500
             ${(formData.confirmpassword.isCorrect || !formData.confirmpassword.value) ? 'opacity-0' : 'opacity-100'}`}>{'Does not match'}</p>
 
-            <input className='w-full px-2 mt-8'
-              name='confirmpassword'
-              type='password' />
+            <input className='w-full px-2'
+            name='confirmpassword'
+            type='password' />
           </Box>
           
-          <button className={`w-full h-8 mt-8 text-neutral-200
-          ${getIsFormCorrect() ? '' : 'button-inactive' }`}>
+          <Box className={`button-common mt-8 min-w-full
+          ${getIsFormCorrect() ? '' : 'button-common-inactive' }`}
+          onClick={handleSubmit}>
             <p className={`transition-all duration-300
             font-semibold
             ${getIsFormCorrect() ? 'opacity-100' : 'opacity-40' }`}>
               {'Continue'}
             </p>
-          </button >
+          </Box >
 
-          <Box className='flex place-self-center mt-2'>
-            <p>{'Already registered?'}</p>
+          <Box className='flex place-self-center mt-4'>
+            <p className='mt-1'>
+              {'Already registered?'}
+            </p>
+
             <Link className='place-self-center ml-2' onClick={goToLoginPage}>
-              {'Login'}
+              {'Login'}     
             </Link>
           </Box>
 
         </form>   
 
-        <p className={`h-16 mt-0
+        <p className={`h-16 mt-2
         transition-all duration-300 
         text-rose-500 text-center
         ${messageData.isShowing ? 'opacity-100': 'opacity-0'}`}>

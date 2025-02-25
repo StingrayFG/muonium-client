@@ -28,7 +28,7 @@ export default function CustomCheckbox ({ defaultValue, setMenuValue, isContextM
 
       <Box className={`absolute grid
       transition-all duration-300
-      border rounded-[0.3rem] 
+      border rounded 
       ${isContextMenuMode ? 'h-4 w-4' : 'h-6 w-6'}
       ${value ? 'border-sky-400/40 bg-sky-400/20' : 'border-neutral-200/20 bg-neutral-200/10'}`}
       onClick={handleOnClick}>

@@ -3,31 +3,20 @@ import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
-import { ModalContext } from 'contexts/ModalContext';
-
-import ImageModal from 'pages/drive/modals/ImageModal';
 
 import FileElementIcon from 'pages/drive/elements/FileElementIcon';
 
 import config from 'config.json';
 
 
-export default function FileElement ({ index, file, listViewColumns, isClicked, isCut }) {
+export default function FileElement ({ index, file, generatedData, 
+  handleOnElementMouseDown, handleOnElementContextMenu, handleOnElementDoubleClick }) {
   const settingsData = useSelector(state => state.settings);
 
   const contextMenuContext = useContext(ContextMenuContext);
-  const modalContext = useContext(ModalContext);
-
-
-  // IMAGE
-  const imageSrc = file.thumbnail ? 'data:image/png;base64,' + file.thumbnail : file.imageBlob
 
 
   // HANDLERS
-  const handleOnMouseDown = (event) => {
-    contextMenuContext.handleOnElementMouseDown(event, file, index);
-  }
-
   const handleOnMouseEnter = () => {
     contextMenuContext.setHoveredElement(file);
   }
@@ -35,73 +24,47 @@ export default function FileElement ({ index, file, listViewColumns, isClicked, 
   const handleOnMouseLeave = () => {
     contextMenuContext.clearHoveredElement();
   }
+
+  const handleOnMouseDown = (event) => {
+    handleOnElementMouseDown(event, file, index);
+  }
   
   const handleOnContextMenu = (event) => {
-    contextMenuContext.handleFileContextMenuClick(event, file);
+    handleOnElementContextMenu(event, file);
   }
 
-  const handleOnDoubleClick = () => {
-    if (file.thumbnail || file.imageBlob) {
-      modalContext.openModal(<ImageModal file={file}/>);
-    }
+  const handleOnDoubleClick = (event) => {
+    handleOnElementDoubleClick(event, file, index);
   }
 
   
-  // STYLES 
-  const getBoxStyle = () => {
-    let res = '';
-    if (isCut) {
-      res = 'element-box-cut';
-    } else {
-      if (isClicked) {
-        res = 'element-box-clicked';
-      } else {
-        res = 'element-box';
-      }
-    }  
-    return res;
-  }
-
-  const getRowStyle = () => { 
-    let res = '';
-    if (isCut) {
-      res = 'element-row-cut';
-    } else {
-      if (isClicked) {
-        res = 'element-row-clicked';
-      } else {
-        res = 'element-row';
-      }
-    }  
-    return res;
-  }
-
-
   // RENDER
   if (file) {
     if (settingsData.viewMode === 'grid') {
       return (
         <Box data-testid='file-element' 
         className={`
-        transition-all
-        ${getBoxStyle()}`}
+        transition-colors
+        ${generatedData?.boxStyle}`}
         style={{
-          width: (settingsData.gridElementWidth * 0.8) + 'px',
-          margin: (settingsData.gridElementWidth * 0.1) + 'px'
+          width: (generatedData?.gridSize * 0.8) + 'px',
+          margin: (generatedData?.gridSize * 0.1) + 'px'
         }}> 
       
-          <Box className={`w-full aspect-4-3 grid`}
+          <Box id='file-icon-box'
+          className={`w-full aspect-4-3 grid`}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
-            {(file.thumbnail || file.imageBlob) ? 
-              <img data-testid='file-icon'
+            {generatedData?.thumbnailLink ? 
+              <img data-testid='file-thumbnail'
               className={`element-image
+              pointer-events-none
               w-full h-full object-contain 
               transition-opacity`}
-              src={imageSrc} 
+              src={generatedData?.thumbnailLink} 
               alt=''
               draggable={false} />
               :
@@ -114,7 +77,8 @@ export default function FileElement ({ index, file, listViewColumns, isClicked, 
             }
           </Box>
     
-          <Box className='w-full h-[3.5rem] pt-2 place-self-center overflow-visible'
+          <Box id='file-name-box'
+          className='w-full h-12 pt-2 mb-2 place-self-center overflow-visible'
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
@@ -122,11 +86,12 @@ export default function FileElement ({ index, file, listViewColumns, isClicked, 
           onDoubleClick={handleOnDoubleClick}>
             <p data-testid='file-name'
             className={`element-name
+            pointer-events-none
             w-fit max-w-full h-fit max-h-12
             mx-auto px-1 place-self-center 
             select-none pointer-events-none
             transition-all
-            rounded-[0.3rem] overflow-hidden
+            rounded overflow-hidden
             leading-6 text-center break-words whitespace-pre-wrap second-line-ellipsis`}>
               {file.name}
             </p>
@@ -137,19 +102,19 @@ export default function FileElement ({ index, file, listViewColumns, isClicked, 
     } else if (settingsData.viewMode === 'list') {
       return (
         <Box data-testid='file-element' 
-        className={`w-full relative
-        transition-all
-        ${getRowStyle()}`}
+        className={`
+        w-full relative
+        transition-colors
+        ${generatedData?.rowStyle}`}
         style={{
-          height: settingsData.listElementHeight + 'px'
+          height: generatedData?.listSize + 'px'
         }}>
-          {((index % 2) === 1) &&
-            <Box className='w-full h-full absolute z-[-10] bg-neutral-950/40' />
-          }
+          {generatedData?.rowBackground && generatedData?.rowBackground}
 
-          <Box className='w-fit flex'
+          <Box id='folder-row-box'
+          className='w-fit flex'
           style={{
-            marginLeft: settingsData.listElementHeight + 'px'
+            marginLeft: generatedData?.listSize + 'px'
           }}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
@@ -159,32 +124,35 @@ export default function FileElement ({ index, file, listViewColumns, isClicked, 
 
             <Box className={`h-full ml-2 aspect-4-3 grid`}
             style={{
-              height: settingsData.listElementHeight + 'px',
-              padding: settingsData.listElementHeight * 0.1 + 'px',
+              height: generatedData?.listSize + 'px',
+              padding: generatedData?.listSize * 0.1 + 'px',
             }}>
-              {(file.thumbnail || file.imageBlob) ? 
-                <img data-testid='file-icon' 
+              {generatedData?.thumbnailLink ? 
+                <img 
+                data-testid='file-thumbnail' 
                 className={`element-image
+                pointer-events-none
                 w-full h-full object-contain`}
-                src={imageSrc} 
+                src={generatedData?.thumbnailLink} 
                 alt=''
                 draggable={false} />
                 :
                 <Box data-testid='file-icon' 
                 className={`
+                pointer-events-none
                 h-full place-self-center 
                 transition-opacity
                 pointer-events-none select-none 
                 ${(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) ?
                 'element-icon' : 'element-small-icon'}`}>
                   <FileElementIcon 
-                  file={file} 
-                  shallBeSmall={!(settingsData.listElementHeight >= config.elements.listSmallIconsHeight)}/>
+                  type={generatedData?.type}
+                  isSmall={!(settingsData.listElementHeight >= config.elements.listSmallIconsHeight)}/>
                 </Box>
               }
             </Box>
 
-            {listViewColumns}
+            {generatedData?.rowColumns}
 
           </Box>
 

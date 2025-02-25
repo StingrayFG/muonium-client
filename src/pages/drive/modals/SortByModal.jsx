@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { setSidePanelIsVisible, setSidePanelIsOverlayMode } from 'state/slices/settingsSlice';
+import { setSidePanelIsEnabled, setSidePanelIsOverlayMode } from 'state/slices/settingsSlice';
 
 import { ModalContext } from 'contexts/ModalContext';
 
@@ -32,8 +32,8 @@ export default function SettingsModal ({ }) {
     modalContext.closeNextModal();
   }
 
-  const changeSidePanelIsVisible = (value) => {
-    dispatch(setSidePanelIsVisible(value))
+  const changeSidePanelIsEnabled = (value) => {
+    dispatch(setSidePanelIsEnabled(value))
   }
 
   const changeSidePanelIsOverlayMode = (value) => {
@@ -50,8 +50,8 @@ export default function SettingsModal ({ }) {
       
       <Box className='h-8 flex mb-6'>
         <CustomCheckbox 
-        defaultValue={settingsData.sidePanelIsVisible}
-        setMenuValue={changeSidePanelIsVisible}
+        defaultValue={settingsData.sidePanelIsEnabled}
+        setMenuValue={changeSidePanelIsEnabled}
         />
         <p className='ml-2'>{'Show side panel'}</p>
       </Box>

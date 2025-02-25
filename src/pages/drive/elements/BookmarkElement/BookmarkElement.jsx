@@ -110,9 +110,9 @@ export default function BookmarkElement ({ bookmark }) {
           </>}
 
           <p data-testid='bookmark-name'
-          className='w-full
+          className='w-full my-auto
           text-left text-ellipsis overflow-hidden'>
-            { bookmark.folder.name }
+            {bookmark.folder.name }
           </p>
         </Box>
 

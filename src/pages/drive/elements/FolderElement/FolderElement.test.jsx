@@ -1,7 +1,7 @@
 import { render, screen, cleanup } from "@testing-library/react";
 import '@testing-library/jest-dom'
 
-import { renderWithProviders } from 'utils/test-utils';
+import { renderWithProviders } from 'utils/test-utils'
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext';
 
@@ -47,12 +47,15 @@ describe('folder element', () => {
 
   test('folder icon', () => {
     defaultRender();
+
     expect(screen.getByTestId('folder-icon')).toBeInTheDocument();
   });
 
   test('folder name', () => {
     defaultRender();
+
     expect(screen.getByTestId('folder-name')).toBeInTheDocument();
     expect(screen.getByText(folderTestData.name)).toBeInTheDocument();
   });
+
 })

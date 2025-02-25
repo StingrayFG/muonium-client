@@ -5,7 +5,7 @@ import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import CommonContextMenu from 'pages/drive/menus/CommonContextMenu';
 
 
-export default function MultipleFolderContextMenu () {
+export default function MultipleDrivePageContextMenu () {
   const contextMenuContext = useContext(ContextMenuContext);
 
   

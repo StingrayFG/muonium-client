@@ -41,8 +41,7 @@ const FileService = {
 
       await instance.post('/file/download', body, { headers })
       .then(res => {
-        window.location.href = ('/file/download/' + fileData.uuid + '/' + res.data.downloadToken);
-        resolve(res.data.fileData);
+        resolve(res.data);
       })
       .catch(err => {
         reject(err);

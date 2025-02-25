@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
-import { setSidePanelIsVisible, setSidePanelIsOverlayMode } from 'state/slices/settingsSlice';
+import { setSidePanelIsEnabled } from 'state/slices/settingsSlice';
 
 import { ModalContext } from 'contexts/ModalContext';
 
@@ -33,12 +33,8 @@ export default function SettingsModal ({ }) {
     modalContext.closeNextModal();
   }
 
-  const changeSidePanelIsVisible = (value) => {
-    dispatch(setSidePanelIsVisible(value))
-  }
-
-  const changeSidePanelIsOverlayMode = (value) => {
-    dispatch(setSidePanelIsOverlayMode(value))
+  const changeSidePanelIsEnabled = (value) => {
+    dispatch(setSidePanelIsEnabled(value))
   }
 
 
@@ -61,19 +57,12 @@ export default function SettingsModal ({ }) {
       
       <Box className='h-8 flex mb-6'>
         <CustomCheckbox 
-        defaultValue={settingsData.sidePanelIsVisible}
-        setMenuValue={changeSidePanelIsVisible}
+        defaultValue={settingsData.sidePanelIsEnabled}
+        setMenuValue={changeSidePanelIsEnabled}
         />
         <p className='ml-2'>{'Show side panel'}</p>
       </Box>
       
-      <Box className='flex mb-6'>
-        <CustomCheckbox 
-        defaultValue={settingsData.sidePanelIsOverlayMode}
-        setMenuValue={changeSidePanelIsOverlayMode}
-        />
-        <p className='ml-2'>{'Overlay side panel'}</p>
-      </Box>
 
       <Box className='mt-4 grid'>
         <button className={`h-8 px-2`}

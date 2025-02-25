@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
@@ -11,7 +11,7 @@ import { getDrive } from 'state/slices/driveSlice';
 import { getBookmarks } from 'state/slices/bookmarkSlice';
 import { getFolder } from 'state/slices/currentFolderSlice';
 
-import { FolderContext } from 'contexts/FolderContext';
+import { DrivePageContext } from 'contexts/DrivePageContext';
 
 import TopPanel from 'pages/drive/panels/TopPanel/TopPanel.jsx';
 import BottomPanel from 'pages/drive/panels/BottomPanel.jsx';
@@ -93,23 +93,39 @@ export default function DrivePanels ({ folderUuid }) {
   }, [pathData.currentUuid, usedFolderUuid]);
 
   
+  // MOBILE SIDE PANEL
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
+
+  const openSidePanel = () => {
+    setIsSidePanelOpen(true);
+  }
+
+  const closeSidePanel = () => {;
+    setIsSidePanelOpen(false);
+  }
+
+
   // RENDER
   if (userData) {
     return (
       <Box className={`w-screen h-dvh 
-      transition-all duration-300
+      flexs flex-col
+      transition-opacity duration-300
       ${isAwaitingNavigation ? 'opacity-0' : 'opacity-100'}`}>
-        <FolderContext.Provider value={{ handleLogout }}> 
+        <DrivePageContext.Provider value={{ handleLogout, isSidePanelOpen, openSidePanel, closeSidePanel }}> 
           <DropzoneWrap>
             <ContextMenuWrap>
               <ModalWrap>
                 <OverlayWrap>
             
                   <TopPanel />   
-                  <Box className={`w-full h-full overflow-hidden grid grid-cols-[max-content_1fr] overflow-hidden
-                  ${settingsData.sidePanelIsOverlayMode ? 'grid-cols-[100vw]' : 'grid-cols-[max-content_1fr]'}`}>
+                  <Box className={`w-full h-full
+                  flex overflow-hidden`}>
+                    
                     <SidePanel />
-                    <Box className='w-full h-full overflow-hidden relative'>
+
+                    <Box className='w-full h-full
+                    grid grid-rows-[1fr_max-content] overflow-hidden'>
                       <ContentsPanel />   
                       <BottomPanel />
                     </Box>
@@ -119,7 +135,7 @@ export default function DrivePanels ({ folderUuid }) {
               </ModalWrap>
             </ContextMenuWrap>
           </DropzoneWrap>
-        </FolderContext.Provider>   
+        </DrivePageContext.Provider>   
       </Box>
     );
   } else {

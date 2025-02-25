@@ -1,15 +1,20 @@
 import { useEffect, useState, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
+import { useDragHandler } from 'hooks/UseDragHandler';
 
-import { setSidePanelWidth, setSidePanelIsVisible } from 'state/slices/settingsSlice';
+import { setSidePanelWidth, setSidePanelIsEnabled } from 'state/slices/settingsSlice';
 import { getBookmarks } from 'state/slices/bookmarkSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
-
-import { useDragHandler } from 'hooks/UseDragHandler';
+import { DrivePageContext } from 'contexts/DrivePageContext';
 
 import BookmarkElement from 'pages/drive/elements/BookmarkElement/BookmarkElement.jsx';
+
+import { ReactComponent as ChevronBarLeft } from 'assets/icons/chevron-bar-left.svg'
+import { ReactComponent as ArrowLeft } from 'assets/icons/arrow-left.svg'
+import { ReactComponent as ChevronLeft } from 'assets/icons/chevron-left.svg'
+import { ReactComponent as JournalBookmark } from 'assets/icons/journal-bookmark.svg'
 
 import config from 'config.json';
 
@@ -18,6 +23,7 @@ export default function SidePanel () {
   const dispatch = useDispatch();
 
   const contextMenuContext = useContext(ContextMenuContext);
+  const drivePageContext = useContext(DrivePageContext);
 
   const userData = useSelector(state => state.user);
   const bookmarkData = useSelector(state => state.bookmark);
@@ -48,8 +54,12 @@ export default function SidePanel () {
     return () => window.removeEventListener('resize', setWindowWidth);
   }, [])
 
+  const getIsOnMobile = () => {
+    return (windowWidth < 768)
+  }
+  
   useEffect(() => {
-    if ((windowWidth - panelWidth) < config.contentsPanel.minWidth) {
+    if (((windowWidth - panelWidth) < config.contentsPanel.minWidth) && !getIsOnMobile()) {
       setPanelWidth(windowWidth - config.contentsPanel.minWidth);
       dispatch(setSidePanelWidth(windowWidth - config.contentsPanel.minWidth));
     }
@@ -77,110 +87,129 @@ export default function SidePanel () {
     }
   }
 
+  const closeSidePanel = () => {
+    drivePageContext.closeSidePanel()
+  }
+
 
   // ELEMENT FUNCTIONS
   const getIsSelected = (bookmark) => {
-    if ((bookmark.folder.uuid === pathData.currentUuid) && (contextMenuContext.clickedElements.length === 0)) {
-      return true;
-    } else if (contextMenuContext.clickedElements.length > 0) {
-      if (((contextMenuContext.clickedElements[0].type === 'folder') || (contextMenuContext.clickedElements[0].type === 'file')) && 
-      (bookmark.folder.uuid === pathData.currentUuid)) {
+    if (pathData) {
+      if ((bookmark.folder.uuid === pathData.currentUuid) && (contextMenuContext.clickedElements.length === 0)) {
         return true;
+      } else if (contextMenuContext.clickedElements.length > 0) {
+        if (((contextMenuContext.clickedElements[0].type === 'folder') || (contextMenuContext.clickedElements[0].type === 'file')) && 
+        (bookmark.folder.uuid === pathData.currentUuid)) {
+          return true;
+        } else {
+          return false;
+        }     
       } else {
         return false;
-      }     
+      }
     } else {
       return false;
     }
   }
-  
 
-  // GETS
-  const [usedIsVisible, setUsedIsVisible] = useState(settingsData.sidePanelIsVisible);
-  const [isChangingIsVisible, setIsChangingIsVisible] = useState(false)
-
-  useEffect(() => {
-    if (usedIsVisible !== settingsData.sidePanelIsVisible) {
-      setIsChangingIsVisible(true);
-      setUsedIsVisible(settingsData.sidePanelIsVisible);
-      setTimeout(() => setIsChangingIsVisible(false), 300);
-    }
-  }, [settingsData.sidePanelIsVisible])
-  
-  const getSidePanelStyle = () => {
-    if (isChangingIsVisible) {
-      return 'duration-300'
+  const getWrapStyles = () => {
+    let res = ''
+    if (getIsOnMobile()) {
+      res = `w-[80vw] 
+      fixed top-0
+      transition-all duration-300`
+      if (drivePageContext.isSidePanelOpen) {
+        res += ' left-0'
+      } else {
+        res += ' left-[-80vw]'
+      }
     } else {
-      return 'duration-0'
+      res = 'relative transition-opacity duration-300'
     }
+    return res;
   }
 
-  const handleOverlayPanelClick = () => {
-    dispatch(setSidePanelIsVisible(!settingsData.sidePanelIsVisible))
+  const getPanelStyles = () => {
+    if (!getIsOnMobile()) {
+      return { width: panelWidth + 'px' };
+    } else {
+      return {};
+    }
   }
 
 
   // RENDER
   return (
     <Box className={`h-full pr-2 -mr-2 z-20
-    shadow-md
-    animate-fadein-custom 
-    transition-opacity duration-300
-    ${settingsData.sidePanelIsOverlayMode ? 'fixed left-0' : isDragging ? 'static' : 'relative'}
-    ${usedIsVisible ? 'pointer-events-auto' : 'pointer-events-none'}`}
+    overflow-hidden
+    shrink-0  
+    ${getWrapStyles()}`}
     onContextMenu={contextMenuContext.handleSidePanelContextMenuClick}
     onMouseDown={contextMenuContext.handleOnWrapMouseDown}>
 
       <Box className={`z-10
+      pointer-events-none md:pointer-events-auto
       cursor-col-resize
       ${isDragging ? 'fixed h-dvh w-screen top-0 left-0' : 'absolute h-full w-4 right-0'}`}
       onMouseDown={handleOnMouseDown}
       onMouseUp={handleOnMouseUp}
       onMouseMove={handleOnMouseMove}/> {/* Used to stop resizing if mouse leaves the window */}
 
-
-      <Box className={`w-screen h-full absolute left-0 z-[-10] 
-      backdrop-blur-sm bg-gray-950/60
+      <Box className={`w-screen h-dvh fixed top-0 left-0 -z-10 
       transition-all duration-300
-      ${(usedIsVisible && settingsData.sidePanelIsOverlayMode) ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`} 
-      onClick={handleOverlayPanelClick}/>
+      bg-gray-950/60 backdrop-blur-sm
+      ${drivePageContext.isSidePanelOpen ? 
+      'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
+      onClick={closeSidePanel}/> 
 
-      <Box className={`h-full overflow-y-auto overflow-x-hidden
-      transition-all
-      scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
-      border-r
-      ${settingsData.sidePanelIsOverlayMode ? 'bg-gray-950/60' : 'bg-neutral-950/40'}
-      ${(usedIsVisible || !settingsData.sidePanelIsOverlayMode) ? 'border-sky-300/20' : 'border-transparent'}
-      ${getSidePanelStyle()}`}
-      style={{
-        width: usedIsVisible ? panelWidth : '0px'
-      }}>
-        <Box className={`transition-all duration-300
+      <Box className={`w-full h-full 
+      overflow-hidden
+      grid grid-rows-[1fr_max-content]
+      border-r bg-gray-950/60 border-sky-300/20
+      ${isHolding ? 'duration-0' : 'duration-300'}`}
+      style={getPanelStyles()}>
+
+
+        <Box className={`overflow-y-auto
+        scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent
+        transition-all duration-300
         ${hasLoadedInitially ? 'opacity-100' : 'opacity-0'}`}> 
 
+          <Box className='w-full h-8 px-2 flex
+          opacity-50
+          select-none pointer-events-none'>
+            <p className='place-self-center'>Places</p>
+          </Box>
+
+          <BookmarkElement bookmark={{ folder: { uuid: 'home', name:'Home' } }}/>
+
+          <BookmarkElement bookmark={{ folder: { uuid: 'trash', name:'Trash' } }}/>
+
+          <Box className='w-full h-8 px-2 flex 
+          opacity-50
+          select-none pointer-events-none'>
+            <p className='place-self-center'>Bookmarks</p>
+          </Box>
+
+          {bookmarkData.bookmarks.map((bookmark) => (
+            <BookmarkElement key={bookmark.uuid} 
+            bookmark={bookmark}
+            isActive={contextMenuContext.clickedElements.includes(bookmark)}
+            isSelected={getIsSelected(bookmark)}/>
+          ))}
+
         </Box>
-        <Box className='w-full h-8 px-2 flex
-        opacity-50
-        select-none pointer-events-none'>
-          <p className='place-self-center'>Places</p>
+          
+        <Box className='w-full flex p-2
+        block md:hidden
+        border-t border-sky-300/20 bg-gray-900'>
+          <Box className='button-small mr-auto'
+          onClick={closeSidePanel}>
+            <JournalBookmark className='button-small-icon'/>
+            <ChevronLeft className='button-small-icon'/>
+          </Box>
         </Box>
 
-        <BookmarkElement bookmark={{ folder: { uuid: 'home', name:'Home' } }}/>
-
-        <BookmarkElement bookmark={{ folder: { uuid: 'trash', name:'Trash' } }}/>
-
-        <Box className='w-full h-8 px-2 flex 
-        opacity-50
-        select-none pointer-events-none'>
-          <p className='place-self-center'>Bookmarks</p>
-        </Box>
-
-        {bookmarkData.bookmarks.map((bookmark) => (
-          <BookmarkElement key={bookmark.uuid} 
-          bookmark={bookmark}
-          isActive={contextMenuContext.clickedElements.includes(bookmark)}
-          isSelected={getIsSelected(bookmark)}/>
-        ))}
       </Box>
 
     </Box>
