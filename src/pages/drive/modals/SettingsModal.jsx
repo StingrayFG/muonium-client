@@ -6,6 +6,7 @@ import { setSidePanelIsEnabled } from 'state/slices/settingsSlice';
 
 import { ModalContext } from 'contexts/ModalContext';
 
+import CommonModal from 'pages/drive/modals/CommonModal';
 import CustomCheckbox from 'components/checkbox/CustomCheckbox';
 
 import { ReactComponent as XLg } from 'assets/icons/x-lg.svg'
@@ -45,43 +46,28 @@ export default function SettingsModal ({ }) {
     modalRef.current?.focus()
   }, [])
 
-
   return(
-    <Box className='max-w-full w-[360px] px-4'
-    ref={modalRef}
-    tabIndex={0}
-    onKeyDown={handleOnKeyDown}>
-      <p className='mb-4 leading-6 font-semibold text-center'>
-        {'Settings'}
-      </p>
-      
-      <Box className='h-8 flex mb-6'>
+    <CommonModal 
+    header={'Settings'}
+    contents={<Box className='flex flex-col'>
+
+      <Box className='flex'>
         <CustomCheckbox 
         defaultValue={settingsData.sidePanelIsEnabled}
         setMenuValue={changeSidePanelIsEnabled}
         />
-        <p className='ml-2'>{'Show side panel'}</p>
+        <p className='ml-2 py-1'>{'Show side panel'}</p>
+      </Box>
+
+      <Box className='mt-2 grid grid-flow-col gap-2 shrink-0'>
+        <Box className='button-common min-w-full'
+        onClick={handleClose}>
+          <p className='button-common-text'>
+            {'Confirm'}
+          </p>
+        </Box>
       </Box>
       
-
-      <Box className='mt-4 grid'>
-        <button className={`h-8 px-2`}
-        onClick={handleConfirm}>
-          <p className={`transition-all duration-300`}>
-            {'Confirm'}
-          </p>   
-        </button>
-      </Box>
-
-      <button className='h-12 w-12 fixed top-0 right-0 grid place-content-center
-      hover:opacity-50 hover:bg-transparent bg-transparent'
-      onClick={handleClose}>
-        <Box className='h-8 w-8 m-2 grid
-        rounded-full bg-black/40'>
-          <XLg className='w-5 h-5 place-self-center'/>
-        </Box>      
-      </button>
-
-    </Box>
+    </Box>}/>
   )
 };
