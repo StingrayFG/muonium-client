@@ -1,8 +1,5 @@
 import React, { useContext } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
-
-import { moveToNew } from 'state/slices/pathSlice';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
@@ -12,15 +9,17 @@ import { ReactComponent as FolderBs } from 'assets/icons/elements/bootstrap/fold
 import config from 'config.json';
 
 
-export default function FolderElement ({ index, folder, generatedData,
-  handleOnElementMouseDown, handleOnElementContextMenu, handleOnElementDoubleClick }) {
-
-  const dispatch = useDispatch();
-
-  const settingsData = useSelector(state => state.settings);
+export default function FolderElement ({ 
+  index, 
+  folder, 
+  generatedData,
+  viewMode,
+  handleOnElementMouseDown, 
+  handleOnElementContextMenu, 
+  handleOnElementDoubleClick 
+}) {
 
   const contextMenuContext = useContext(ContextMenuContext);
-
 
   // HANDLERS
   const handleOnMouseEnter = () => {
@@ -46,19 +45,19 @@ export default function FolderElement ({ index, folder, generatedData,
   
   // RENDER
   if (folder) {
-    if (settingsData.viewMode === 'grid') {
+    if (viewMode === 'grid') {
       return (
         <Box data-testid='folder-element'
         className={`
         transition-colors
         ${generatedData?.boxStyle}`}
         style={{
-          width: (generatedData?.gridSize * 0.8) + 'px',
-          margin: (generatedData?.gridSize * 0.1) + 'px'
+          width: generatedData?.boxWidth + 'px',
+          padding: generatedData?.boxPadding + 'px'
         }}> 
     
           <Box id='folder-icon-box'
-          className={`w-full aspect-4-3 grid`}
+          className={`w-full aspect-4-3`}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
@@ -93,7 +92,7 @@ export default function FolderElement ({ index, folder, generatedData,
 
         </Box>
       );
-    } else if (settingsData.viewMode === 'list') {
+    } else if (viewMode === 'list') {
       return (
         <Box data-testid='folder-element'
         className={`
@@ -101,14 +100,14 @@ export default function FolderElement ({ index, folder, generatedData,
         transition-colors
         ${generatedData?.rowStyle}`}
         style={{
-          height: generatedData?.listSize + 'px'
+          height: generatedData?.rowHeight + 'px'
         }}>
           {generatedData?.rowBackground && generatedData?.rowBackground}
 
           <Box id='folder-row-box' 
           className='w-fit flex'
           style={{
-            marginLeft: generatedData?.listSize + 'px'
+            marginLeft: generatedData?.rowHeight + 'px'
           }}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
@@ -116,20 +115,20 @@ export default function FolderElement ({ index, folder, generatedData,
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
 
-            <Box className={`h-full ml-2 aspect-4-3 grid`}
+            <Box className={`h-full ml-2 aspect-4-3`}
             style={{
-              height: generatedData?.listSize+ 'px',
-              padding: generatedData?.listSize * 0.1 + 'px',
+              height: generatedData?.rowHeight + 'px',
+              padding: generatedData?.rowPadding + 'px',
             }}>
-            {(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) ?
-              <FolderMu data-testid='folder-icon'
-              className={`element-icon
+            {generatedData.rowShouldUseSmallIcon ?
+              <FolderBs data-testid='folder-icon'
+              className={`element-icon-small
               w-full h-full
               transition-opacity
               pointer-events-none select-none`}/>
               :
-              <FolderBs data-testid='folder-icon'
-              className={`element-icon-small
+              <FolderMu data-testid='folder-icon'
+              className={`element-icon
               w-full h-full
               transition-opacity
               pointer-events-none select-none`}/>

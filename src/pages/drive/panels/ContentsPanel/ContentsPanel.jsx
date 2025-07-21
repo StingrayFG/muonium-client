@@ -20,6 +20,7 @@ import AlbumViewerModal from 'pages/drive/modals/AlbumViewerModal';
 import { ReactComponent as ChevronDown } from 'assets/icons/chevron-down.svg';
 
 import config from 'config.json';
+import extensions from 'extensions.json';
 
 
 export default function ContentsPanel () {
@@ -309,6 +310,7 @@ export default function ContentsPanel () {
       } else if (element.type === 'folder') {
         if (!element.isRemoved) {
           dispatch(moveToNew({ uuid: element.uuid }));
+          contextMenuContext.clearClickedElements();
         }
       }
     } 
@@ -441,6 +443,7 @@ export default function ContentsPanel () {
     )
   }
 
+  // ELEMENT GETS
   const getElementRowColumns = (element) => {
     const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 
@@ -484,23 +487,16 @@ export default function ContentsPanel () {
     }</>)
   }
 
-  const textExtensions = ['txt', 'cfg', 'log', 'conf'];
-  const audioExtensions = ['mp3', 'wav', 'flac'];
-  const imageExtensions = ['png', 'jpg', 'jpeg', 'webp', 'gif'];
-  const videoExtensions = ['mp4', 'webm', 'avi', 'mkv', ];
-  const archiveExtensions = ['zip', '7z', 'rar', 'gz'];
-  const appExtensions = ['x86_64', 'sh', 'AppImage', 'exe' ];
-
   const getFileType = (file) => {
-    const ext = file.name.split('.').pop();
+    const ext = (file.name.split('.').pop()).toLowerCase();
 
-    if (textExtensions.includes(ext)) { return 'text' } 
-    else if (audioExtensions.includes(ext)) { return 'audio'} 
-    else if (imageExtensions.includes(ext)) { return 'image'} 
-    else if (videoExtensions.includes(ext)) { return 'video'  } 
-    else if (archiveExtensions.includes(ext)) { return 'archive' } 
-    else if (appExtensions.includes(ext)) { return 'app' } 
-    else { return 'unknown' }
+    if (extensions.text.includes(ext)) { return 'text' } 
+    else if (extensions.audio.includes(ext)) { return 'audio'} 
+    else if (extensions.image.includes(ext)) { return 'image'} 
+    else if (extensions.video.includes(ext)) { return 'video'  } 
+    else if (extensions.archive.includes(ext)) { return 'archive' } 
+    else if (extensions.app.includes(ext)) { return 'app' } 
+    else { return 'unknown' };
   }
 
   const getFileThumbnailLink = (file) => {
@@ -512,30 +508,26 @@ export default function ContentsPanel () {
   }
 
   const getElementBoxStyle = (element) => {
-    let res = '';
+    let res = 'w-[${settingsData.gridElementWidth * 0.8}px] m-[${settingsData.gridElementWidth * 0.1}px] ';
     if (clipboardData.cutElementsUuids.includes(element.uuid)) {
       res = 'element-box-cut';
+    } else if (contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)) {
+      res = 'element-box-clicked';
     } else {
-      if (contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)) {
-        res = 'element-box-clicked';
-      } else {
-        res = 'element-box';
-      }
-    }  
+      res = 'element-box';
+    } 
     return res;
   }
 
   const getElementRowStyle = (element) => {
-    let res = '';
+    let res = 'w-[${settingsData.gridElementWidth * 0.8}px] m-[${settingsData.gridElementWidth * 0.1}px] ';
     if (clipboardData.cutElementsUuids.includes(element.uuid)) {
-      res = 'element-row-cut';
+      res += 'element-row-cut';
+    } else if (contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)) {
+      res += 'element-row-clicked';
     } else {
-      if (contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)) {
-        res = 'element-row-clicked';
-      } else {
-        res = 'element-row';
-      }
-    }  
+      res += 'element-row';
+    }
     return res;
   }
 
@@ -549,23 +541,32 @@ export default function ContentsPanel () {
     return {
       type: getFileType(element),
       thumbnailLink: getFileThumbnailLink(element),
-      gridSize: settingsData.gridElementWidth,
-      listSize: settingsData.listElementHeight,
+
       boxStyle: getElementBoxStyle(element),
+      boxWidth: settingsData.gridElementWidth,
+      boxPadding: settingsData.gridElementWidth * 0.1,
+
       rowStyle: getElementRowStyle(element),
+      rowHeight: settingsData.listElementHeight,
+      rowPadding: settingsData.listElementHeight * 0.1,
       rowBackground: getElementRowBackground(index),
-      rowColumns: getElementRowColumns(element)
+      rowColumns: getElementRowColumns(element),
+      rowShouldUseSmallIcon: (settingsData.listElementHeight <= config.elements.listSmallIconsHeight),
     }
   }
 
   const getFolderGeneratedData = (element, index) => {
     return {
-      gridSize: settingsData.gridElementWidth,
-      listSize: settingsData.listElementHeight,
       boxStyle: getElementBoxStyle(element),
+      boxWidth: settingsData.gridElementWidth,
+      boxPadding: settingsData.gridElementWidth * 0.1,
+
       rowStyle: getElementRowStyle(element),
+      rowHeight: settingsData.listElementHeight,
+      rowPadding: settingsData.listElementHeight * 0.1,
       rowBackground: getElementRowBackground(index),
-      rowColumns: getElementRowColumns(element)
+      rowColumns: getElementRowColumns(element),
+      rowShouldUseSmallIcon: (settingsData.listElementHeight <= config.elements.listSmallIconsHeight),
     }
   }
 
@@ -599,6 +600,7 @@ export default function ContentsPanel () {
               index={0}
               folder={getNewFolder()}
               generatedData={getFolderGeneratedData(getNewFolder(), 0)} 
+              viewMode={settingsData.viewMode}
               handleOnElementMouseDown={handleOnElementMouseDown}
               handleOnElementContextMenu={handleOnElementContextMenu}
               handleOnElementDoubleClick={handleOnElementDoubleClick}/>
@@ -612,6 +614,7 @@ export default function ContentsPanel () {
                     index={index}
                     folder={element} 
                     generatedData={getFolderGeneratedData(element, index)}
+                    viewMode={settingsData.viewMode}
                     handleOnElementMouseDown={handleOnElementMouseDown}
                     handleOnElementContextMenu={handleOnElementContextMenu}
                     handleOnElementDoubleClick={handleOnElementDoubleClick}/>
@@ -622,6 +625,7 @@ export default function ContentsPanel () {
                     index={index}
                     file={element} 
                     generatedData={getFileGeneratedData(element, index)}
+                    viewMode={settingsData.viewMode}
                     handleOnElementMouseDown={handleOnElementMouseDown}
                     handleOnElementContextMenu={handleOnElementContextMenu}
                     handleOnElementDoubleClick={handleOnElementDoubleClick}/>
@@ -673,6 +677,7 @@ export default function ContentsPanel () {
                     index={index}
                     folder={element} 
                     generatedData={getFolderGeneratedData(element, index)}
+                    viewMode={settingsData.viewMode}
                     handleOnElementMouseDown={handleOnElementMouseDown}
                     handleOnElementContextMenu={handleOnElementContextMenu}
                     handleOnElementDoubleClick={handleOnElementDoubleClick}/>
@@ -683,6 +688,7 @@ export default function ContentsPanel () {
                     index={index}
                     file={element} 
                     generatedData={getFileGeneratedData(element, index)}
+                    viewMode={settingsData.viewMode}
                     handleOnElementMouseDown={handleOnElementMouseDown}
                     handleOnElementContextMenu={handleOnElementContextMenu}
                     handleOnElementDoubleClick={handleOnElementDoubleClick}/>

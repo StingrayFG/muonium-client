@@ -13,9 +13,18 @@ import { ReactComponent as FileArchiveBs } from 'assets/icons/elements/bootstrap
 import { ReactComponent as FileAppBs } from 'assets/icons/elements/bootstrap/terminal.svg'
 
 
-export default function FileElement ({ type, isSmall }) { 
+export default function FileElement ({ type, isSmall=false }) { 
  
-  const iconStyle = 'h-full w-full';
+  const iconStyle = isSmall ? 
+  `element-icon-small
+  w-full h-full
+  transition-opacity
+  pointer-events-none select-none`
+  :
+  `element-icon
+  w-full h-full
+  transition-opacity
+  pointer-events-none select-none`;
 
   if (isSmall) {
     if (type === 'text') { return <FileTextBs className={iconStyle}/> } 

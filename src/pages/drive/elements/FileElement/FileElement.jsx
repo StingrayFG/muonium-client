@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
@@ -9,12 +8,17 @@ import FileElementIcon from 'pages/drive/elements/FileElementIcon';
 import config from 'config.json';
 
 
-export default function FileElement ({ index, file, generatedData, 
-  handleOnElementMouseDown, handleOnElementContextMenu, handleOnElementDoubleClick }) {
-  const settingsData = useSelector(state => state.settings);
+export default function FileElement ({ 
+  index, 
+  file, 
+  generatedData, 
+  viewMode,
+  handleOnElementMouseDown, 
+  handleOnElementContextMenu,
+  handleOnElementDoubleClick 
+}) {
 
   const contextMenuContext = useContext(ContextMenuContext);
-
 
   // HANDLERS
   const handleOnMouseEnter = () => {
@@ -37,22 +41,21 @@ export default function FileElement ({ index, file, generatedData,
     handleOnElementDoubleClick(event, file, index);
   }
 
-  
   // RENDER
   if (file) {
-    if (settingsData.viewMode === 'grid') {
+    if (viewMode === 'grid') {
       return (
         <Box data-testid='file-element' 
         className={`
         transition-colors
         ${generatedData?.boxStyle}`}
         style={{
-          width: (generatedData?.gridSize * 0.8) + 'px',
-          margin: (generatedData?.gridSize * 0.1) + 'px'
+          width: generatedData?.boxWidth + 'px',
+          padding: generatedData?.boxPadding + 'px'
         }}> 
       
           <Box id='file-icon-box'
-          className={`w-full aspect-4-3 grid`}
+          className={`w-full aspect-4-3`}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
@@ -68,12 +71,7 @@ export default function FileElement ({ index, file, generatedData,
               alt=''
               draggable={false} />
               :
-              <Box data-testid='file-icon'
-              className={`element-icon h-full place-self-center 
-              transition-opacity
-              pointer-events-none select-none`}>
-                <FileElementIcon file={file}/>
-              </Box>
+              <FileElementIcon file={file}/>
             }
           </Box>
     
@@ -99,7 +97,7 @@ export default function FileElement ({ index, file, generatedData,
 
         </Box>
       );
-    } else if (settingsData.viewMode === 'list') {
+    } else if (viewMode === 'list') {
       return (
         <Box data-testid='file-element' 
         className={`
@@ -107,14 +105,14 @@ export default function FileElement ({ index, file, generatedData,
         transition-colors
         ${generatedData?.rowStyle}`}
         style={{
-          height: generatedData?.listSize + 'px'
+          height: generatedData.rowHeight + 'px'
         }}>
           {generatedData?.rowBackground && generatedData?.rowBackground}
 
           <Box id='folder-row-box'
           className='w-fit flex'
           style={{
-            marginLeft: generatedData?.listSize + 'px'
+            marginLeft: generatedData.rowHeight + 'px'
           }}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
@@ -122,10 +120,10 @@ export default function FileElement ({ index, file, generatedData,
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
 
-            <Box className={`h-full ml-2 aspect-4-3 grid`}
+            <Box className={`h-full ml-2 aspect-4-3`}
             style={{
-              height: generatedData?.listSize + 'px',
-              padding: generatedData?.listSize * 0.1 + 'px',
+              height: generatedData.rowHeight + 'px',
+              padding: generatedData.rowPadding + 'px',
             }}>
               {generatedData?.thumbnailLink ? 
                 <img 
@@ -137,18 +135,9 @@ export default function FileElement ({ index, file, generatedData,
                 alt=''
                 draggable={false} />
                 :
-                <Box data-testid='file-icon' 
-                className={`
-                pointer-events-none
-                h-full place-self-center 
-                transition-opacity
-                pointer-events-none select-none 
-                ${(settingsData.listElementHeight >= config.elements.listSmallIconsHeight) ?
-                'element-icon' : 'element-small-icon'}`}>
-                  <FileElementIcon 
-                  type={generatedData?.type}
-                  isSmall={!(settingsData.listElementHeight >= config.elements.listSmallIconsHeight)}/>
-                </Box>
+                <FileElementIcon 
+                type={generatedData?.type}
+                isSmall={generatedData.rowShouldUseSmallIcon}/>
               }
             </Box>
 
