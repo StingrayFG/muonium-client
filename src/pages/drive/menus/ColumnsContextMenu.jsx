@@ -6,7 +6,7 @@ import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { deleteBookmark } from 'state/slices/bookmarkSlice';
 import { setColumnIsEnabled } from 'state/slices/settingsSlice';
 
-import CommonContextMenu from 'pages/drive/menus/CommonContextMenu';
+import CommonContextMenu from 'pages/drive/menus/CommonContextMenu/CommonContextMenu';
 import CustomCheckbox from 'components/checkbox/CustomCheckbox';
 
 

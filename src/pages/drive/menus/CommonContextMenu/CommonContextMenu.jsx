@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
-import MenuOptionElement from 'pages/drive/elements/MenuOptionElement';
+import MenuOptionElement from 'pages/drive/menus/CommonContextMenu/MenuOptionElement';
 
 import config from 'config.json';
 
@@ -11,7 +11,7 @@ import config from 'config.json';
 export default function CommonContextMenu ({ options }) {
   const contextMenuContext = useContext(ContextMenuContext);
 
-  const linesCount = options.filter(option => option === 'line').length
+  const linesCount = options.filter(option => option === 'line').length;
   const menuWidth = config.menus.defaultWidth;
   const menuHeight = 2 + (32 * (options.length - linesCount)) + linesCount * 9;
 
@@ -20,15 +20,15 @@ export default function CommonContextMenu ({ options }) {
   
   useEffect(() => {
     window.addEventListener('resize', () => {
-      setWindowWidth(window.innerWidth)
-      setWindowHeight(window.innerHeight)
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
     });
     return () => window.removeEventListener('resize', setWindowWidth);
   }, [])
 
-  const getPosition = () => {
+  const getUsedPosition = () => {
     let position = { ...contextMenuContext.contextMenuClickPosition };
-    //console.log(position.y, menuHeight, windowHeight)
+
     if (!contextMenuContext.getIsOnMobile()) {
       if (position.x + menuWidth > windowWidth) { position.x -= menuWidth; }
       if (position.y + menuHeight > windowHeight) { position.y -= menuHeight; }
@@ -37,12 +37,21 @@ export default function CommonContextMenu ({ options }) {
       if (position.y + menuHeight > windowHeight) { position.y -= windowHeight - menuHeight; }
     }
 
-    return position
+    return position;
+  }
+
+  const getPositionStyle = () => {
+    const usedPosition = getUsedPosition();
+    return {
+      top: usedPosition.y, 
+      left: usedPosition.x
+    };
   }
 
 
   return (
-    <Box className={`transition-opacity duration-300 
+    <Box data-testid='context-menu' 
+    className={`transition-opacity duration-300 
     bg-gray-950/90 border border-sky-300/20 rounded
     ${contextMenuContext.isContextMenuOpen ? 'opacity-100 animate-fadein-custom-300' : 'opacity-0 pointer-events-none' }`}
     onMouseEnter={() => contextMenuContext.setIsHoveredOverMenu(true)}
@@ -50,14 +59,16 @@ export default function CommonContextMenu ({ options }) {
     style={{
       width: menuWidth + 'px',
       position: 'absolute', 
-      top: getPosition().y, 
-      left: getPosition().x
+      ...getPositionStyle()
     }}>
 
       {options.map((option, index) => (typeof(option) === 'object' ? 
-        <MenuOptionElement option={option} key={'option-' + index}/>
+        <MenuOptionElement key={'option-' + index}
+        option={option} />
         :
-        <Box className='separator-horizontal' key={'option-' + index}/>
+        <Box data-testid='context-menu-separator' 
+        key={'option-' + index}
+        className='separator-horizontal' />
       ))}
       
     </Box>    

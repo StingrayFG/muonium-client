@@ -53,7 +53,8 @@ export default function MenuOptionElement ({ option }) {
 
 
   return (
-    <button className={`w-full h-8 px-2 flex 
+    <button data-testid='context-menu-option' 
+    className={`w-full h-8 px-2 flex 
     button-menu
     active:button-menu-active`}
     onClick={option.handleOnClick}>

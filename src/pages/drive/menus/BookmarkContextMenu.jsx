@@ -5,7 +5,7 @@ import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import { deleteBookmark } from 'state/slices/bookmarkSlice';
 
-import CommonContextMenu from 'pages/drive/menus/CommonContextMenu';
+import CommonContextMenu from 'pages/drive/menus/CommonContextMenu/CommonContextMenu';
 
 
 export default function BookmarkContextMenu ({ bookmark }) {

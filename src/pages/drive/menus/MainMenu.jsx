@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { ModalContext } from 'contexts/ModalContext.jsx';
 
-import CommonContextMenu from 'pages/drive/menus/CommonContextMenu';
+import CommonContextMenu from 'pages/drive/menus/CommonContextMenu/CommonContextMenu';
 import SettingsModal from 'pages/drive/modals/SettingsModal';
 
 

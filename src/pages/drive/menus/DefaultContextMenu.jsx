@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
-import CommonContextMenu from 'pages/drive/menus/CommonContextMenu';
+import CommonContextMenu from 'pages/drive/menus/CommonContextMenu/CommonContextMenu';
 
 
 export default function DefaultContextMenu () {

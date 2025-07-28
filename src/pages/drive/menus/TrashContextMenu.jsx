@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
-import CommonContextMenu from 'pages/drive/menus/CommonContextMenu';
+import CommonContextMenu from 'pages/drive/menus/CommonContextMenu/CommonContextMenu';
 
 
 export default function TrashContextMenu () {
