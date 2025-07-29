@@ -1,4 +1,4 @@
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom'
 
 import { renderWithProviders } from 'utils/test-utils';
@@ -20,7 +20,7 @@ describe('contents panel', () => {
         handleLogout: jest.fn()
       }}>
         <ContextMenuContext.Provider value={{
-          clickedElements: [],
+          selectedElements: [],
           hoveredElement: {}
         }}>
           <TopPanel />

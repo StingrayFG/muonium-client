@@ -43,7 +43,7 @@ describe('folder element', () => {
   const defaultRender = (viewMode) => {
     renderWithProviders(
       <ContextMenuContext.Provider value={{
-        clickedElements: [],
+        selectedElements: [],
         hoveredElement: {},
         setHoveredElement: setHoveredElementMock,
         clearHoveredElement: clearHoveredElementMock

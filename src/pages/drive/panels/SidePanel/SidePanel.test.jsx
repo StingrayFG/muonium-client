@@ -1,9 +1,10 @@
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom'
 
 import { renderWithProviders } from 'utils/test-utils';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext';
+import { DrivePageContext } from 'contexts/DrivePageContext';
 
 import SidePanel from './SidePanel';
 
@@ -13,12 +14,16 @@ import bookmarkSliceTestData from 'state/testdata/bookmarkSlice.testdata.json';
 describe('side panel', () => {
   const defaultRender = () => {
     renderWithProviders(
-      <ContextMenuContext.Provider value={{
-        clickedElements: [],
-        hoveredElement: {}
+      <DrivePageContext.Provider value={{
+        isSidePanelOpen: true
       }}>
-        <SidePanel/>
-      </ContextMenuContext.Provider>,
+        <ContextMenuContext.Provider value={{
+          selectedElements: [],
+          hoveredElement: {}
+        }}>
+          <SidePanel/>
+        </ContextMenuContext.Provider>,
+      </DrivePageContext.Provider>,
       {
         preloadedState: {
           bookmark: bookmarkSliceTestData

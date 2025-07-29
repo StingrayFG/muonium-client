@@ -22,7 +22,7 @@ export default function BookmarkElement ({ bookmark }) {
   // HANDLERS
   const handleOnMouseDown = (event) => {
     if (event.button === 0) {   
-      contextMenuContext.clearClickedElements();
+      contextMenuContext.clearSelectedElements();
       if (!bookmark.folder.isRemoved) { 
         dispatch(moveToNew({ uuid: bookmark.folder.uuid })); 
       }
@@ -56,10 +56,10 @@ export default function BookmarkElement ({ bookmark }) {
   }
 
   const getIsSelected = () => {
-    if ((bookmark.folder.uuid === pathData.currentUuid) && (contextMenuContext.clickedElements.length === 0)) {
+    if ((bookmark.folder.uuid === pathData.currentUuid) && (contextMenuContext.selectedElements.length === 0)) {
       return true;
-    } else if (contextMenuContext.clickedElements.length > 0) {
-      if (((contextMenuContext.clickedElements[0].type === 'folder') || (contextMenuContext.clickedElements[0].type === 'file')) && 
+    } else if (contextMenuContext.selectedElements.length > 0) {
+      if (((contextMenuContext.selectedElements[0].type === 'folder') || (contextMenuContext.selectedElements[0].type === 'file')) && 
       (bookmark.folder.uuid === pathData.currentUuid)) {
         return true;
       } else {
@@ -71,7 +71,7 @@ export default function BookmarkElement ({ bookmark }) {
   }
 
   const getIsActive = () => {
-    return contextMenuContext.clickedElements.includes(bookmark);
+    return contextMenuContext.selectedElements.includes(bookmark);
   }
 
   const getButtonStyle = () => {

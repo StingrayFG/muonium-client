@@ -100,9 +100,9 @@ export default function BottomPanel () {
   const getSelectionText = () => {
     let res = '';
 
-    if (contextMenuContext.clickedElements.length > 0) {
-      const folders = contextMenuContext.clickedElements.filter(element => (element.type === 'folder'));
-      const files = contextMenuContext.clickedElements.filter(element => (element.type === 'file'));
+    if (contextMenuContext.selectedElements.length > 0) {
+      const folders = contextMenuContext.selectedElements.filter(element => (element.type === 'folder'));
+      const files = contextMenuContext.selectedElements.filter(element => (element.type === 'file'));
       const fileSizesSum = files.reduce((partialSum, element) => partialSum + element.size, 0)
 
       if (folders.length > 0) {
@@ -234,7 +234,7 @@ export default function BottomPanel () {
         <Box className={`h-8 absolute right-0 
         transition-all duration-300
         flex
-        ${(contextMenuContext.clickedElements.length === 0) ? '-top-12' : 'top-0'}`}>
+        ${(contextMenuContext.selectedElements.length === 0) ? '-top-12' : 'top-0'}`}>
           <Box className='separator-vertical' />
 
           <Box className={`h-6 min-w-12 px-2 my-auto
@@ -243,20 +243,20 @@ export default function BottomPanel () {
           pointer-events-none
           bg-sky-400/20 rounded-full`}
           style={{
-            width: (16 + ((contextMenuContext.clickedElements.filter(e => e.type === 'folder').length + '').length * 8)) + 'px'
+            width: (16 + ((contextMenuContext.selectedElements.filter(e => e.type === 'folder').length + '').length * 8)) + 'px'
           }}>
             <FolderBs className='h-4 w-4 absolute left-2'/>
 
             {Array.from(Array(5).keys())
-            .map(count => count + contextMenuContext.clickedElements.filter(e => e.type === 'folder').length - 2)
+            .map(count => count + contextMenuContext.selectedElements.filter(e => e.type === 'folder').length - 2)
             .map(count =>
               <p key={'selection-count-number-' + count}
               className={`absolute right-2
               transition-all duration-300
               text-neutral-200
-              ${count < contextMenuContext.clickedElements.filter(e => e.type === 'folder').length && '-top-6'}
-              ${count === contextMenuContext.clickedElements.filter(e => e.type === 'folder').length && 'top-0'}
-              ${count > contextMenuContext.clickedElements.filter(e => e.type === 'folder').length && 'top-6'}`}>
+              ${count < contextMenuContext.selectedElements.filter(e => e.type === 'folder').length && '-top-6'}
+              ${count === contextMenuContext.selectedElements.filter(e => e.type === 'folder').length && 'top-0'}
+              ${count > contextMenuContext.selectedElements.filter(e => e.type === 'folder').length && 'top-6'}`}>
                 {count}
               </p>
             )}
@@ -268,20 +268,20 @@ export default function BottomPanel () {
           pointer-events-none
           bg-sky-400/20 rounded-full`}
           style={{
-            width: (16 + ((contextMenuContext.clickedElements.filter(e => e.type === 'file').length + '').length * 8)) + 'px'
+            width: (16 + ((contextMenuContext.selectedElements.filter(e => e.type === 'file').length + '').length * 8)) + 'px'
           }}>
             <FileEmptyBs className='h-4 w-4 absolute left-2'/>
 
             {Array.from(Array(5).keys())
-            .map(count => count + contextMenuContext.clickedElements.filter(e => e.type === 'file').length - 2)
+            .map(count => count + contextMenuContext.selectedElements.filter(e => e.type === 'file').length - 2)
             .map(count =>
               <p key={'selection-count-number-' + count}
               className={`absolute right-2
               transition-all duration-300
               text-neutral-200
-              ${count < contextMenuContext.clickedElements.filter(e => e.type === 'file').length && '-top-6'}
-              ${count === contextMenuContext.clickedElements.filter(e => e.type === 'file').length && 'top-0'}
-              ${count > contextMenuContext.clickedElements.filter(e => e.type === 'file').length && 'top-6'}`}>
+              ${count < contextMenuContext.selectedElements.filter(e => e.type === 'file').length && '-top-6'}
+              ${count === contextMenuContext.selectedElements.filter(e => e.type === 'file').length && 'top-0'}
+              ${count > contextMenuContext.selectedElements.filter(e => e.type === 'file').length && 'top-6'}`}>
                 {count}
               </p>
             )}
@@ -292,7 +292,7 @@ export default function BottomPanel () {
         <Box className={`absolute right-0
         transition-all duration-300
         flex
-        ${(contextMenuContext.clickedElements.length === 0) ? 'top-0' : 'top-12'}`}>
+        ${(contextMenuContext.selectedElements.length === 0) ? 'top-0' : 'top-12'}`}>
           <Box className='separator-vertical' />
           
           <Box className='button-small'

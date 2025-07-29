@@ -10,9 +10,9 @@ export default function MultipleDrivePageContextMenu () {
 
   
   const options = [
-    { text: 'Cut', icon: 'cut', handleOnClick: contextMenuContext.cutClickedElements },
+    { text: 'Cut', icon: 'cut', handleOnClick: contextMenuContext.cutSelectedElements },
     'line',
-    { text: 'Move to trash', icon: 'trash', handleOnClick: contextMenuContext.removeClickedElements },
+    { text: 'Move to trash', icon: 'trash', handleOnClick: contextMenuContext.removeSelectedElements },
   ]
 
 

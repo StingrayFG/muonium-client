@@ -1,11 +1,11 @@
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom'
 
 import { renderWithProviders } from 'utils/test-utils';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext';
 
-import BookmarkElement from './BookmarkElement';
+import BookmarkElement from 'pages/drive/elements/BookmarkElement/BookmarkElement';
 
 import currentFolderSliceTestData from 'state/testdata/currentFolderSlice.testdata.json';
 import config from 'config.json';
@@ -37,7 +37,7 @@ describe('bookmark element', () => {
   const defaultRender = () => {
     renderWithProviders(
       <ContextMenuContext.Provider value={{
-        clickedElements: [],
+        selectedElements: [],
         hoveredElement: {}
       }}>
         <BookmarkElement bookmark={bookmarkTestData}/>

@@ -16,7 +16,7 @@ export default function DefaultContextMenu () {
     { text: 'Upload a file', icon: 'upload', handleOnClick: contextMenuContext.openUpload },
     { text: 'New folder', icon: 'new-folder', handleOnClick: () => contextMenuContext.setIsCreatingFolder(true) },
     'line',
-    { text: 'Paste', icon: 'paste', handleOnClick: contextMenuContext.pasteClickedElements },
+    { text: 'Paste', icon: 'paste', handleOnClick: contextMenuContext.pasteSelectedElements },
   ] 
   :
   [

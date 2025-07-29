@@ -95,10 +95,10 @@ export default function SidePanel () {
   // ELEMENT FUNCTIONS
   const getIsSelected = (bookmark) => {
     if (pathData) {
-      if ((bookmark.folder.uuid === pathData.currentUuid) && (contextMenuContext.clickedElements.length === 0)) {
+      if ((bookmark.folder.uuid === pathData.currentUuid) && (contextMenuContext.selectedElements.length === 0)) {
         return true;
-      } else if (contextMenuContext.clickedElements.length > 0) {
-        if (((contextMenuContext.clickedElements[0].type === 'folder') || (contextMenuContext.clickedElements[0].type === 'file')) && 
+      } else if (contextMenuContext.selectedElements.length > 0) {
+        if (((contextMenuContext.selectedElements[0].type === 'folder') || (contextMenuContext.selectedElements[0].type === 'file')) && 
         (bookmark.folder.uuid === pathData.currentUuid)) {
           return true;
         } else {
@@ -194,7 +194,7 @@ export default function SidePanel () {
           {bookmarkData.bookmarks.map((bookmark) => (
             <BookmarkElement key={bookmark.uuid} 
             bookmark={bookmark}
-            isActive={contextMenuContext.clickedElements.includes(bookmark)}
+            isActive={contextMenuContext.selectedElements.includes(bookmark)}
             isSelected={getIsSelected(bookmark)}/>
           ))}
 

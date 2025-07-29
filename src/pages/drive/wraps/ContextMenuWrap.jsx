@@ -34,36 +34,37 @@ export default function ContextMenuWrap ({ children }) {
   const clipboardData = useSelector(state => state.clipboard);
   const currentFolderData = useSelector(state => state.currentFolder);
 
-  const [clickedElements, setClickedElements] = useState([]);
+  const [selectedElements, setSelectedElements] = useState([]);
   const [hoveredElement, setHoveredElement] = useState({ uuid: '' });
 
 
   // SELECTION
-  const addClickedElement = (event, element) => {
+  const addSelectedElement = (event, element) => {
     if (event?.ctrlKey) {
-      if (!clickedElements.includes(element)) {
-        setClickedElements([ ...clickedElements, element ]);
+      if (!selectedElements.includes(element)) {
+        setSelectedElements([ ...selectedElements, element ]);
       }   
     } else {
-      setClickedElements([ element ]);
+      setSelectedElements([ element ]);
     }
   }
 
-  const clearClickedElements = () => {
-    setClickedElements([]);
+  const clearSelectedElements = () => {
+    setSelectedElements([]);
   }
 
+  // CONTEXT MENU OPTION HANDLERS
   // UPLOAD
   const openUpload = async () => {
-    dropzoneContext.open();
     setIsContextMenuOpen(false);
+    dropzoneContext.open();
   }
   
   // DOWNLOAD
-  const downloadClickedElements = async () => {
+  const downloadSelectedElements = async () => {
     setIsContextMenuOpen(false);
 
-    for await (const element of clickedElements) {
+    for await (const element of selectedElements) {
       await FileService.handleDownload(userData, driveData, element)
       .then(res => {
         //console.log(res, env.REACT_APP_SERVER_URL + '/file/download/' + element.uuid + '/' + res.downloadToken)
@@ -81,17 +82,17 @@ export default function ContextMenuWrap ({ children }) {
   }, [isRenaming, isCreatingFolder])
 
   // CLIPBOARD
-  const copyClickedElements = () => {
+  const copySelectedElements = () => {
     setIsContextMenuOpen(false);
-    dispatch(copyToClipboard({ originUuid: currentFolderData.uuid, elements: clickedElements }));
+    dispatch(copyToClipboard({ originUuid: currentFolderData.uuid, elements: selectedElements }));
   };
 
-  const cutClickedElements = () => {
+  const cutSelectedElements = () => {
     setIsContextMenuOpen(false);
-    dispatch(cutToClipboard({ originUuid: currentFolderData.uuid, elements: clickedElements }));
+    dispatch(cutToClipboard({ originUuid: currentFolderData.uuid, elements: selectedElements }));
   };
 
-  const pasteClickedElements = async () => {
+  const pasteSelectedElements = async () => {
     setIsContextMenuOpen(false);
     dispatch(clearClipboard());
 
@@ -110,27 +111,27 @@ export default function ContextMenuWrap ({ children }) {
     }
   };
 
-  const moveClickedElements = async () => { // Used to move by dragging elements
+  const moveSelectedElements = async () => { // Used to move by dragging elements
     dispatch(moveElements({ 
       userData, 
       driveData, 
-      elements: clickedElements.map(element => ({ ...element, parentUuid: hoveredElement.uuid }))
+      elements: selectedElements.map(element => ({ ...element, parentUuid: hoveredElement.uuid }))
     }))
   }
 
-  const updateClickedElement = async (updatedElement) => {
-    clickedElements.find((element, index) => {
+  const updateSelectedElement = async (updatedElement) => {
+    selectedElements.find((element, index) => {
       if (element.uuid === updatedElement.uuid) { 
-        clickedElements[index] = updatedElement;
+        selectedElements[index] = updatedElement;
       }
     })
   }
 
   // TRASH
-  const removeClickedElements = async () => {
+  const removeSelectedElements = async () => {
     setIsContextMenuOpen(false);
     
-    dispatch(updateBookmarksOnClient(clickedElements
+    dispatch(updateBookmarksOnClient(selectedElements
       .filter(element => element.type === 'folder')
       .map(element => ({ uuid: userData.uuid + element.uuid, folder: { ...element, isRemoved: true } }))
     ))
@@ -138,7 +139,7 @@ export default function ContextMenuWrap ({ children }) {
     dispatch(removeElements({ 
       userData, 
       driveData, 
-      elements: clickedElements
+      elements: selectedElements
     }))
     .then(async res => {
       if ((res.payload) && (res.type === 'elements/remove/rejected')) {
@@ -150,10 +151,10 @@ export default function ContextMenuWrap ({ children }) {
     })
   }
 
-  const recoverClickedElements = async () => {
+  const recoverSelectedElements = async () => {
     setIsContextMenuOpen(false);
 
-    dispatch(updateBookmarksOnClient(clickedElements
+    dispatch(updateBookmarksOnClient(selectedElements
       .filter(element => element.type === 'folder')
       .map(element => ({ uuid: userData.uuid + element.uuid, folder: { ...element, isRemoved: false } }))
     ))
@@ -161,7 +162,7 @@ export default function ContextMenuWrap ({ children }) {
     dispatch(recoverElements({ 
       userData, 
       driveData, 
-      elements: clickedElements
+      elements: selectedElements
     }))
     .then(async res => {
       if ((res.payload) && (res.type === 'elements/recover/rejected')) {
@@ -173,10 +174,10 @@ export default function ContextMenuWrap ({ children }) {
     })
   }
 
-  const deleteClickedElements = async () => {
+  const deleteSelectedElements = async () => {
     setIsContextMenuOpen(false);
 
-    dispatch(deleteBookmarksOnClient(clickedElements
+    dispatch(deleteBookmarksOnClient(selectedElements
       .filter(element => element.type === 'folder')
       .map(element => ({ uuid: userData.uuid + element.uuid, folder: element }))
     ))
@@ -184,7 +185,7 @@ export default function ContextMenuWrap ({ children }) {
     dispatch(deleteElements({ 
       userData, 
       driveData, 
-      elements: clickedElements
+      elements: selectedElements
     }))    
     .then(async res => {
       if ((res.payload) && (res.type === 'elements/delete/rejected')) {
@@ -240,7 +241,7 @@ export default function ContextMenuWrap ({ children }) {
     handleContextMenuClick(event);
 
     if (!isContextMenuOpen) {
-      clearClickedElements();
+      clearSelectedElements();
       setContextMenuType('default');
     }
   };
@@ -263,13 +264,13 @@ export default function ContextMenuWrap ({ children }) {
     }
 
     if (!isContextMenuOpen) {
-      clearClickedElements();
+      clearSelectedElements();
       setContextMenuType('main');
     }
   };
 
   const handleTopPanelContextMenuClick = (event) => {
-    clearClickedElements();
+    clearSelectedElements();
   };
 
   const handleColumnsContextMenuClick = (event) => {
@@ -278,27 +279,27 @@ export default function ContextMenuWrap ({ children }) {
   };
 
   const handleSidePanelContextMenuClick = (event) => {
-    clearClickedElements();
+    clearSelectedElements();
   };
   
   const handleBottomPanelContextMenuClick = (event) => {
-    clearClickedElements();
+    clearSelectedElements();
   };
   
   const handleFileContextMenuClick = (event, file) => {
     handleContextMenuClick(event);
 
     if (!isContextMenuOpen) {
-      if (clickedElements.length <= 1) {
-        addClickedElement(event, file);
+      if (selectedElements.length <= 1) {
+        addSelectedElement(event, file);
         setContextMenuType('file')
       } else {
-        // Will replace the clickedElements if ctrl key is not pressed and 
-        // the newly clicked element is not already in the clickedElements, otherwise nothing will happen
-        if (!clickedElements.includes(file)) { 
-          addClickedElement(event, file); 
+        // Will replace the selectedElements if ctrl key is not pressed and 
+        // the newly clicked element is not already in the selectedElements, otherwise nothing will happen
+        if (!selectedElements.includes(file)) { 
+          addSelectedElement(event, file); 
         }
-        if (clickedElements.map(element => element.type).includes('folder')) {
+        if (selectedElements.map(element => element.type).includes('folder')) {
           setContextMenuType('folder-multiple')
         } else {
           setContextMenuType('file-multiple')
@@ -311,14 +312,14 @@ export default function ContextMenuWrap ({ children }) {
     handleContextMenuClick(event);
 
     if (!isContextMenuOpen) {
-      if (clickedElements.length <= 1) {
-        addClickedElement(event, folder);
+      if (selectedElements.length <= 1) {
+        addSelectedElement(event, folder);
         setContextMenuType('folder');
       } else {
-        // Will replace the clickedElements if ctrl key is not pressed and 
-        // the newly clicked element is not already in the clickedElements, otherwise nothing will happen
-        if (!clickedElements.includes(folder)) { 
-          addClickedElement(event, folder); 
+        // Will replace the selectedElements if ctrl key is not pressed and 
+        // the newly clicked element is not already in the selectedElements, otherwise nothing will happen
+        if (!selectedElements.includes(folder)) { 
+          addSelectedElement(event, folder); 
         }
         setContextMenuType('folder-multiple');
       }
@@ -329,7 +330,7 @@ export default function ContextMenuWrap ({ children }) {
     if (!['home', 'trash'].includes(bookmark.folder.uuid)) {
       handleContextMenuClick(event);
       if (!isContextMenuOpen) {
-        addClickedElement(event, bookmark);
+        addSelectedElement(event, bookmark);
         setContextMenuType('bookmark'); 
       }
     } else {
@@ -415,14 +416,14 @@ export default function ContextMenuWrap ({ children }) {
     setIsDraggingElement(false);
     setIsHoldingElement(false);
 
-    if ((!clickedElements.includes(hoveredElement)) && (hoveredElement.type === 'folder') && 
+    if ((!selectedElements.includes(hoveredElement)) && (hoveredElement.type === 'folder') && 
     isDraggingElement && hoveredElement.uuid) {
       // If dragged onto a folder, move the clicked elements
-      moveClickedElements();
+      moveSelectedElements();
     } else if (!draggingStartEvent.ctrlKey && !draggingStartEvent.shiftKey && 
     !isDraggingElement && !isContextMenuOpen && hoveredElement.uuid) { 
       // Used to set clicked element if there was no drag attempt after mouse down event
-      addClickedElement({}, hoveredElement)
+      addSelectedElement({}, hoveredElement)
     }
   }
 
@@ -440,7 +441,7 @@ export default function ContextMenuWrap ({ children }) {
 
   const handleOnKeyDown = (event) => {
     if (event.code === 'Escape') { 
-      clearClickedElements();
+      clearSelectedElements();
       dispatch(clearClipboard());
     }
   }
@@ -470,7 +471,7 @@ export default function ContextMenuWrap ({ children }) {
     if (getIsOnMobile()) {
       //console.log(event.target, event.currentTarget)
       if (!clickableElementBoxesIds.includes(event.target.id)) {
-        clearClickedElements()
+        clearSelectedElements()
       }
 
     } else {
@@ -480,7 +481,7 @@ export default function ContextMenuWrap ({ children }) {
   
       if ((event.button === 0)) {
         if (!hoveredElement.uuid && !isContextMenuOpen && !event.ctrlKey) { // Deselect elements if context menu is not open
-          clearClickedElements();  
+          clearSelectedElements();  
         }
   
         if (hoveredElement.uuid) { // Get ready for dragging
@@ -501,15 +502,15 @@ export default function ContextMenuWrap ({ children }) {
       if (currentFolderData.uuid !== 'trash') {
         if (contextMenuType === 'default') { return <DefaultContextMenu /> }
         else if (contextMenuType === 'file') { return <FileContextMenu /> } 
-        else if (contextMenuType === 'folder') { return <FolderContextMenu folder={clickedElements[0]} /> }  
+        else if (contextMenuType === 'folder') { return <FolderContextMenu folder={selectedElements[0]} /> }  
         else if (contextMenuType === 'file-multiple') { return <MultipleFileContextMenu /> }
         else if (contextMenuType === 'folder-multiple') { return <MultipleFolderContextMenu /> }
-        else if (contextMenuType === 'bookmark') { return <BookmarkContextMenu bookmark={clickedElements[0]} /> } 
+        else if (contextMenuType === 'bookmark') { return <BookmarkContextMenu bookmark={selectedElements[0]} /> } 
         else if (contextMenuType === 'main') { return <MainMenu /> } 
         else if (contextMenuType === 'columns') { return <ColumnsContextMenu /> } 
       } else if (currentFolderData.uuid === 'trash') {
         if (['file', 'folder', 'file-multiple', 'folder-multiple'].includes(contextMenuType)) { return <TrashContextMenu /> }
-        else if (contextMenuType === 'bookmark') { return <BookmarkContextMenu bookmark={clickedElements[0]} /> }  
+        else if (contextMenuType === 'bookmark') { return <BookmarkContextMenu bookmark={selectedElements[0]} /> }  
       }
     }
   }
@@ -526,10 +527,10 @@ export default function ContextMenuWrap ({ children }) {
       getIsOnMobile, 
 
       hoveredElement, setHoveredElement, clearHoveredElement,
-      clickedElements, setClickedElements, addClickedElement, updateClickedElement, clearClickedElements,  
-      downloadClickedElements, openUpload,
-      removeClickedElements, recoverClickedElements, deleteClickedElements,
-      copyClickedElements, cutClickedElements, pasteClickedElements, 
+      selectedElements, setSelectedElements, addSelectedElement, updateSelectedElement, clearSelectedElements,  
+      downloadSelectedElements, openUpload,
+      removeSelectedElements, recoverSelectedElements, deleteSelectedElements,
+      copySelectedElements, cutSelectedElements, pasteSelectedElements, 
 
       isRenaming, setIsRenaming, isCreatingFolder, setIsCreatingFolder,
 

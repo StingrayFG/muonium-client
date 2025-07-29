@@ -9,13 +9,13 @@ export default function FileContextMenu () {
   const contextMenuContext = useContext(ContextMenuContext)
 
   const options = [
-    { text: 'Download', icon: 'download', handleOnClick: contextMenuContext.downloadClickedElements },
+    { text: 'Download', icon: 'download', handleOnClick: contextMenuContext.downloadSelectedElements },
     'line',
-    { text: 'Copy', icon: 'copy', handleOnClick: contextMenuContext.copyClickedElements },
-    { text: 'Cut', icon: 'cut', handleOnClick: contextMenuContext.cutClickedElements },
+    { text: 'Copy', icon: 'copy', handleOnClick: contextMenuContext.copySelectedElements },
+    { text: 'Cut', icon: 'cut', handleOnClick: contextMenuContext.cutSelectedElements },
     { text: 'Rename', icon: 'rename', handleOnClick: () => contextMenuContext.setIsRenaming(true) },
     'line',
-    { text: 'Move to trash', icon: 'trash', handleOnClick: contextMenuContext.removeClickedElements },
+    { text: 'Move to trash', icon: 'trash', handleOnClick: contextMenuContext.removeSelectedElements },
   ] 
 
 

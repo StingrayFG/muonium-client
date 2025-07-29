@@ -9,8 +9,8 @@ export default function TrashContextMenu () {
   const contextMenuContext = useContext(ContextMenuContext)
 
   const options = [
-    { text: 'Recover', icon: 'recover', handleOnClick: contextMenuContext.recoverClickedElements },
-    { text: 'Delete', icon: 'trash', handleOnClick: contextMenuContext.deleteClickedElements },
+    { text: 'Recover', icon: 'recover', handleOnClick: contextMenuContext.recoverSelectedElements },
+    { text: 'Delete', icon: 'trash', handleOnClick: contextMenuContext.deleteSelectedElements },
   ] 
 
   return (

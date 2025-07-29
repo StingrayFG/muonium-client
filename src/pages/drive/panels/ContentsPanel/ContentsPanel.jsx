@@ -189,9 +189,9 @@ export default function ContentsPanel () {
   // ELEMENT FUNCTIONS
   useEffect(() => {
     if (contextMenuContext.isRenaming || contextMenuContext.isCreatingFolder) {
-      if (contextMenuContext.clickedElements.length > 0) {
+      if (contextMenuContext.selectedElements.length > 0) {
         modalContext.openModal(<RenameModal 
-        name={contextMenuContext.clickedElements[0].name} 
+        name={contextMenuContext.selectedElements[0].name} 
         setName={handleNaming} 
         stopNaming={stopNaming} 
         usedNames={[ 
@@ -218,8 +218,8 @@ export default function ContentsPanel () {
   }
 
   const handleNaming = async (name) => {
-    if ((contextMenuContext.clickedElements.length === 0) || 
-    (name && (name !== contextMenuContext.clickedElements[0].name))) {
+    if ((contextMenuContext.selectedElements.length === 0) || 
+    (name && (name !== contextMenuContext.selectedElements[0].name))) {
       modalContext.closeNextModal();
 
       if (contextMenuContext.isCreatingFolder) {
@@ -228,11 +228,11 @@ export default function ContentsPanel () {
         const newFolder = { uuid: 'temp-' + Date.now(), name: name, type: 'folder', parentUuid: currentFolderData.uuid };
         dispatch(createElement({ userData, driveData, element: newFolder }))
 
-        contextMenuContext.addClickedElement(null, newFolder);
+        contextMenuContext.addSelectedElement(null, newFolder);
       } else {
         contextMenuContext.setIsRenaming(false);
 
-        const newElement = { ...contextMenuContext.clickedElements[0], name: name };
+        const newElement = { ...contextMenuContext.selectedElements[0], name: name };
         dispatch(updateBookmarksOnClient([{
           uuid: userData.uuid + newElement.uuid,
           folder: newElement
@@ -247,10 +247,10 @@ export default function ContentsPanel () {
           }
         })
 
-        contextMenuContext.updateClickedElement(newElement)
+        contextMenuContext.updateSelectedElement(newElement)
       }
 
-    } else if (name === contextMenuContext.clickedElements[0].name) {
+    } else if (name === contextMenuContext.selectedElements[0].name) {
       modalContext.closeNextModal();
       contextMenuContext.setIsRenaming(false);
     }
@@ -258,7 +258,7 @@ export default function ContentsPanel () {
 
   const handleOnElementMouseDown = (event, element, index) => {
     if (contextMenuContext.getIsOnMobile()) { 
-      if (contextMenuContext.clickedElements.length === 0) {
+      if (contextMenuContext.selectedElements.length === 0) {
         if (element.type === 'file') {
           if (element.thumbnail || element.imageBlob) {
             modalContext.openModal(<AlbumViewerModal 
@@ -271,30 +271,30 @@ export default function ContentsPanel () {
           }
         }
       } else {
-        if (!contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)) {
-          contextMenuContext.setClickedElements([ ...contextMenuContext.clickedElements, element])
+        if (!contextMenuContext.selectedElements.map(e => e.uuid).includes(element.uuid)) {
+          contextMenuContext.setSelectedElements([ ...contextMenuContext.selectedElements, element])
         } else {
-          contextMenuContext.setClickedElements([ ...contextMenuContext.clickedElements.filter(e => e.uuid !== element.uuid) ])
+          contextMenuContext.setSelectedElements([ ...contextMenuContext.selectedElements.filter(e => e.uuid !== element.uuid) ])
         }
       }
     } else {
       if ((event.button === 0) && 
       event.shiftKey && 
       !contextMenuContext.isContextMenuOpen && 
-      (contextMenuContext.clickedElements.length > 0) && 
-      !contextMenuContext.clickedElements.includes(element)) {
-        const firstElementIndex = currentFolderData.sortedElements.indexOf(contextMenuContext.clickedElements[0]);
+      (contextMenuContext.selectedElements.length > 0) && 
+      !contextMenuContext.selectedElements.includes(element)) {
+        const firstElementIndex = currentFolderData.sortedElements.indexOf(contextMenuContext.selectedElements[0]);
 
         if (index < firstElementIndex) {
-          contextMenuContext.setClickedElements([ contextMenuContext.clickedElements[0], ...currentFolderData.sortedElements.slice(index, firstElementIndex) ])
+          contextMenuContext.setSelectedElements([ contextMenuContext.selectedElements[0], ...currentFolderData.sortedElements.slice(index, firstElementIndex) ])
         } else if (index > firstElementIndex) {
-          contextMenuContext.setClickedElements([ contextMenuContext.clickedElements[0], ...currentFolderData.sortedElements.slice(firstElementIndex + 1, index + 1) ])
+          contextMenuContext.setSelectedElements([ contextMenuContext.selectedElements[0], ...currentFolderData.sortedElements.slice(firstElementIndex + 1, index + 1) ])
         }
 
       } else if ((event.button === 0) && 
       !contextMenuContext.isContextMenuOpen && 
-      !contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)) {
-        contextMenuContext.addClickedElement(event, element); // Will get added or appended depending on the ctrl key
+      !contextMenuContext.selectedElements.map(e => e.uuid).includes(element.uuid)) {
+        contextMenuContext.addSelectedElement(event, element); // Will get added or appended depending on the ctrl key
       }
     }
   };
@@ -310,7 +310,7 @@ export default function ContentsPanel () {
       } else if (element.type === 'folder') {
         if (!element.isRemoved) {
           dispatch(moveToNew({ uuid: element.uuid }));
-          contextMenuContext.clearClickedElements();
+          contextMenuContext.clearSelectedElements();
         }
       }
     } 
@@ -318,14 +318,14 @@ export default function ContentsPanel () {
   
   const handleOnElementContextMenu = (event, element, index) => {
     if (contextMenuContext.getIsOnMobile()) {
-      if (contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)) {
+      if (contextMenuContext.selectedElements.map(e => e.uuid).includes(element.uuid)) {
         if (element.type === 'file') {
           contextMenuContext.handleFileContextMenuClick(event, element);
         } else if (element.type === 'folder') {
           contextMenuContext.handleFolderContextMenuClick(event, element);
         }
       } else {
-        contextMenuContext.setClickedElements([ ...contextMenuContext.clickedElements, element])
+        contextMenuContext.setSelectedElements([ ...contextMenuContext.selectedElements, element])
       }
     } else {
       if (element.type === 'file') {
@@ -511,7 +511,7 @@ export default function ContentsPanel () {
     let res = 'w-[${settingsData.gridElementWidth * 0.8}px] m-[${settingsData.gridElementWidth * 0.1}px] ';
     if (clipboardData.cutElementsUuids.includes(element.uuid)) {
       res = 'element-box-cut';
-    } else if (contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)) {
+    } else if (contextMenuContext.selectedElements.map(e => e.uuid).includes(element.uuid)) {
       res = 'element-box-clicked';
     } else {
       res = 'element-box';
@@ -523,7 +523,7 @@ export default function ContentsPanel () {
     let res = 'w-[${settingsData.gridElementWidth * 0.8}px] m-[${settingsData.gridElementWidth * 0.1}px] ';
     if (clipboardData.cutElementsUuids.includes(element.uuid)) {
       res += 'element-row-cut';
-    } else if (contextMenuContext.clickedElements.map(e => e.uuid).includes(element.uuid)) {
+    } else if (contextMenuContext.selectedElements.map(e => e.uuid).includes(element.uuid)) {
       res += 'element-row-clicked';
     } else {
       res += 'element-row';
