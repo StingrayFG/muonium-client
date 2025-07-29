@@ -9,7 +9,11 @@ export function renderWithProviders(
   ui,
   {
     preloadedState = {},
-    store = setupStore(preloadedState),
+    dispatch = () => {},
+    store = {
+      ...setupStore(preloadedState),
+      dispatch
+    },
     ...renderOptions
   } = {}
 ) {
