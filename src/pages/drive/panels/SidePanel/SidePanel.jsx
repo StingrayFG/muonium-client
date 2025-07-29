@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
+
 import { useDragHandler } from 'hooks/UseDragHandler';
 import { useIsOnMobile } from 'hooks/UseIsOnMobile';
 
@@ -24,6 +25,9 @@ import config from 'config.json';
 export default function SidePanel () {
   const dispatch = useDispatch();
 
+  const isOnMobile = useIsOnMobile();
+  const [dragData, dragFunctions] = useDragHandler(0);
+
   const contextMenuContext = useContext(ContextMenuContext);
   const drivePageContext = useContext(DrivePageContext);
 
@@ -31,9 +35,6 @@ export default function SidePanel () {
   const bookmarkData = useSelector(state => state.bookmark);
   const settingsData = useSelector(state => state.settings);
   const pathData = useSelector(state => state.path);
-
-  const isOnMobile = useIsOnMobile();
-  const [dragData, dragFunctions] = useDragHandler(0);
 
   const [panelWidth, setPanelWidth] = useState(settingsData.sidePanelWidth);
 
@@ -61,6 +62,7 @@ export default function SidePanel () {
   
   useEffect(() => {
     if (((windowWidth - panelWidth) < config.contentsPanel.minWidth) && !isOnMobile) {
+      console.log(2, windowWidth, isOnMobile) 
       setPanelWidth(windowWidth - config.contentsPanel.minWidth);
       dispatch(setSidePanelWidth(windowWidth - config.contentsPanel.minWidth));
     }
@@ -121,11 +123,17 @@ export default function SidePanel () {
   const getWrapStylesString = () => {
     if (isOnMobile) {
       return `w-[80vw] 
-      fixed top-0 left-[${drivePageContext.isSidePanelOpen ? 0 : -80}vw]
+      fixed top-0
       transition-all duration-300`;
     } else {
       return `relative 
       transition-opacity duration-300`;
+    }
+  }
+
+  const getWrapStyles = () => {
+    if (isOnMobile) {
+      return { left: drivePageContext.isSidePanelOpen ? '0vw' : '-80vw' }
     }
   }
 
@@ -165,6 +173,7 @@ export default function SidePanel () {
     overflow-hidden
     shrink-0  
     ${getWrapStylesString()}`}
+    style={getWrapStyles()}
     onContextMenu={contextMenuContext.handleSidePanelContextMenuClick}
     onMouseDown={contextMenuContext.handleOnWrapMouseDown}>
 

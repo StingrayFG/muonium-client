@@ -1,7 +1,7 @@
 import { render, screen, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom'
 
-import { renderWithProviders } from 'utils/test-utils';
+import { renderWithProviders } from 'utils/testUtils';
 
 import { DrivePageContext } from "contexts/DrivePageContext";
 import { ContextMenuContext } from 'contexts/ContextMenuContext';

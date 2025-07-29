@@ -1,6 +1,8 @@
 import { useRef, useState, useEffect, useContext } from 'react';
 import { Box } from '@mui/material';
 
+import { useIsOnMobile } from 'hooks/UseIsOnMobile';
+
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
 import MenuOptionElement from 'pages/drive/menus/CommonContextMenu/MenuOptionElement';
@@ -9,6 +11,8 @@ import config from 'config.json';
 
 
 export default function CommonContextMenu ({ options }) {
+  const isOnMobile = useIsOnMobile();
+
   const contextMenuContext = useContext(ContextMenuContext);
 
   const linesCount = options.filter(option => option === 'line').length;
@@ -29,7 +33,7 @@ export default function CommonContextMenu ({ options }) {
   const getUsedPosition = () => {
     let position = { ...contextMenuContext.contextMenuClickPosition };
 
-    if (!contextMenuContext.getIsOnMobile()) {
+    if (!isOnMobile) {
       if (position.x + menuWidth > windowWidth) { position.x -= menuWidth; }
       if (position.y + menuHeight > windowHeight) { position.y -= menuHeight; }
     } else {

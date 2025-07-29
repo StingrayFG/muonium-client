@@ -2,7 +2,7 @@ import { render, screen, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 
-import { renderWithProviders } from 'utils/test-utils';
+import { renderWithProviders } from 'utils/testUtils';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext';
 
@@ -11,8 +11,8 @@ import CommonContextMenu from 'pages/drive/menus/CommonContextMenu/CommonContext
 
 describe('context menus', () => {
 
-  const handleOnClickMock = jest.fn((text) => {});
-  const setIsHoveredOverMenuMock = jest.fn((text) => {});
+  const handleOnClickMock = jest.fn();
+  const setIsHoveredOverMenuMock = jest.fn();
 
   const testOptions = [
     { text: 'Download', icon: 'download', handleOnClick: () => handleOnClickMock('Download') },
@@ -24,8 +24,7 @@ describe('context menus', () => {
     renderWithProviders(
       <ContextMenuContext.Provider value={{
         contextMenuClickPosition: contextMenuClickPosition,
-        setIsHoveredOverMenu: setIsHoveredOverMenuMock,
-        getIsOnMobile: () => false
+        setIsHoveredOverMenu: setIsHoveredOverMenuMock
       }}>
         <CommonContextMenu 
         options={testOptions}/>
@@ -57,10 +56,10 @@ describe('context menus', () => {
 
     const options = screen.getAllByTestId('context-menu-option');
 
-    await user.click(options[0]);
+    await user.pointer({ keys: '[MouseLeft]', target: options[0] });
     expect(handleOnClickMock.mock.calls[0][0]).toBe(testOptions[0].text)
 
-    await user.click(options[1]);
+    await user.pointer({ keys: '[MouseLeft]', target: options[1] });
     expect(handleOnClickMock.mock.calls[1][0]).toBe(testOptions[1].text)
 
     expect(setIsHoveredOverMenuMock.mock.calls).toBeDefined();

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { useDispatch } from 'react-redux';
 
-import { renderWithProviders } from 'utils/test-utils';
+import { renderWithProviders } from 'utils/testUtils';
 import { store } from 'state/store/store';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext';
@@ -16,11 +16,11 @@ import bookmarkSliceTestData from 'state/testdata/bookmarkSlice.testdata.json';
 
 describe('side panel', () => {
 
-  const setHoveredElementMock = jest.fn((element) => {});
-  const clearHoveredElementMock = jest.fn(() => {});
-  const clearSelectedElementsMock = jest.fn(() => {});
+  const setHoveredElementMock = jest.fn();
+  const clearHoveredElementMock = jest.fn();
+  const clearSelectedElementsMock = jest.fn();
 
-  const dispatchMock = jest.fn(() => {});
+  const dispatchMock = jest.fn();
 
   const defaultRender = () => {
     renderWithProviders(
@@ -63,7 +63,7 @@ describe('side panel', () => {
 
     const bookmarkElement = screen.getAllByTestId('bookmark-element')[2];
 
-    await user.click(bookmarkElement);
+    await user.pointer({ keys: '[MouseLeft]', target: bookmarkElement });
     expect(dispatchMock.mock.calls[0][0]).toEqual({
       type: 'path/moveToNew',
       payload: {

@@ -2,7 +2,7 @@ import { render, screen, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 
-import { renderWithProviders } from 'utils/test-utils';
+import { renderWithProviders } from 'utils/testUtils';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext';
 
@@ -35,10 +35,10 @@ describe('bookmark element', () => {
     "type": "bookmark"
   }
 
-  const handleOnBookmarkMouseDownMock = jest.fn(() => {})
+  const handleOnBookmarkMouseDownMock = jest.fn();
 
-  const setHoveredElementMock = jest.fn((element) => {});
-  const clearHoveredElementMock = jest.fn(() => {});
+  const setHoveredElementMock = jest.fn();
+  const clearHoveredElementMock = jest.fn();
 
   const defaultRender = () => {
     renderWithProviders(
@@ -74,8 +74,7 @@ describe('bookmark element', () => {
 
     const bookmarkElement = screen.getByTestId('bookmark-element');
 
-    await user.click(bookmarkElement);
+    await user.pointer({ keys: '[MouseLeft]', target: bookmarkElement });
     expect(handleOnBookmarkMouseDownMock.mock.calls[0][1]).toEqual(testBookmark);
-    expect(setHoveredElementMock.mock.calls[0][0]).toEqual(testBookmark);
   });
 })

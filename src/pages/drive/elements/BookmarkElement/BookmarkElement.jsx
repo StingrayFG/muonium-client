@@ -17,6 +17,10 @@ export default function BookmarkElement ({
   const contextMenuContext = useContext(ContextMenuContext);
 
   // HANDLERS
+  const handleOnMouseDown = (event) => {
+    handleOnBookmarkMouseDown(event, bookmark)
+  }
+  
   const handleOnMouseEnter = () => {
     contextMenuContext.setHoveredElement(bookmark);
   }
@@ -28,7 +32,7 @@ export default function BookmarkElement ({
   const handleOnContextMenu = (event) => {
     contextMenuContext.handleBookmarkContextMenuClick(event, bookmark)
   }
-  
+
   // RENDER
   if (bookmark) {
     return (
@@ -36,7 +40,7 @@ export default function BookmarkElement ({
       className={`w-full h-8 px-2 flex 
       animate-fadein-custom
       ${isSelected ? 'button-sidebar-selected' : 'button-sidebar'}`}
-      onMouseDown={(event) => handleOnBookmarkMouseDown(event, bookmark)}
+      onMouseDown={handleOnMouseDown}
       onMouseEnter={handleOnMouseEnter}
       onMouseLeave={handleOnMouseLeave}
       onContextMenu={handleOnContextMenu}>
