@@ -199,7 +199,7 @@ export default function SidePanel () {
 
           <Box className='w-full h-8 px-2 flex
           select-none pointer-events-none'>
-            <p className='place-self-center'>Places</p>
+            <p className='place-self-center text-secondary'>Places</p>
           </Box>
 
           <BookmarkElement 
@@ -212,7 +212,7 @@ export default function SidePanel () {
 
           <Box className='w-full h-8 px-2 flex
           select-none pointer-events-none'>
-            <p className='place-self-center'>Bookmarks</p>
+            <p className='place-self-center text-secondary'>Bookmarks</p>
           </Box>
 
           {bookmarkData.bookmarks.map((bookmark) => (
