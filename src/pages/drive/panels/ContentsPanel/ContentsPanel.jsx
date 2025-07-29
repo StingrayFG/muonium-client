@@ -10,7 +10,7 @@ import { moveToNew } from 'state/slices/pathSlice';
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { ModalContext } from 'contexts/ModalContext.jsx'
 
-import { useDragHandler } from 'hooks/UseDragHandler';
+import { useDragHandler } from 'hooks/UseDragHandlerLegacy';
 
 import FileElement from 'pages/drive/elements/FileElement/FileElement.jsx';
 import FolderElement from 'pages/drive/elements/FolderElement/FolderElement.jsx';

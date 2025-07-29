@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 
 
 export function useDragHandler (draggingDeltaThreshold = 10, shouldResetDeltaAfterDragging = false) {
-
-  const [usedDeltaThreshold, setUsedDeltaThreshold] = useState(draggingDeltaThreshold);
-
   const [mouseDownPosition, setMouseDownPosition] = useState({ x: null, y: null });
   const [dragDelta, setDragDelta] = useState({ x: null, y: null });
   const [isHolding, setIsHolding] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+
+  const [usedLowerDeltaLimit, setUsedLowerDeltaLimit] = useState(draggingDeltaThreshold);
   
   const startDragging = (event) => {
     setIsHolding(true);
@@ -27,7 +26,7 @@ export function useDragHandler (draggingDeltaThreshold = 10, shouldResetDeltaAft
   
       setDragDelta(newDragDelta);
   
-      if ((Math.pow(newDragDelta.x, 2) + Math.pow(newDragDelta.y, 2) > Math.pow(usedDeltaThreshold, 2)) && 
+      if (((newDragDelta.x * newDragDelta.x) + (newDragDelta.y * newDragDelta.y) > (usedLowerDeltaLimit * usedLowerDeltaLimit)) && 
       isHolding && 
       !isDragging) {
         setIsDragging(true);
@@ -42,28 +41,15 @@ export function useDragHandler (draggingDeltaThreshold = 10, shouldResetDeltaAft
   useEffect(() => {
     if (!isHolding) {
       setIsDragging(false);
-      if (shouldResetDeltaAfterDragging) { 
+      if (!shouldResetDeltaAfterDragging) { 
         setDragDelta({ x: null, y: null }) 
       };
     }
   }, [isHolding])
 
-  const updateDeltaThreshold = (delta) => {
-    setUsedDeltaThreshold(delta);
+  const updateDelta = (delta) => {
+    setUsedLowerDeltaLimit(delta);
   }
 
-  // use [dragData, dragFunctions]
-  return [
-    {
-      isHolding,
-      isDragging,
-      dragDelta,
-    },
-    {
-      startDragging, 
-      updateDragging, 
-      stopDragging, 
-      updateDeltaThreshold
-    }
-  ] 
+  return [isHolding, isDragging, dragDelta, startDragging, updateDragging, stopDragging, updateDelta];
 }
