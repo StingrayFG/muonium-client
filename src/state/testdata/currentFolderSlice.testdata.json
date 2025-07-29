@@ -12,7 +12,8 @@
       "driveUuid": "c808eb64-8970-4a5d-a7e1-571f6cad4ac5",
       "parentUuid": "696b5d09-e26c-479a-8e15-e964d5eeff47",
       "isRemoved": false,
-      "type": "file"
+      "type": "file",
+      "thumbnail": "placeholder"
     }
   ],
   "folders": [
@@ -57,7 +58,8 @@
       "driveUuid": "c808eb64-8970-4a5d-a7e1-571f6cad4ac5",
       "parentUuid": "696b5d09-e26c-479a-8e15-e964d5eeff47",
       "isRemoved": false,
-      "type": "file"
+      "type": "file",
+      "thumbnail": "placeholder"
     }
   ],
   "sortBy": "modificationDate",
