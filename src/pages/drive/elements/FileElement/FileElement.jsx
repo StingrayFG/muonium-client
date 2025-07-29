@@ -3,9 +3,7 @@ import { Box } from '@mui/material';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
-import FileElementIcon from 'pages/drive/elements/FileElementIcon';
-
-import config from 'config.json';
+import FileElementIcon from 'pages/drive/elements/FileElement/FileElementIcon';
 
 
 export default function FileElement ({ 
@@ -54,7 +52,7 @@ export default function FileElement ({
           padding: generatedData?.boxPadding + 'px'
         }}> 
       
-          <Box id='file-icon-box'
+          <Box data-testid='file-icon-box'
           className={`w-full aspect-4-3`}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
@@ -75,7 +73,7 @@ export default function FileElement ({
             }
           </Box>
     
-          <Box id='file-name-box'
+          <Box data-testid='file-name-box'
           className='w-full h-12 pt-2 mb-2 place-self-center overflow-visible'
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
@@ -109,7 +107,7 @@ export default function FileElement ({
         }}>
           {generatedData?.rowBackground && generatedData?.rowBackground}
 
-          <Box id='folder-row-box'
+          <Box data-testid='file-row-box'
           className='w-fit flex'
           style={{
             marginLeft: generatedData.rowHeight + 'px'

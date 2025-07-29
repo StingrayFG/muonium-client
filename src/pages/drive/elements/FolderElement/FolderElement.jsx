@@ -3,10 +3,7 @@ import { Box } from '@mui/material';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 
-import { ReactComponent as FolderMu } from 'assets/icons/elements/muonium/folder.svg'
-import { ReactComponent as FolderBs } from 'assets/icons/elements/bootstrap/folder2.svg'
-
-import config from 'config.json';
+import FolderElementIcon from 'pages/drive/elements/FolderElement/FolderElementIcon';
 
 
 export default function FolderElement ({ 
@@ -56,22 +53,17 @@ export default function FolderElement ({
           padding: generatedData?.boxPadding + 'px'
         }}> 
     
-          <Box id='folder-icon-box'
+          <Box data-testid='folder-icon-box'
           className={`w-full aspect-4-3`}
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
           onContextMenu={handleOnContextMenu}
           onDoubleClick={handleOnDoubleClick}>
-            <FolderMu
-            data-testid='folder-icon'
-            className={`element-icon
-            w-full h-full place-self-center 
-            transition-opacity
-            pointer-events-none select-none`}/>
+            <FolderElementIcon />
           </Box>
     
-          <Box id='folder-name-box'
+          <Box data-testid='folder-name-box'
           className='w-full h-12 pt-2 mb-2 place-self-center overflow-visible'
           onMouseDown={handleOnMouseDown}
           onMouseEnter={handleOnMouseEnter}
@@ -104,7 +96,7 @@ export default function FolderElement ({
         }}>
           {generatedData?.rowBackground && generatedData?.rowBackground}
 
-          <Box id='folder-row-box' 
+          <Box data-testid='folder-row-box' 
           className='w-fit flex'
           style={{
             marginLeft: generatedData?.rowHeight + 'px'
@@ -120,19 +112,8 @@ export default function FolderElement ({
               height: generatedData?.rowHeight + 'px',
               padding: generatedData?.rowPadding + 'px',
             }}>
-            {generatedData.rowShouldUseSmallIcon ?
-              <FolderBs data-testid='folder-icon'
-              className={`element-icon-small
-              w-full h-full
-              transition-opacity
-              pointer-events-none select-none`}/>
-              :
-              <FolderMu data-testid='folder-icon'
-              className={`element-icon
-              w-full h-full
-              transition-opacity
-              pointer-events-none select-none`}/>
-            }
+              <FolderElementIcon 
+              isSmall={generatedData.rowShouldUseSmallIcon}/>
             </Box>
     
             {generatedData?.rowColumns}

@@ -1,11 +1,12 @@
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup } from '@testing-library/react';
+import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 
 import { renderWithProviders } from 'utils/test-utils'
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext';
 
-import FolderElement from './FolderElement';
+import FolderElement from 'pages/drive/elements/FolderElement/FolderElement';
 
 import currentFolderSliceTestData from 'state/testdata/currentFolderSlice.testdata.json';
 import config from 'config.json';
@@ -13,7 +14,7 @@ import config from 'config.json';
 
 describe('folder element', () => {
   
-  const folderTestData = {
+  const testFolder = {
     "name": "icons",
     "size": 0,
     "creationDate": "2024-11-23T19:55:25.991Z",
@@ -28,13 +29,32 @@ describe('folder element', () => {
     "type": "folder"
   }
 
-  const defaultRender = () => {
+  const testGeneratedData = {
+    "rowColumns": <p data-testid={'columns-placeholder'}></p>
+  }
+
+  const handleOnElementMouseDownMock = jest.fn(() => {});
+  const handleOnElementContextMenuMock = jest.fn(() => {});
+  const handleOnElementDoubleClickMock = jest.fn(() => {});
+
+  const setHoveredElementMock = jest.fn((element) => {});
+  const clearHoveredElementMock = jest.fn(() => {});
+
+  const defaultRender = (viewMode) => {
     renderWithProviders(
       <ContextMenuContext.Provider value={{
         clickedElements: [],
-        hoveredElement: {}
+        hoveredElement: {},
+        setHoveredElement: setHoveredElementMock,
+        clearHoveredElement: clearHoveredElementMock
       }}>
-        <FolderElement folder={folderTestData}/>
+        <FolderElement
+        folder={testFolder}
+        generatedData={testGeneratedData}
+        viewMode={viewMode}
+        handleOnElementMouseDown={handleOnElementMouseDownMock}
+        handleOnElementContextMenu={handleOnElementContextMenuMock}
+        handleOnElementDoubleClick={handleOnElementDoubleClickMock} />
       </ContextMenuContext.Provider>,
       {
         preloadedState: {
@@ -45,17 +65,67 @@ describe('folder element', () => {
     );
   }
 
-  test('folder icon', () => {
-    defaultRender();
+  test('render in grid view', () => {
+    defaultRender('grid');
 
     expect(screen.getByTestId('folder-icon')).toBeInTheDocument();
+    expect(screen.getByText(testFolder.name)).toBeInTheDocument();
   });
 
-  test('folder name', () => {
-    defaultRender();
+  test('render in list view', () => {
+    defaultRender('list');
 
-    expect(screen.getByTestId('folder-name')).toBeInTheDocument();
-    expect(screen.getByText(folderTestData.name)).toBeInTheDocument();
+    expect(screen.getByTestId('folder-icon')).toBeInTheDocument();
+    expect(screen.getByTestId('columns-placeholder')).toBeInTheDocument();
+  });
+
+  test('interact in grid view', async () => {
+    const user = userEvent.setup();
+    defaultRender('grid');
+
+    //
+    const folderIconElement = screen.getByTestId('folder-icon-box');
+
+    await user.click(folderIconElement);
+    expect(handleOnElementMouseDownMock.mock.calls[0][1]).toEqual(testFolder);
+    expect(setHoveredElementMock.mock.calls[0][0]).toEqual(testFolder);
+
+    await user.dblClick(folderIconElement);
+    expect(handleOnElementDoubleClickMock.mock.calls[0][1]).toEqual(testFolder);
+
+    await user.pointer({ keys: '[MouseRight>]', target: folderIconElement })
+    expect(handleOnElementContextMenuMock.mock.calls[0][1]).toEqual(testFolder);
+
+    //
+    const folderNameElement = screen.getByTestId('folder-name-box');
+
+    await user.click(folderNameElement);
+    expect(handleOnElementMouseDownMock.mock.calls[1][1]).toEqual(testFolder);
+    expect(setHoveredElementMock.mock.calls[1][0]).toEqual(testFolder);
+
+    await user.dblClick(folderNameElement);
+    expect(handleOnElementDoubleClickMock.mock.calls[1][1]).toEqual(testFolder);
+
+    await user.pointer({ keys: '[MouseRight>]', target: folderNameElement })
+    expect(handleOnElementContextMenuMock.mock.calls[1][1]).toEqual(testFolder);
+  });
+
+  test('render in list view', async () => {
+    const user = userEvent.setup();
+    defaultRender('list');
+
+    //
+    const folderRow = screen.getByTestId('folder-row-box');
+
+    await user.click(folderRow);
+    expect(handleOnElementMouseDownMock.mock.calls[0][1]).toEqual(testFolder);
+    expect(setHoveredElementMock.mock.calls[0][0]).toEqual(testFolder);
+
+    await user.dblClick(folderRow);
+    expect(handleOnElementDoubleClickMock.mock.calls[0][1]).toEqual(testFolder);
+
+    await user.pointer({ keys: '[MouseRight>]', target: folderRow })
+    expect(handleOnElementContextMenuMock.mock.calls[0][1]).toEqual(testFolder);
   });
 
 })

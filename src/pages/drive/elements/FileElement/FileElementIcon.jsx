@@ -13,7 +13,7 @@ import { ReactComponent as FileArchiveBs } from 'assets/icons/elements/bootstrap
 import { ReactComponent as FileAppBs } from 'assets/icons/elements/bootstrap/terminal.svg'
 
 
-export default function FileElement ({ type, isSmall=false }) { 
+export default function FileElementIcon ({ type, isSmall=false }) { 
  
   const iconStyle = isSmall ? 
   `element-icon-small
@@ -27,20 +27,19 @@ export default function FileElement ({ type, isSmall=false }) {
   pointer-events-none select-none`;
 
   if (isSmall) {
-    if (type === 'text') { return <FileTextBs className={iconStyle}/> } 
-    else if (type === 'audio') { return <FileMusicBs className={iconStyle}/> } 
-    else if (type === 'video') { return <FileVideoBs className={iconStyle}/>  } 
-    else if (type === 'archive') { return <FileArchiveBs className={iconStyle}/> } 
-    else if (type === 'app') { return <FileAppBs className={iconStyle}/> } 
-    else { return <FileEmptyBs className={iconStyle}/> }
+    if (type === 'text') { return <FileTextBs data-testid='file-icon' className={iconStyle}/> } 
+    else if (type === 'audio') { return <FileMusicBs data-testid='file-icon' className={iconStyle}/> } 
+    else if (type === 'video') { return <FileVideoBs data-testid='file-icon' className={iconStyle}/>  } 
+    else if (type === 'archive') { return <FileArchiveBs data-testid='file-icon' className={iconStyle}/> } 
+    else if (type === 'app') { return <FileAppBs data-testid='file-icon' className={iconStyle}/> } 
+    else { return <FileEmptyBs data-testid='file-icon' className={iconStyle}/> }
   } else {
-    if (type === 'text') { return <FileTextMu className={iconStyle}/> } 
-    else if (type === 'audio') { return <FileMusicMu className={iconStyle}/> } 
-    else if (type === 'video') { return <FileVideoMu className={iconStyle}/>  } 
-    else if (type === 'archive') { return <FileArchiveMu className={iconStyle}/> } 
-    else if (type === 'app') { return <FileAppMu className={iconStyle}/> } 
-    else { return <FileEmptyMu className={iconStyle}/> }
+    if (type === 'text') { return <FileTextMu data-testid='file-icon' className={iconStyle}/> } 
+    else if (type === 'audio') { return <FileMusicMu data-testid='file-icon' className={iconStyle}/> } 
+    else if (type === 'video') { return <FileVideoMu data-testid='file-icon' className={iconStyle}/>  } 
+    else if (type === 'archive') { return <FileArchiveMu data-testid='file-icon' className={iconStyle}/> } 
+    else if (type === 'app') { return <FileAppMu data-testid='file-icon' className={iconStyle}/> } 
+    else { return <FileEmptyMu data-testid='file-icon' className={iconStyle}/> }
   }
-
 
 }
