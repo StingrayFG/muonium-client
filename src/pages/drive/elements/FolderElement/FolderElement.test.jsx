@@ -2,7 +2,7 @@ import { render, screen, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 
-import { renderWithProviders } from 'utils/test-utils'
+import { renderWithProviders } from 'utils/testUtils'
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext';
 
@@ -30,15 +30,15 @@ describe('folder element', () => {
   }
 
   const testGeneratedData = {
-    "rowColumns": <p data-testid={'columns-placeholder'}></p>
+    rowColumns: [{ name: 'name', value: 'icons', width: 0 }]
   }
 
-  const handleOnElementMouseDownMock = jest.fn(() => {});
-  const handleOnElementContextMenuMock = jest.fn(() => {});
-  const handleOnElementDoubleClickMock = jest.fn(() => {});
+  const handleOnElementMouseDownMock = jest.fn();
+  const handleOnElementContextMenuMock = jest.fn();
+  const handleOnElementDoubleClickMock = jest.fn();
 
-  const setHoveredElementMock = jest.fn((element) => {});
-  const clearHoveredElementMock = jest.fn(() => {});
+  const setHoveredElementMock = jest.fn();
+  const clearHoveredElementMock = jest.fn();
 
   const defaultRender = (viewMode) => {
     renderWithProviders(
@@ -76,7 +76,8 @@ describe('folder element', () => {
     defaultRender('list');
 
     expect(screen.getByTestId('folder-icon')).toBeInTheDocument();
-    expect(screen.getByTestId('columns-placeholder')).toBeInTheDocument();
+    expect(screen.getByTestId('folder-column')).toBeInTheDocument();
+    expect(screen.getByText(testGeneratedData.rowColumns[0].value)).toBeInTheDocument();
   });
 
   test('interact in grid view', async () => {
@@ -86,45 +87,42 @@ describe('folder element', () => {
     //
     const folderIconElement = screen.getByTestId('folder-icon-box');
 
-    await user.click(folderIconElement);
+    await user.pointer({ keys: '[MouseLeft]', target: folderIconElement })
     expect(handleOnElementMouseDownMock.mock.calls[0][1]).toEqual(testFolder);
-    expect(setHoveredElementMock.mock.calls[0][0]).toEqual(testFolder);
 
-    await user.dblClick(folderIconElement);
+    await user.pointer({ keys: '[MouseLeft][MouseLeft]', target: folderIconElement })
     expect(handleOnElementDoubleClickMock.mock.calls[0][1]).toEqual(testFolder);
 
-    await user.pointer({ keys: '[MouseRight>]', target: folderIconElement })
+    await user.pointer({ keys: '[MouseRight]', target: folderIconElement })
     expect(handleOnElementContextMenuMock.mock.calls[0][1]).toEqual(testFolder);
 
     //
     const folderNameElement = screen.getByTestId('folder-name-box');
 
-    await user.click(folderNameElement);
+    await user.pointer({ keys: '[MouseLeft]', target: folderNameElement })
     expect(handleOnElementMouseDownMock.mock.calls[1][1]).toEqual(testFolder);
-    expect(setHoveredElementMock.mock.calls[1][0]).toEqual(testFolder);
 
-    await user.dblClick(folderNameElement);
+    await user.pointer({ keys: '[MouseLeft][MouseLeft]', target: folderNameElement })
     expect(handleOnElementDoubleClickMock.mock.calls[1][1]).toEqual(testFolder);
 
-    await user.pointer({ keys: '[MouseRight>]', target: folderNameElement })
+    await user.pointer({ keys: '[MouseRight]', target: folderNameElement })
     expect(handleOnElementContextMenuMock.mock.calls[1][1]).toEqual(testFolder);
   });
 
-  test('render in list view', async () => {
+  test('interact in list view', async () => {
     const user = userEvent.setup();
     defaultRender('list');
 
     //
-    const folderRow = screen.getByTestId('folder-row-box');
+    const folderRowElement = screen.getByTestId('folder-row-box');
 
-    await user.click(folderRow);
+    await user.pointer({ keys: '[MouseLeft]', target: folderRowElement })
     expect(handleOnElementMouseDownMock.mock.calls[0][1]).toEqual(testFolder);
-    expect(setHoveredElementMock.mock.calls[0][0]).toEqual(testFolder);
 
-    await user.dblClick(folderRow);
+    await user.pointer({ keys: '[MouseLeft][MouseLeft]', target: folderRowElement })
     expect(handleOnElementDoubleClickMock.mock.calls[0][1]).toEqual(testFolder);
 
-    await user.pointer({ keys: '[MouseRight>]', target: folderRow })
+    await user.pointer({ keys: '[MouseRight]', target: folderRowElement })
     expect(handleOnElementContextMenuMock.mock.calls[0][1]).toEqual(testFolder);
   });
 

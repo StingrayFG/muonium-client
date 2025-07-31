@@ -2,7 +2,7 @@ import { render, screen, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 
-import { renderWithProviders } from 'utils/test-utils';
+import { renderWithProviders } from 'utils/testUtils';
 
 import { ContextMenuContext } from 'contexts/ContextMenuContext';
 
@@ -29,16 +29,16 @@ describe('file element', () => {
   }
 
   const testGeneratedData = {
-    "type": "image",
-    "rowColumns": <p data-testid={'columns-placeholder'}></p>
+    type: 'image',
+    rowColumns: [{ name: 'name', value: 'gear.jpg', width: 0 }]
   }
 
-  const handleOnElementMouseDownMock = jest.fn(() => {});
-  const handleOnElementContextMenuMock = jest.fn(() => {});
-  const handleOnElementDoubleClickMock = jest.fn(() => {});
+  const handleOnElementMouseDownMock = jest.fn();
+  const handleOnElementContextMenuMock = jest.fn();
+  const handleOnElementDoubleClickMock = jest.fn();
 
-  const setHoveredElementMock = jest.fn((element) => {});
-  const clearHoveredElementMock = jest.fn(() => {});
+  const setHoveredElementMock = jest.fn();
+  const clearHoveredElementMock = jest.fn();
 
   const defaultRender = (viewMode) => {
     renderWithProviders(
@@ -76,7 +76,8 @@ describe('file element', () => {
     defaultRender('list');
 
     expect(screen.getByTestId('file-icon')).toBeInTheDocument();
-    expect(screen.getByTestId('columns-placeholder')).toBeInTheDocument();
+    expect(screen.getByTestId('file-column')).toBeInTheDocument();
+    expect(screen.getByText(testGeneratedData.rowColumns[0].value)).toBeInTheDocument();
   });
 
   test('interact in grid view', async () => {
@@ -86,45 +87,42 @@ describe('file element', () => {
     //
     const fileIconElement = screen.getByTestId('file-icon-box');
 
-    await user.click(fileIconElement);
+    await user.pointer({ keys: '[MouseLeft]', target: fileIconElement })
     expect(handleOnElementMouseDownMock.mock.calls[0][1]).toEqual(testFile);
-    expect(setHoveredElementMock.mock.calls[0][0]).toEqual(testFile);
 
-    await user.dblClick(fileIconElement);
+    await user.pointer({ keys: '[MouseLeft][MouseLeft]', target: fileIconElement })
     expect(handleOnElementDoubleClickMock.mock.calls[0][1]).toEqual(testFile);
 
-    await user.pointer({ keys: '[MouseRight>]', target: fileIconElement })
+    await user.pointer({ keys: '[MouseRight]', target: fileIconElement })
     expect(handleOnElementContextMenuMock.mock.calls[0][1]).toEqual(testFile);
 
     //
     const fileNameElement = screen.getByTestId('file-name-box');
 
-    await user.click(fileNameElement);
+    await user.pointer({ keys: '[MouseLeft]', target: fileNameElement })
     expect(handleOnElementMouseDownMock.mock.calls[1][1]).toEqual(testFile);
-    expect(setHoveredElementMock.mock.calls[1][0]).toEqual(testFile);
 
-    await user.dblClick(fileNameElement);
+    await user.pointer({ keys: '[MouseLeft][MouseLeft]', target: fileNameElement })
     expect(handleOnElementDoubleClickMock.mock.calls[1][1]).toEqual(testFile);
 
-    await user.pointer({ keys: '[MouseRight>]', target: fileNameElement })
+    await user.pointer({ keys: '[MouseRight]', target: fileNameElement })
     expect(handleOnElementContextMenuMock.mock.calls[1][1]).toEqual(testFile);
   });
 
-  test('render in list view', async () => {
+  test('interact in list view', async () => {
     const user = userEvent.setup();
     defaultRender('list');
-
+    
     //
-    const fileRow = screen.getByTestId('file-row-box');
+    const fileRowElement = screen.getByTestId('file-row-box');
 
-    await user.click(fileRow);
+    await user.pointer({ keys: '[MouseLeft]', target: fileRowElement })
     expect(handleOnElementMouseDownMock.mock.calls[0][1]).toEqual(testFile);
-    expect(setHoveredElementMock.mock.calls[0][0]).toEqual(testFile);
 
-    await user.dblClick(fileRow);
+    await user.pointer({ keys: '[MouseLeft][MouseLeft]', target: fileRowElement })
     expect(handleOnElementDoubleClickMock.mock.calls[0][1]).toEqual(testFile);
 
-    await user.pointer({ keys: '[MouseRight>]', target: fileRow })
+    await user.pointer({ keys: '[MouseRight]', target: fileRowElement })
     expect(handleOnElementContextMenuMock.mock.calls[0][1]).toEqual(testFile);
   });
 

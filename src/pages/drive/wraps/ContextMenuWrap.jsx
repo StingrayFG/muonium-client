@@ -465,12 +465,10 @@ export default function ContextMenuWrap ({ children }) {
     }
   };
   
-  const clickableElementBoxesIds = ['folder-icon-box', 'folder-name-box', 'folder-row-box', 'file-icon-box', 'file-name-box', 'file-row-box'];
-
   const handleOnWrapMouseDown = (event) => {
     if (getIsOnMobile()) {
       //console.log(event.target, event.currentTarget)
-      if (!clickableElementBoxesIds.includes(event.target.id)) {
+      if (event.target.id === 'contents-box') {
         clearSelectedElements()
       }
 

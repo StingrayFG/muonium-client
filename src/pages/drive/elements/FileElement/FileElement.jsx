@@ -36,10 +36,18 @@ export default function FileElement ({
   }
 
   const handleOnDoubleClick = (event) => {
-    handleOnElementDoubleClick(event, file, index);
+    handleOnElementDoubleClick(event, file);
   }
 
   // RENDER
+  const commonHandlerProps = {
+    onMouseDown: handleOnMouseDown,
+    onMouseEnter: handleOnMouseEnter,
+    onMouseLeave: handleOnMouseLeave,
+    onContextMenu: handleOnContextMenu,
+    onDoubleClick: handleOnDoubleClick
+  }
+
   if (file) {
     if (viewMode === 'grid') {
       return (
@@ -54,11 +62,7 @@ export default function FileElement ({
       
           <Box data-testid='file-icon-box'
           className={`w-full aspect-4-3`}
-          onMouseDown={handleOnMouseDown}
-          onMouseEnter={handleOnMouseEnter}
-          onMouseLeave={handleOnMouseLeave}
-          onContextMenu={handleOnContextMenu}
-          onDoubleClick={handleOnDoubleClick}>
+          { ...commonHandlerProps }>
             {generatedData?.thumbnailLink ? 
               <img data-testid='file-thumbnail'
               className={`element-image
@@ -75,11 +79,7 @@ export default function FileElement ({
     
           <Box data-testid='file-name-box'
           className='w-full h-12 pt-2 mb-2 place-self-center overflow-visible'
-          onMouseDown={handleOnMouseDown}
-          onMouseEnter={handleOnMouseEnter}
-          onMouseLeave={handleOnMouseLeave}
-          onContextMenu={handleOnContextMenu}
-          onDoubleClick={handleOnDoubleClick}>
+          { ...commonHandlerProps }>
             <p data-testid='file-name'
             className={`element-name
             pointer-events-none
@@ -103,25 +103,18 @@ export default function FileElement ({
         transition-colors
         ${generatedData?.rowStyle}`}
         style={{
-          height: generatedData.rowHeight + 'px'
+          height: generatedData?.rowHeight + 'px'
         }}>
           {generatedData?.rowBackground && generatedData?.rowBackground}
 
           <Box data-testid='file-row-box'
           className='w-fit flex'
-          style={{
-            marginLeft: generatedData.rowHeight + 'px'
-          }}
-          onMouseDown={handleOnMouseDown}
-          onMouseEnter={handleOnMouseEnter}
-          onMouseLeave={handleOnMouseLeave}
-          onContextMenu={handleOnContextMenu}
-          onDoubleClick={handleOnDoubleClick}>
+          { ...commonHandlerProps }>
 
             <Box className={`h-full ml-2 aspect-4-3`}
             style={{
-              height: generatedData.rowHeight + 'px',
-              padding: generatedData.rowPadding + 'px',
+              height: generatedData?.rowHeight + 'px',
+              padding: generatedData?.rowPadding + 'px',
             }}>
               {generatedData?.thumbnailLink ? 
                 <img 
@@ -135,11 +128,23 @@ export default function FileElement ({
                 :
                 <FileElementIcon 
                 type={generatedData?.type}
-                isSmall={generatedData.rowShouldUseSmallIcon}/>
+                isSmall={generatedData?.rowShouldUseSmallIcon}/>
               }
             </Box>
 
-            {generatedData?.rowColumns}
+            {generatedData?.rowColumns?.map(column => 
+              <p data-testid={'file-column'}
+              key={file.uuid + '-' + column.name}
+              className={`h-8 w-full py-1 px-2 my-auto 
+              shrink-0
+              pointer-events-none
+              text-left text-ellipsis overflow-hidden break-all whitespace-nowrap`}
+              style={{
+                width: column.width
+              }}> 
+                {column.value}
+              </p>
+            )}
 
           </Box>
 

@@ -2,15 +2,18 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 
+import { useDragHandler } from 'hooks/UseDragHandler';
+import { useIsOnMobile } from 'hooks/UseIsOnMobile';
+
 import { setColumnWidth, setColumnPosition, setSortBy, setSortByAscending } from 'state/slices/settingsSlice';
 import { syncSortingData, createElement, renameElements } from 'state/slices/currentFolderSlice';
 import { updateBookmarksOnClient, revertUpdateBookmarksOnClient } from 'state/slices/bookmarkSlice';
 import { moveToNew } from 'state/slices/pathSlice';
 
+import commonUtils from 'utils/commonUtils';
+
 import { ContextMenuContext } from 'contexts/ContextMenuContext.jsx';
 import { ModalContext } from 'contexts/ModalContext.jsx'
-
-import { useDragHandler } from 'hooks/UseDragHandlerLegacy';
 
 import FileElement from 'pages/drive/elements/FileElement/FileElement.jsx';
 import FolderElement from 'pages/drive/elements/FolderElement/FolderElement.jsx';
@@ -26,6 +29,8 @@ import extensions from 'extensions.json';
 export default function ContentsPanel () {
   const dispatch = useDispatch();
 
+  const isOnMobile = useIsOnMobile();
+
   const contextMenuContext = useContext(ContextMenuContext);
   const modalContext = useContext(ModalContext);
 
@@ -39,17 +44,9 @@ export default function ContentsPanel () {
   const contentsRef = useRef(null);
 
 
-  const getNewFolder = () => {
-    return {
-      uuid: '', 
-      name: '',
-      type: 'folder', 
-      parentUuid: currentFolderData.uuid 
-    }
-  }
-
-
   // WINDOW RESIZE
+  const [gridGridColumnsCount, setGridColumnsCount] = useState(Math.floor(contentsRef?.current?.clientWidth / settingsData.gridElementWidth));
+
   useEffect(() => {
     if (!contentsRef.current) return;
 
@@ -59,7 +56,7 @@ export default function ContentsPanel () {
     resizeObserver.observe(contentsRef.current);
 
     return () => resizeObserver.disconnect();
-  }, [settingsData.gridElementWidth]);
+  }, [settingsData.gridElementWidth, isOnMobile]);
 
   const handleOnScroll = (event) => {
     headerRef.current.scrollLeft = event?.target?.scrollLeft;
@@ -75,112 +72,123 @@ export default function ContentsPanel () {
     }))
   }, [settingsData.sortBy, settingsData.sortByAscending, settingsData.showFoldersFirst])
 
-  useEffect(() => {
-    const firstColumnOffset = (settingsData.listElementHeight * (7 / 3)) + 8;
+
+  // HEADER HANDLERS
+  const [dragData, dragFunctions] = useDragHandler(0);
+
+
+  // COLUMN RESIZING
+  const [resizedColumn, setResizedColumn] = useState(null);
+
+  const handleOnResizeBarMouseDown = (event, column) => {
+    if (event.button === 0) {
+      dragFunctions.updateDeltaThreshold(0);
+      dragFunctions.startDragging(event);
+      setResizedColumn(column);
+    }
+  }
+
+  const handleOnResizeBarMouseUp = (event) => {
+    dragFunctions.stopDragging(event);
+    setResizedColumn(null);
+  } 
+
+  const handleOnResizeBarMouseMove = (event) => {
+    dragFunctions.updateDragging(event);
+    if ((dragData.isDragging) &&
+    resizedColumn &&
+    (resizedColumn.width + dragData.dragDelta.x) > config.columns.minWidth) {
+      dispatch(setColumnWidth({ ...resizedColumn, width: resizedColumn.width + dragData.dragDelta.x }));
+    }
+  }
+  
+
+  // COLUMN REPOSITIONING
+  const [movedColumnData, setMovedColumnData] = useState({
+    column: null,
+    columnIndex: 0,
+    initialOffset: 0,
+    currentOffset: 0,
+  })
+
+  const getColumnOffsets = () => {
+    const firstColumnOffset = (settingsData.listElementHeight * (4 / 3)) + 8;
     let currentOffset = firstColumnOffset;
-    let newColumnsOffsets = [];
+    let columnOffsets = [];
 
     for (const column of settingsData.listViewColumns.filter(c => c.isEnabled)) {
-      newColumnsOffsets.push({
+      columnOffsets.push({
         leftOffset: currentOffset,
         rightOffset: currentOffset + column.width
       });
       currentOffset += column.width;
     }
 
-    setColumnsOffsets(newColumnsOffsets);
-  }, [settingsData.listViewColumns])
-
-
-  // HEADER HANDLERS
-  const [isHolding, isDragging, dragDelta, startDragging, updateDragging, stopDragging, updateDelta] = useDragHandler(0);
-
-  const [gridGridColumnsCount, setGridColumnsCount] = useState(Math.floor(contentsRef?.current?.clientWidth / settingsData.gridElementWidth));
-
-  const [resizedColumn, setResizedColumn] = useState({});
-  const [movedColumn, setMovedColumn] = useState({});
-  const [movedColumnInitialOffset, setMovedColumnInitialOffset] = useState(0);
-  const [movedColumnOffset, setMovedColumnOffset] = useState(0);
-  const [movedColumnIndex, setMovedColumnIndex] = useState({});
-
-  const [columnsOffsets, setColumnsOffsets] = useState([]);
-
-  const handleOnResizeBarMouseDown = (event, column) => {
-    if (event.button === 0) {
-      updateDelta(0);
-
-      startDragging(event);
-      setResizedColumn(column);
-    }
+    return columnOffsets;
   }
 
-  const handleOnResizeBarMouseUp = (event) => {
-    stopDragging(event);
-    setResizedColumn({});
-  } 
-
-  const handleOnResizeBarMouseMove = (event) => {
-    updateDragging(event);
-    if (isDragging) {
-      if ((resizedColumn.width + dragDelta.x) > config.columns.minWidth) {
-        dispatch(setColumnWidth({ ...resizedColumn, width: resizedColumn.width + dragDelta.x }));
-      }
-    }
-  }
-  
   const handleOnColumnHeaderMouseDown = (event, column) => {
     if ((event.target === event.currentTarget) && (event.button === 0)) {
-      updateDelta(10);
+      dragFunctions.updateDeltaThreshold(10);
 
-      setMovedColumn(column);
-      setMovedColumnOffset(event.target.offsetLeft);
-      setMovedColumnInitialOffset(event.target.offsetLeft);    
-      setMovedColumnIndex(settingsData.listViewColumns
-        .filter(c => c.isEnabled)
-        .findIndex(c => c.name === column.name))
+      setMovedColumnData({
+        column: column,
+        columnIndex: settingsData.listViewColumns.filter(c => c.isEnabled).findIndex(c => c.name === column.name),
+        currentOffset: event.target.offsetLeft,
+        initialOffset: event.target.offsetLeft,
+      })
     }
   }
 
   const handleOnColumnHeaderMouseUp = (event) => {
-    if (!isDragging) {
-      if (settingsData.sortBy === movedColumn.name) {
+    if (!dragData.isDragging) {
+      if (settingsData.sortBy === movedColumnData.column.name) {
         dispatch(setSortByAscending(!settingsData.sortByAscending));
       } else {
-        dispatch(setSortBy(movedColumn.name));
+        dispatch(setSortBy(movedColumnData.column.name));
       }      
     }
 
-    stopDragging(event);
-    setMovedColumn({});
-    setMovedColumnOffset(0);
-    setMovedColumnInitialOffset(0);   
+    dragFunctions.stopDragging();
+    setMovedColumnData({
+      ...movedColumnData,
+      column: null
+    })
   }
 
   const handleOnColumnHeaderMouseMove = (event) => {
-    if (!isHolding) {
-      startDragging(event);
-    } else {
-      updateDragging(event);
-      setMovedColumnOffset(movedColumnInitialOffset + dragDelta.x);
+    dragFunctions.updateDragging(event);
+
+    if (!dragData.isHolding) {
+      dragFunctions.startDragging(event);
+
+    } else if (dragData.isDragging) {
+      setMovedColumnData({ 
+        ...movedColumnData, 
+        currentOffset: movedColumnData.initialOffset + dragData.dragDelta.x
+      })
       const enabledColumns = settingsData.listViewColumns.filter(c => c.isEnabled);
+      const columnOffsets = getColumnOffsets();
      
-      if ((movedColumnIndex >= 1) && isDragging) {
-        if ((movedColumnIndex >= 2) &&
-        (movedColumnOffset < columnsOffsets[movedColumnIndex - 1].leftOffset)) {
-          const newPosition = settingsData.listViewColumns.findIndex(c => c.name === enabledColumns[movedColumnIndex - 1].name)
+      if ((movedColumnData.columnIndex >= 1) &&
+      (movedColumnData.currentOffset < columnOffsets[movedColumnData.columnIndex - 1].leftOffset)) {
+        
+        const newPosition = settingsData.listViewColumns.findIndex(c => c.name === enabledColumns[movedColumnData.columnIndex - 1].name)
+        setMovedColumnData({ 
+          ...movedColumnData, 
+          columnIndex: enabledColumns.findIndex(c => c.name === enabledColumns[movedColumnData.columnIndex - 1].name)
+        })
+        dispatch(setColumnPosition({ column: movedColumnData.column, position: newPosition }));
+      
+      } else if ((movedColumnData.columnIndex <= enabledColumns.length - 2) && 
+      (movedColumnData.currentOffset > columnOffsets[movedColumnData.columnIndex + 1].leftOffset)) {
 
-          setMovedColumnIndex(enabledColumns.findIndex(c => c.name === enabledColumns[movedColumnIndex - 1].name));
-
-          dispatch(setColumnPosition({ column: movedColumn, position: newPosition }));
-          
-        } else if ((movedColumnIndex <= enabledColumns.length - 2) && 
-        ((movedColumnOffset + movedColumn.width) > columnsOffsets[movedColumnIndex + 1].rightOffset)) {
-          const newPosition = settingsData.listViewColumns.findIndex(c => c.name === enabledColumns[movedColumnIndex + 1].name)
-          setMovedColumnIndex(enabledColumns.findIndex(c => c.name === enabledColumns[movedColumnIndex + 1].name));
-
-          dispatch(setColumnPosition({ column: movedColumn, position: newPosition }));
-       
-        }
+        const newPosition = settingsData.listViewColumns.findIndex(c => c.name === enabledColumns[movedColumnData.columnIndex + 1].name)
+        setMovedColumnData({ 
+          ...movedColumnData, 
+          columnIndex: enabledColumns.findIndex(c => c.name === enabledColumns[movedColumnData.columnIndex + 1].name)
+        })
+        dispatch(setColumnPosition({ column: movedColumnData.column, position: newPosition }));
       }
     }
   } 
@@ -257,18 +265,14 @@ export default function ContentsPanel () {
   }
 
   const handleOnElementMouseDown = (event, element, index) => {
-    if (contextMenuContext.getIsOnMobile()) { 
+    if (isOnMobile) { 
       if (contextMenuContext.selectedElements.length === 0) {
-        if (element.type === 'file') {
-          if (element.thumbnail || element.imageBlob) {
-            modalContext.openModal(<AlbumViewerModal 
-            initialFile={element}
-            allFiles={currentFolderData.sortedElements.filter(e => (e.thumbnail || e.imageBlob))}/>);
-          }
-        } else if (element.type === 'folder') {
-          if (!element.isRemoved) {
-            dispatch(moveToNew({ uuid: element.uuid }));
-          }
+        if ((element.type === 'file') && (element.thumbnail || element.imageBlob)) {
+          modalContext.openModal(<AlbumViewerModal 
+          initialFile={element}
+          allFiles={currentFolderData.sortedElements.filter(e => (e.thumbnail || e.imageBlob))}/>);
+        } else if ((element.type === 'folder') && !element.isRemoved) {
+          dispatch(moveToNew({ uuid: element.uuid }));
         }
       } else {
         if (!contextMenuContext.selectedElements.map(e => e.uuid).includes(element.uuid)) {
@@ -278,6 +282,7 @@ export default function ContentsPanel () {
         }
       }
     } else {
+      // Selection with shift
       if ((event.button === 0) && 
       event.shiftKey && 
       !contextMenuContext.isContextMenuOpen && 
@@ -286,9 +291,15 @@ export default function ContentsPanel () {
         const firstElementIndex = currentFolderData.sortedElements.indexOf(contextMenuContext.selectedElements[0]);
 
         if (index < firstElementIndex) {
-          contextMenuContext.setSelectedElements([ contextMenuContext.selectedElements[0], ...currentFolderData.sortedElements.slice(index, firstElementIndex) ])
+          contextMenuContext.setSelectedElements([ 
+            contextMenuContext.selectedElements[0],
+            ...currentFolderData.sortedElements.slice(index, firstElementIndex) 
+          ])
         } else if (index > firstElementIndex) {
-          contextMenuContext.setSelectedElements([ contextMenuContext.selectedElements[0], ...currentFolderData.sortedElements.slice(firstElementIndex + 1, index + 1) ])
+          contextMenuContext.setSelectedElements([ 
+            contextMenuContext.selectedElements[0], 
+            ...currentFolderData.sortedElements.slice(firstElementIndex + 1, index + 1) 
+          ])
         }
 
       } else if ((event.button === 0) && 
@@ -299,8 +310,8 @@ export default function ContentsPanel () {
     }
   };
 
-  const handleOnElementDoubleClick = (event, element, index) => {
-    if (!contextMenuContext.getIsOnMobile()) {
+  const handleOnElementDoubleClick = (event, element) => {
+    if (!isOnMobile) {
       if (element.type === 'file') {
         if (element.thumbnail || element.imageBlob) {
           modalContext.openModal(<AlbumViewerModal 
@@ -316,8 +327,8 @@ export default function ContentsPanel () {
     } 
   };  
   
-  const handleOnElementContextMenu = (event, element, index) => {
-    if (contextMenuContext.getIsOnMobile()) {
+  const handleOnElementContextMenu = (event, element) => {
+    if (isOnMobile) {
       if (contextMenuContext.selectedElements.map(e => e.uuid).includes(element.uuid)) {
         if (element.type === 'file') {
           contextMenuContext.handleFileContextMenuClick(event, element);
@@ -336,65 +347,48 @@ export default function ContentsPanel () {
     }
   };
 
-  const clickableElementBoxesIds = ['folder-icon-box', 'folder-name-box', 'folder-row-box', 'file-icon-box', 'file-name-box', 'file-row-box'];
-
   const handleOnPanelContextMenu = (event) => {
-    if (!clickableElementBoxesIds.includes(event.target.id) && contextMenuContext.getIsOnMobile()) {
-      contextMenuContext.handleDefaultContextMenuClick(event);
-    } else if (!contextMenuContext.getIsOnMobile()) { 
+    if (event.target.id === 'contents-box') {
       contextMenuContext.handleDefaultContextMenuClick(event);
     }
   }
 
   
-  // GETS
-  const getParsedFileSize = (size) => {
-    let res = '';
-    if (size > Math.pow(1024, 3)) { res += (((size / Math.pow(1024, 3)) + '')
-      .slice(0, (Math.floor(size / Math.pow(1024, 3)) + '').length + 2) + ' GiB') } 
-    else if (size > Math.pow(1024, 2)) { res += (((size / Math.pow(1024, 2)) + '')
-      .slice(0, (Math.floor(size / Math.pow(1024, 2)) + '').length + 2) + ' MiB') } 
-    else if (size > Math.pow(1024, 1)) { res += (((size / Math.pow(1024, 1)) + '')
-      .slice(0, (Math.floor(size / Math.pow(1024, 1)) + '').length + 2) + ' KiB') } 
-    else { res += (size + ' B') } 
-    return res;
-  }
-
+  // HEADER
   const getHeaderRowColumns = () => {
     return (
       <Box className={`h-8 w-full absolute top-0 flex
-      transition-opacity duration-0
       overflow-x-auto scrollbar-hidden
-      border-b border-sky-300/20 bg-gray-900/40 shadow-md
-      ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}
+      border-b border-sky-300/20 bg-gray-900/60`}
       ref={headerRef}
       onContextMenu={contextMenuContext.handleColumnsContextMenuClick}>
 
+        {/* Offset box */}
         {/* MUI Box has a bug, which results in shrinking animation that is impossible to disable, so a div is used */}
         <div className={`ml-2 shrink-0
-        transition-all duration-0
         border-r border-sky-300/20`}
         style={{
-          width: settingsData.listElementHeight * (7 / 3) + 'px',
+          width: settingsData.listElementHeight * (4 / 3) + 'px',
         }} />
 
+        {/* Columns */}
         {settingsData.listViewColumns.filter(c => c.isEnabled).map(column => 
           <Box className={`shrink-0 
           grid grid-cols-[1fr_max-content]
           transition-all duration-300 hover:duration-0
           border-r border-sky-300/20 hover:bg-sky-400/10   
-          ${(isDragging && (column.name === resizedColumn.name)) ? 'static' : 'relative'}
-          ${(column.name === movedColumn.name) ? 'bg-sky-400/10' : 'bg-transparent'}`}
+          ${(dragData.isDragging && (column.name === resizedColumn?.name)) ? 'static' : 'relative'}
+          ${(column.name === movedColumnData.column?.name) ? 'bg-sky-400/10' : 'bg-transparent'}`}
           style={{
             width: column.width
           }}
           key={'header-' + column.name}
           onMouseDown={(event) => handleOnColumnHeaderMouseDown(event, column)}>
 
-
+            {/* Resize bar / resizing lock box */}
             <Box className={`-mr-2 z-10
             cursor-col-resize
-            ${(isDragging && (column.name === resizedColumn.name)) ? 'fixed h-dvh w-screen top-0 left-0 ' : 'absolute h-full w-4 right-0'}`}
+            ${(dragData.isDragging && (column.name === resizedColumn?.name)) ? 'fixed h-dvh w-screen top-0 left-0 ' : 'absolute h-full w-4 right-0'}`}
             onMouseDown={(event) => handleOnResizeBarMouseDown(event, column)}
             onMouseUp={handleOnResizeBarMouseUp}
             onMouseMove={handleOnResizeBarMouseMove}/> {/* Used to stop resizing if mouse leaves the window */}
@@ -411,30 +405,32 @@ export default function ContentsPanel () {
           </Box>
         )}
 
-        {movedColumn.name && 
+        {/* Repositioning lock box */}
+        {movedColumnData.column && 
           <Box className={`fixed h-dvh w-screen top-0 left-0 z-20`}
           onMouseUp={handleOnColumnHeaderMouseUp}
           onMouseMove={handleOnColumnHeaderMouseMove} />
         }
 
-        {(isDragging && movedColumn.name) && 
-          <Box className={`absolute z-10
+        {/* Column ghost */}
+        {(dragData.isDragging && movedColumnData.column) && 
+          <Box className={`shrink-0 absolute z-10
+          grid grid-cols-[1fr_max-content]
           animate-fadein-custom-150 animate-fadeout-custom-150
-          shrink-0 grid grid-cols-[1fr_max-content]
           bg-gray-700/80`}
           style={{
-            width: movedColumn.width + 'px',
-            transform: `translateX(${movedColumnOffset + 'px'})`
+            width: movedColumnData.column.width + 'px',
+            transform: `translateX(${movedColumnData.currentOffset}px)`
           }}
-          key={'header-' + movedColumn.name}>
+          key={'header-' + movedColumnData.column.name}>
 
-            <p className='w-full px-2 pointer-events-none
+            <p className='w-full px-2 py-1 pointer-events-none
             text-ellipsis overflow-hidden'>
-              {config.columns.displayedNames[movedColumn.name]}
+              {config.columns.displayedNames[movedColumnData.column.name]}
             </p> 
 
             <ChevronDown className={`h-4 w-4 mt-2 mr-2 pointer-events-none
-            ${(settingsData.sortBy === movedColumn.name) ? 'opacity-100' : 'opacity-0'}
+            ${(settingsData.sortBy === movedColumnData.column.name) ? 'opacity-100' : 'opacity-0'}
             ${settingsData.sortByAscending ? 'rotate-180' : 'rotate-0'}`}/>
 
           </Box>
@@ -445,66 +441,32 @@ export default function ContentsPanel () {
 
   // ELEMENT GETS
   const getElementRowColumns = (element) => {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 
     const parseColumnValue = (column) => {
-      if ((column.name === 'creationDate') || (column.name === 'modificationDate')) {
-        return new Date(element[column.name]).toLocaleString('en-GB', options);  
+      if (['creationDate', 'modificationDate'].includes(column.name)) {
+        return new Date(element[column.name]).toLocaleString('en-GB', dateOptions);  
+
       } else if (column.name === 'size') {
         if (element.type === 'folder') {
-          if (element[column.name] === 1) {
-            return element[column.name] + ' item';
-          } else if ((element[column.name] === 0) || (element[column.name] > 1)) {
-            return element[column.name] + ' items';
-          } else {
-            return '';
-          }
+          return element[column.name] + (element[column.name] === 1 ? ' item' : ' items');
         } else if (element.type === 'file') {
-          return getParsedFileSize(element.size)
+          return commonUtils.parseFileSizeToString(element.size)
         }
+
       } else if (column.name === 'type') {
         return element[column.name].charAt(0).toUpperCase() + element[column.name].slice(1);
+
       } else {
         return element[column.name];
       }
     }
 
-    return (<>{
-      settingsData.listViewColumns.filter(c => c.isEnabled).map(column => 
-        <p data-testid={'element-column'}
-        className={`h-8 w-full py-1 px-2 my-auto 
-        shrink-0
-        pointer-events-none
-        text-left text-ellipsis overflow-hidden break-all whitespace-nowrap
-        ${(column.name === 'name') ? 'text-neutral-200' : 'text-neutral-200/60'}`}
-        style={{
-          width: column.width
-        }}
-        key={element.uuid + '-' + column.name}>
-          {parseColumnValue(column)}
-        </p>
-      )
-    }</>)
-  }
-
-  const getFileType = (file) => {
-    const ext = (file.name.split('.').pop()).toLowerCase();
-
-    if (extensions.text.includes(ext)) { return 'text' } 
-    else if (extensions.audio.includes(ext)) { return 'audio'} 
-    else if (extensions.image.includes(ext)) { return 'image'} 
-    else if (extensions.video.includes(ext)) { return 'video'  } 
-    else if (extensions.archive.includes(ext)) { return 'archive' } 
-    else if (extensions.app.includes(ext)) { return 'app' } 
-    else { return 'unknown' };
-  }
-
-  const getFileThumbnailLink = (file) => {
-    if (file.thumbnail) {
-      return 'data:image/png;base64,' + file.thumbnail;
-    } else if (file.imageBlob) {
-      return file.imageBlob;
-    }
+    return settingsData.listViewColumns.filter(c => c.isEnabled).map(column => ({
+      name: column.name,
+      value: parseColumnValue(column),
+      width: column.width
+    }))
   }
 
   const getElementBoxStyle = (element) => {
@@ -537,25 +499,7 @@ export default function ContentsPanel () {
     }
   }
 
-  const getFileGeneratedData = (element, index) => {
-    return {
-      type: getFileType(element),
-      thumbnailLink: getFileThumbnailLink(element),
-
-      boxStyle: getElementBoxStyle(element),
-      boxWidth: settingsData.gridElementWidth,
-      boxPadding: settingsData.gridElementWidth * 0.1,
-
-      rowStyle: getElementRowStyle(element),
-      rowHeight: settingsData.listElementHeight,
-      rowPadding: settingsData.listElementHeight * 0.1,
-      rowBackground: getElementRowBackground(index),
-      rowColumns: getElementRowColumns(element),
-      rowShouldUseSmallIcon: (settingsData.listElementHeight <= config.elements.listSmallIconsHeight),
-    }
-  }
-
-  const getFolderGeneratedData = (element, index) => {
+  const getElementGeneratedData = (element, index) => {
     return {
       boxStyle: getElementBoxStyle(element),
       boxWidth: settingsData.gridElementWidth,
@@ -570,84 +514,119 @@ export default function ContentsPanel () {
     }
   }
 
+  const getFileType = (file) => {
+    const ext = (file.name.split('.').pop()).toLowerCase();
+    const type = Object.keys(extensions).find(type => extensions[type].includes(ext))
+    return type;
+  }
+
+  const getFileThumbnailLink = (file) => {
+    if (file.thumbnail) {
+      return 'data:image/png;base64,' + file.thumbnail;
+    } else if (file.imageBlob) {
+      return file.imageBlob;
+    }
+  }
+
+  // ELEMENT PROPS
+  const getCommonElementProps = () => {
+    return {
+      viewMode: settingsData.viewMode,
+      handleOnElementMouseDown,
+      handleOnElementContextMenu,
+      handleOnElementDoubleClick
+    }
+  }
+
+  const getFileProps = (file, index) => {
+    return {
+      generatedData: {
+        type: getFileType(file),
+        thumbnailLink: getFileThumbnailLink(file),
+        ...getElementGeneratedData(file, index),
+      },
+      ...getCommonElementProps()
+    }
+  }
+
+  const getFolderProps = (folder, index) => {
+    return {
+      generatedData: getElementGeneratedData(folder, index),
+      ...getCommonElementProps()
+    }
+  }
   
   // RENDER
+  const getNewFolder = () => {
+    return {
+      uuid: '', 
+      name: '',
+      type: 'folder', 
+      parentUuid: currentFolderData.uuid 
+    }
+  }
+
   if (settingsData.viewMode === 'grid') {
     return (
-
       <Box className={`w-full
       shrink-0 grow
-      shadow-md
       overflow-hidden relative
       transition-opacity duration-300
       ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}
       onMouseDown={contextMenuContext.handleOnWrapMouseDown}
       onContextMenu={handleOnPanelContextMenu}>
 
-        <Box className={`w-full h-full
+        <Box id={'contents-box'}
+        className={`w-full h-full
         overflow-y-auto 
         scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent`}
         ref={contentsRef}>
 
-          <Box className={`w-full h-fit 
+          <Box id={'contents-box'}
+          className={`w-full h-fit 
           grid place-items-center`}
           style={{
-            gridTemplateColumns: `repeat(${gridGridColumnsCount}, minmax(0, 1fr))`
+            gridTemplateColumns: `repeat(${gridGridColumnsCount}, minmax(0, 1fr))`,
+            paddingTop: settingsData.gridElementWidth * 0.1,
+            paddingBottom: settingsData.gridElementWidth * 0.1
           }}>
 
-            {contextMenuContext.isCreatingFolder && (
+            {contextMenuContext.isCreatingFolder && 
               <FolderElement 
               index={0}
               folder={getNewFolder()}
-              generatedData={getFolderGeneratedData(getNewFolder(), 0)} 
-              viewMode={settingsData.viewMode}
-              handleOnElementMouseDown={handleOnElementMouseDown}
-              handleOnElementContextMenu={handleOnElementContextMenu}
-              handleOnElementDoubleClick={handleOnElementDoubleClick}/>
-            )}
+              { ...getFolderProps(getNewFolder(), 0) } />
+            }
       
-            {(currentFolderData.sortedElements.length > 0) && <>
-              {currentFolderData.sortedElements.map((element, index) => {
-                if (element.type === 'folder') {
-                  return (
-                    <FolderElement key={element.uuid}
-                    index={index}
-                    folder={element} 
-                    generatedData={getFolderGeneratedData(element, index)}
-                    viewMode={settingsData.viewMode}
-                    handleOnElementMouseDown={handleOnElementMouseDown}
-                    handleOnElementContextMenu={handleOnElementContextMenu}
-                    handleOnElementDoubleClick={handleOnElementDoubleClick}/>
-                  )
-                } else if (element.type === 'file') {
-                  return (
-                    <FileElement key={element.uuid} 
-                    index={index}
-                    file={element} 
-                    generatedData={getFileGeneratedData(element, index)}
-                    viewMode={settingsData.viewMode}
-                    handleOnElementMouseDown={handleOnElementMouseDown}
-                    handleOnElementContextMenu={handleOnElementContextMenu}
-                    handleOnElementDoubleClick={handleOnElementDoubleClick}/>
-                  )
-                }
-              })}
-            </>}
+            {currentFolderData.sortedElements.map((element, index) => {
+              if (element.type === 'folder') {
+                return (
+                  <FolderElement key={element.uuid}
+                  index={index}
+                  folder={element} 
+                  { ...getFolderProps(element, index) } />
+                )
+              } else if (element.type === 'file') {
+                return (
+                  <FileElement key={element.uuid} 
+                  index={index}
+                  file={element} 
+                  { ...getFileProps(element, index) } />
+                )
+              }
+            })} 
 
           </Box> 
 
         </Box> 
 
       </Box> 
-
     ) 
-
   } else if (settingsData.viewMode === 'list') {
     return (
   
       <Box className={`w-full h-full pt-8 
       shrink-0 grow
-      shadow-md
       overflow-hidden relative
       transition-opacity duration-300
       ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}
@@ -663,10 +642,12 @@ export default function ContentsPanel () {
         onScroll={handleOnScroll}
         onContextMenu={contextMenuContext.handleOnPanelContextMenu}>
           
-          
           <Box className={`w-full h-fit grid`}>
             {contextMenuContext.isCreatingFolder && (
-              <FolderElement isCreating={true}/>
+              <FolderElement 
+              index={0}
+              folder={getNewFolder()}
+              { ...getFolderProps(getNewFolder(), 0) } />
             )}
 
             {(currentFolderData.sortedElements.length) > 0 && <>
@@ -676,22 +657,14 @@ export default function ContentsPanel () {
                     <FolderElement key={element.uuid}
                     index={index}
                     folder={element} 
-                    generatedData={getFolderGeneratedData(element, index)}
-                    viewMode={settingsData.viewMode}
-                    handleOnElementMouseDown={handleOnElementMouseDown}
-                    handleOnElementContextMenu={handleOnElementContextMenu}
-                    handleOnElementDoubleClick={handleOnElementDoubleClick}/>
+                    { ...getFolderProps(element, index) } />
                   )
                 } else if (element.type === 'file') {
                   return (
                     <FileElement key={element.uuid} 
                     index={index}
                     file={element} 
-                    generatedData={getFileGeneratedData(element, index)}
-                    viewMode={settingsData.viewMode}
-                    handleOnElementMouseDown={handleOnElementMouseDown}
-                    handleOnElementContextMenu={handleOnElementContextMenu}
-                    handleOnElementDoubleClick={handleOnElementDoubleClick}/>
+                    { ...getFileProps(element, index) } />
                   )
                 }
               })}
@@ -701,10 +674,7 @@ export default function ContentsPanel () {
         </Box>  
 
       </Box>
-
     )  
-
   }
-  
 }
 
