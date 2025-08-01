@@ -2,6 +2,8 @@ import { useContext, useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 
+import { useWindowSize } from 'hooks/UseWindowSize';
+
 import { copyToClipboard, cutToClipboard, clearClipboard } from 'state/slices/clipboardSlice.jsx';
 import { copyElements, pasteElements, moveElements, removeElements, recoverElements, deleteElements } from 'state/slices/currentFolderSlice';
 import { addBookmarksOnClient, updateBookmarksOnClient, revertUpdateBookmarksOnClient, deleteBookmarksOnClient } from 'state/slices/bookmarkSlice';
@@ -26,6 +28,8 @@ import { env } from 'env.js'
 
 export default function ContextMenuWrap ({ children }) {
   const dispatch = useDispatch();
+
+  const windowSize = useWindowSize();
   
   const dropzoneContext = useContext(DropzoneContext);
 
@@ -338,28 +342,6 @@ export default function ContextMenuWrap ({ children }) {
       event.stopPropagation();
     }
   };
-
-  
-  // WINDOW SIZE
-  const getWindowSize = () => {
-    const {innerWidth, innerHeight} = window;
-    return {innerWidth, innerHeight};
-  }
-
-  const [windowSize, setWindowSize] = useState(getWindowSize());
-
-  useEffect(() => {
-    function handleWindowResize() {
-      setWindowSize(getWindowSize());
-    }
-
-    window.addEventListener('resize', handleWindowResize);
-
-    return () => {
-      window.removeEventListener('resize', handleWindowResize);
-    };
-  }, []);
-
 
   // DRAGGING
   const [draggingStartEvent, setDraggingStartEvent] = useState({});
