@@ -234,7 +234,7 @@ export default function SidePanel () {
           
         <Box className='w-full flex p-2
         block md:hidden
-        border-t border-sky-300/20 bg-gray-900'>
+        border-t border-sky-300/20'>
           <Box className='button-small mr-auto'
           onClick={closeSidePanel}>
             <JournalBookmark className='button-small-icon'/>
