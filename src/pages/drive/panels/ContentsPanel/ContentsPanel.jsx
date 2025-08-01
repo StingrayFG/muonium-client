@@ -23,7 +23,6 @@ import AlbumViewerModal from 'pages/drive/modals/AlbumViewerModal';
 import { ReactComponent as ChevronDown } from 'assets/icons/chevron-down.svg';
 
 import config from 'config.json';
-import extensions from 'extensions.json';
 
 
 export default function ContentsPanel () {
@@ -514,12 +513,6 @@ export default function ContentsPanel () {
     }
   }
 
-  const getFileType = (file) => {
-    const ext = (file.name.split('.').pop()).toLowerCase();
-    const type = Object.keys(extensions).find(type => extensions[type].includes(ext))
-    return type;
-  }
-
   const getFileThumbnailLink = (file) => {
     if (file.thumbnail) {
       return 'data:image/png;base64,' + file.thumbnail;
@@ -541,7 +534,7 @@ export default function ContentsPanel () {
   const getFileProps = (file, index) => {
     return {
       generatedData: {
-        type: getFileType(file),
+        type: commonUtils.getFileTypeFromName(file.name),
         thumbnailLink: getFileThumbnailLink(file),
         ...getElementGeneratedData(file, index),
       },

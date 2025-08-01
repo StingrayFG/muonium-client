@@ -1,3 +1,5 @@
+import extensions from 'extensions.json';
+
 
 const commonUtils = {
   parseFileSizeToString: (size) => { 
@@ -11,6 +13,12 @@ const commonUtils = {
       return size + ' B';
     } 
   },
+
+  getFileTypeFromName: (name) => {
+    const ext = (name.split('.').pop()).toLowerCase();
+    const type = Object.keys(extensions).find(type => extensions[type].includes(ext))
+    return type;
+  }
 }
 
 export default commonUtils; 
