@@ -73,7 +73,8 @@ export default function FileElement ({
               alt=''
               draggable={false} />
               :
-              <FileElementIcon file={file}/>
+              <FileElementIcon 
+              type={generatedData?.type}/>
             }
           </Box>
     

@@ -14,32 +14,41 @@ import { ReactComponent as FileAppBs } from 'assets/icons/elements/bootstrap/ter
 
 
 export default function FileElementIcon ({ type, isSmall=false }) { 
- 
-  const iconStyle = isSmall ? 
-  `element-icon-small
-  w-full h-full
-  transition-opacity
-  pointer-events-none select-none`
-  :
-  `element-icon
-  w-full h-full
-  transition-opacity
-  pointer-events-none select-none`;
 
-  if (isSmall) {
-    if (type === 'text') { return <FileTextBs data-testid='file-icon' className={iconStyle}/> } 
-    else if (type === 'audio') { return <FileMusicBs data-testid='file-icon' className={iconStyle}/> } 
-    else if (type === 'video') { return <FileVideoBs data-testid='file-icon' className={iconStyle}/>  } 
-    else if (type === 'archive') { return <FileArchiveBs data-testid='file-icon' className={iconStyle}/> } 
-    else if (type === 'app') { return <FileAppBs data-testid='file-icon' className={iconStyle}/> } 
-    else { return <FileEmptyBs data-testid='file-icon' className={iconStyle}/> }
-  } else {
-    if (type === 'text') { return <FileTextMu data-testid='file-icon' className={iconStyle}/> } 
-    else if (type === 'audio') { return <FileMusicMu data-testid='file-icon' className={iconStyle}/> } 
-    else if (type === 'video') { return <FileVideoMu data-testid='file-icon' className={iconStyle}/>  } 
-    else if (type === 'archive') { return <FileArchiveMu data-testid='file-icon' className={iconStyle}/> } 
-    else if (type === 'app') { return <FileAppMu data-testid='file-icon' className={iconStyle}/> } 
-    else { return <FileEmptyMu data-testid='file-icon' className={iconStyle}/> }
+  const commonProps = {
+    className: isSmall ? 
+    `element-icon-small
+    w-full h-full
+    transition-opacity
+    pointer-events-none select-none`
+    :
+    `element-icon
+    w-full h-full
+    transition-opacity
+    pointer-events-none select-none`,
+    'data-testid': 'file-icon'
   }
 
+  const icons = isSmall ? 
+  {
+    'text': FileTextBs,
+    'audio': FileMusicBs,
+    'video': FileVideoBs,
+    'archive': FileArchiveBs,
+    'app': FileAppBs,
+    'unknown' : FileEmptyBs
+  }
+  :
+  {
+    'text': FileTextMu,
+    'audio': FileMusicMu,
+    'video': FileVideoMu,
+    'archive': FileArchiveMu,
+    'app': FileAppMu,
+    'unknown' : FileEmptyMu
+  }
+  
+  const icon = { icon: icons[type] };
+  
+  return icon.icon ? <icon.icon {...commonProps}/> : <icons.unknown {...commonProps}/>
 }

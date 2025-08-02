@@ -5,12 +5,10 @@ import { ReactComponent as Upload } from 'assets/icons/upload.svg'
 import { ReactComponent as Download } from 'assets/icons/download.svg'
 import { ReactComponent as FilePlus } from 'assets/icons/file-plus.svg'
 import { ReactComponent as FileX } from 'assets/icons/file-x.svg'
-
 import { ReactComponent as ClipboardMinus } from 'assets/icons/clipboard2-minus.svg'
 import { ReactComponent as Files } from 'assets/icons/files.svg'
 import { ReactComponent as Scissors } from 'assets/icons/scissors.svg'
 import { ReactComponent as Pencil } from 'assets/icons/pencil.svg'
-
 import { ReactComponent as Trash } from 'assets/icons/trash.svg'
 import { ReactComponent as ArrowClockwise } from 'assets/icons/arrow-clockwise.svg'
 
@@ -21,46 +19,46 @@ import CustomCheckbox from 'components/checkbox/CustomCheckbox';
 
 export default function MenuOptionElement ({ option }) {
 
-  const iconStyle = 'h-4 w-4 mt-[8px]';
-
-  const icon = option.icon;
-
-  const getIcon = () => {
-    if (icon === 'upload') { return <Upload className={iconStyle}/> } 
-    else if (icon === 'download') { return <Download className={iconStyle}/> }
-    else if (icon === 'new-folder') { return <FilePlus className={iconStyle}/> } 
-
-    else if (icon === 'add-bookmark') { return <FilePlus className={iconStyle}/> } 
-    else if (icon === 'remove-bookmark') { return <FileX className={iconStyle}/> }
-
-    else if (icon === 'copy') { return <Files className={iconStyle}/> }
-    else if (icon === 'cut') { return <Scissors className={iconStyle}/> }
-    else if (icon === 'paste') { return <ClipboardMinus className={iconStyle}/> } 
-    else if (icon === 'rename') { return <Pencil className={iconStyle}/> }
-
-    else if (icon === 'trash') { return <Trash className={iconStyle}/> }
-    else if (icon === 'recover') { return <ArrowClockwise className={iconStyle}/> }
-
-
-    else if (icon === 'settings') { return <Gear className={iconStyle}/> }
-
-    else if (icon === 'checkbox-on') { return <CustomCheckbox defaultValue={true} isContextMenuMode={true}/> }
-    else if (icon === 'checkbox-off') { return <CustomCheckbox defaultValue={false} isContextMenuMode={true}/> }
-
-
-    else { return <Box className={iconStyle}/> } 
+  const commonProps = {
+    className: 'h-4 w-4 mt-2'
   }
 
+  const icons = {
+    'upload': Upload,
+    'download': Download,
+
+    'new-folder': FilePlus,
+
+    'add-bookmark': FilePlus,
+    'remove-bookmark': FileX,
+
+    'copy': Files,
+    'cut': Scissors,
+    'paste': ClipboardMinus,
+    'rename': Pencil,
+
+    'trash': Trash,
+    'recover': ArrowClockwise,
+
+    'settings': Gear,
+
+    'unknown': Box,
+
+    'checkbox-on': () => CustomCheckbox({ value: true, isSmall: true }),
+    'checkbox-off': () => CustomCheckbox({ value: false, isSmall: true }),
+  }
+
+  const icon = { icon: icons[option.icon] };
 
   return (
-    <button data-testid='context-menu-option' 
+    <Box data-testid='context-menu-option' 
     className={`w-full h-8 px-2 flex 
     button-menu
     active:button-menu-active`}
     onClick={option.handleOnClick}>
 
       <Box className='shrink-0'>
-        {getIcon()}
+        {icon.icon ? <icon.icon {...commonProps}/>: <icons.unknown {...commonProps}/>}
       </Box>
 
       <p className='ml-2 place-self-center
@@ -68,6 +66,6 @@ export default function MenuOptionElement ({ option }) {
         {option.text}
       </p>
 
-    </button> 
+    </Box> 
   );
 }
