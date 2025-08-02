@@ -53,8 +53,8 @@ export default function SettingsModal ({ }) {
 
       <Box className='flex'>
         <CustomCheckbox 
-        defaultValue={settingsData.sidePanelIsEnabled}
-        setMenuValue={changeSidePanelIsEnabled}
+        value={settingsData.sidePanelIsEnabled}
+        setValue={changeSidePanelIsEnabled}
         />
         <p className='ml-2 py-1'>{'Show side panel'}</p>
       </Box>

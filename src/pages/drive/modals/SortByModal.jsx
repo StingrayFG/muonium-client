@@ -50,16 +50,16 @@ export default function SettingsModal ({ }) {
       
       <Box className='h-8 flex mb-6'>
         <CustomCheckbox 
-        defaultValue={settingsData.sidePanelIsEnabled}
-        setMenuValue={changeSidePanelIsEnabled}
+        value={settingsData.sidePanelIsEnabled}
+        setValue={changeSidePanelIsEnabled}
         />
         <p className='ml-2'>{'Show side panel'}</p>
       </Box>
       
       <Box className='flex mb-6'>
         <CustomCheckbox 
-        defaultValue={settingsData.sidePanelIsOverlayMode}
-        setMenuValue={changeSidePanelIsOverlayMode}
+        value={settingsData.sidePanelIsOverlayMode}
+        setValue={changeSidePanelIsOverlayMode}
         />
         <p className='ml-2'>{'Show side panel on top of folder contents'}</p>
       </Box>
