@@ -117,20 +117,20 @@ export default function DrivePanels ({ folderUuid }) {
             <ContextMenuWrap>
               <ModalWrap>
                 <OverlayWrap>
-            
-                  <TopPanel />   
-                  <Box className={`w-full h-full
-                  flex overflow-hidden`}>
-                    
-                    <SidePanel />
 
-                    <Box className='w-full h-full
-                    grid grid-rows-[1fr_max-content] overflow-hidden'>
-                      <ContentsPanel />   
-                      <BottomPanel />
+                  <Box className='w-full h-dvh grid grid-rows-[max-content_1fr] overflow-hidden'>
+                    <TopPanel />   
+                    <Box className={`w-full h-full
+                    flex overflow-hidden`}>
+                      <SidePanel />
+                      <Box className='w-full h-full
+                      grid grid-rows-[1fr_max-content] overflow-hidden'>
+                        <ContentsPanel />   
+                        <BottomPanel />
+                      </Box>
                     </Box>
                   </Box>
-                  
+                       
                 </OverlayWrap>
               </ModalWrap>
             </ContextMenuWrap>
