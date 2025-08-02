@@ -46,14 +46,6 @@ export default function BottomPanel () {
 
 
   // HANDLERS
-  const handleOnSliderChange = (event, value) => {
-    if (settingsData.viewMode === 'grid') {
-      dispatch(setGridElementWidth(value));
-    } else if (settingsData.viewMode === 'list') {
-      dispatch(setListElementHeight(value));
-    } 
-  }
-
   const handleSwitchSidePanel = () => {
     drivePageContext.openSidePanel(!drivePageContext.isSidePanelOpen)
     //dispatch(setSidePanelIsEnabled(!settingsData.sidePanelIsEnabled))
@@ -155,56 +147,61 @@ export default function BottomPanel () {
       <SelectionPanel />
 
       {/* Bottom panel */}
-      <Box className={`w-full h-12 px-2 py-2 absolute bottom-0
-      flex
-      transition-all duration-300
+      <Box className={`w-full absolute bottom-0
       bg-gray-950/60 border-t border-sky-300/20`}>
 
-        {isOnMobile &&
-          <Box className='button-small mr-auto'
-          onClick={handleSwitchSidePanel}>
-            <LayoutSidebar className='button-small-icon'/>
-            <CaretRightFill className='button-small-icon -ml-2 -mr-1'/>
-          </Box>
-        }
+        <Box className={`w-full h-12 px-2 py-2
+        flex
+        animate-fadein-custom`}>
 
-        {!isOnMobile && 
-          <Box className='flex mr-auto'>
-            <p className='my-auto'>
-              {currentFolderData.folders.length}
-            </p>
+          {isOnMobile &&
+            <Box className='button-small mr-auto'
+            onClick={handleSwitchSidePanel}>
+              <LayoutSidebar className='button-small-icon'/>
+              <CaretRightFill className='button-small-icon -ml-2 -mr-1'/>
+            </Box>
+          }
 
-            <FolderBs className='h-4 w-4 my-auto ml-1'/>
+          {!isOnMobile && 
+            <Box className={`flex mr-auto
+            ${currentFolderData.uuid ? 'opacity-100' : 'opacity-0'}`}>
+              <p className='my-auto'>
+                {currentFolderData.folders.length}
+              </p>
 
-            <p className='my-auto'>
-              {','}
-            </p>
+              <FolderBs className='h-4 w-4 my-auto ml-1'/>
 
-            <p className='my-auto ml-1'>
-              {currentFolderData.files.length}
-            </p>
+              <p className='my-auto'>
+                {','}
+              </p>
 
-            <FileEmptyBs className='h-4 w-4 my-auto ml-1'/> 
-          </Box>
-        }
-        
-        <Box className='separator-vertical' />
+              <p className='my-auto ml-1'>
+                {currentFolderData.files.length}
+              </p>
 
-        <Box className=''>
-          {getZoomBox()}
-        </Box>
-
-        <Box className='separator-vertical' />
-
-        <Box className=''>
-          {getDiskBox()}
-        </Box>
-
-        <Box className='separator-vertical' />
+              <FileEmptyBs className='h-4 w-4 my-auto ml-1'/> 
+            </Box>
+          }
           
-        <Box className='button-small'
-        onClick={dropzoneContext.open}>
-          <Upload className='button-small-icon'/>
+          <Box className='separator-vertical' />
+
+          <Box className=''>
+            {getZoomBox()}
+          </Box>
+
+          <Box className='separator-vertical' />
+
+          <Box className=''>
+            {getDiskBox()}
+          </Box>
+
+          <Box className='separator-vertical' />
+            
+          <Box className='button-small'
+          onClick={dropzoneContext.open}>
+            <Upload className='button-small-icon'/>
+          </Box>
+
         </Box>
 
       </Box>
