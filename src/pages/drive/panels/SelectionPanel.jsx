@@ -13,6 +13,7 @@ import { ReactComponent as Files } from 'assets/icons/files.svg';
 import { ReactComponent as XLg } from 'assets/icons/x-lg.svg';
 import { ReactComponent as Trash } from 'assets/icons/trash.svg';
 import { ReactComponent as ClipboardMinus } from 'assets/icons/clipboard2-minus.svg';
+import { ReactComponent as ArrowClockwise } from 'assets/icons/arrow-clockwise.svg'
 import { ReactComponent as FolderBs } from 'assets/icons/elements/bootstrap/folder2.svg';
 import { ReactComponent as FileEmptyBs } from 'assets/icons/elements/bootstrap/file-earmark.svg';
 
@@ -21,6 +22,7 @@ export default function SelectionPanel () {
   const dispatch = useDispatch();
 
   const clipboardData = useSelector(state => state.clipboard);
+  const currentFolderData = useSelector(state => state.currentFolder)
 
   const contextMenuContext = useContext(ContextMenuContext);
 
@@ -46,12 +48,9 @@ export default function SelectionPanel () {
 
 
   // GETS
-  const getPanelStyles = () => {
-    if ((contextMenuContext.selectedElements.length > 0) || (clipboardData.elements.length > 0)) {
-      return ' h-12'
-    } else {
-      return ' h-0'
-    }
+  const getIsPanelActive = () => {
+    return (contextMenuContext.selectedElements.filter(e => ['folder', 'file'].includes(e.type)).length > 0) ||
+    (clipboardData.elements.filter(e => ['folder', 'file'].includes(e.type)).length > 0);
   };
 
   const getIsClipboardModeActive = () => {
@@ -60,12 +59,78 @@ export default function SelectionPanel () {
 
   const getClipboardText = () => {
     if (usedClipboardMode === 'cut') {
-      return 'Cut'
+      return 'Cut';
     } else if (usedClipboardMode === 'copy') {
-      return 'Copy  '
+      return 'Copy';
     } 
   };
 
+  const getSelectionButtons = () => {
+    if (currentFolderData.uuid !== 'trash') {
+      return (<Box className='flex gap-2 ml-auto'>
+        <Box className={`button-small
+        ${selectedFolderCount > 0 ? 'button-small-inactive' : ''}`}
+        onClick={contextMenuContext.copySelectedElements}>
+          <Files className='button-small-icon'/>
+        </Box>
+
+        <Box className={`button-small`}
+        onClick={contextMenuContext.cutSelectedElements}>
+          <Scissors className='button-small-icon'/>
+        </Box>
+        
+        <Box className={`button-small`}
+        onClick={contextMenuContext.removeSelectedElements}>
+          <Trash className='button-small-icon'/>
+        </Box>
+
+        <Box className={`button-small`}
+        onClick={contextMenuContext.clearSelectedElements}>
+          <XLg className='button-small-icon'/>
+        </Box>
+      </Box>);
+    } else {
+      return (<Box className='flex gap-2'>
+        <Box className={`button-small`}
+        onClick={contextMenuContext.recoverSelectedElements}>
+          <ArrowClockwise className='button-small-icon'/>
+        </Box>
+
+        <Box className={`button-small`}
+        onClick={() => dispatch(clearClipboard())}>
+          <XLg className='button-small-icon'/>
+        </Box>
+      </Box>);
+    }
+  }
+
+  const getClipboardButtons = () => {
+    if (currentFolderData.uuid !== 'trash') {
+      return (<Box className='flex gap-2'>
+        <Box className={`button-small`}
+        onClick={contextMenuContext.pasteSelectedElements}>
+          <ClipboardMinus className='button-small-icon'/>
+        </Box>
+
+        <Box className={`button-small`}
+        onClick={() => dispatch(clearClipboard())}>
+          <XLg className='button-small-icon'/>
+        </Box>
+      </Box>);
+    } else {
+      return (<Box className='flex gap-2'>
+        <Box className={`button-small button-small-inactive`}
+        onClick={contextMenuContext.pasteSelectedElements}>
+          <ClipboardMinus className='button-small-icon'/>
+        </Box>
+
+        <Box className={`button-small`}
+        onClick={() => dispatch(clearClipboard())}>
+          <XLg className='button-small-icon'/>
+        </Box>
+      </Box>);
+    }
+  }
 
   // RENDER
   return (
@@ -73,14 +138,14 @@ export default function SelectionPanel () {
     relative overflow-hidden
     bg-sky-400/20
     transition-all duration-300
-    ${getPanelStyles()}`}>
+    ${getIsPanelActive() ? 'h-12' : 'h-0'}`}>
 
       {/* Selection mode */}
       <Box className={`absolute w-full h-12 px-2 py-2
       transition-all duration-300
       flex
       ${getIsClipboardModeActive() ? '-bottom-12' : 'bottom-0'}`}>
-        <Box className='flex'>
+        <Box className='flex mr-auto'>
           <p className='my-auto '>
             {'Select'}
           </p>
@@ -102,29 +167,7 @@ export default function SelectionPanel () {
           <FileEmptyBs className='h-4 w-4 my-auto ml-1'/> 
         </Box>
 
-        <Box className='flex gap-2 ml-auto'>
-
-          <Box className={`button-small
-          ${selectedFolderCount > 0 ? 'button-small-inactive' : ''}`}
-          onClick={contextMenuContext.copySelectedElements}>
-            <Files className='button-small-icon'/>
-          </Box>
-
-          <Box className={`button-small ml-auto`}
-          onClick={contextMenuContext.cutSelectedElements}>
-            <Scissors className='button-small-icon'/>
-          </Box>
-          
-          <Box className={`button-small`}
-          onClick={contextMenuContext.removeSelectedElements}>
-            <Trash className='button-small-icon'/>
-          </Box>
-
-          <Box className={`button-small`}
-          onClick={contextMenuContext.clearSelectedElements}>
-            <XLg className='button-small-icon'/>
-          </Box>
-        </Box>
+        {getSelectionButtons()}
 
       </Box>
 
@@ -133,7 +176,7 @@ export default function SelectionPanel () {
       transition-all duration-300
       flex
       ${getIsClipboardModeActive() ? 'top-0' : '-top-12'}`}>
-        <Box className='flex'>
+        <Box className='flex mr-auto'>
           <p className='my-auto'>
             {getClipboardText()}
           </p>
@@ -155,17 +198,7 @@ export default function SelectionPanel () {
           <FileEmptyBs className='h-4 w-4 my-auto ml-1'/> 
         </Box>
 
-        <Box className='flex gap-2 ml-auto'>
-          <Box className={`button-small`}
-          onClick={contextMenuContext.pasteSelectedElements}>
-            <ClipboardMinus className='button-small-icon'/>
-          </Box>
-
-          <Box className={`button-small`}
-          onClick={() => dispatch(clearClipboard())}>
-            <XLg className='button-small-icon'/>
-          </Box>
-        </Box>
+        {getClipboardButtons()}
 
       </Box>
       
