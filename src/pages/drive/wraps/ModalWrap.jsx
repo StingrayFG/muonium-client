@@ -18,8 +18,7 @@ export default function ModalWrap ({ children }) {
       setAwaitingOpenModal({ 
         isOpen: true, 
         component, 
-        doesCloseOnClickOutside: options.doesCloseOnClickOutside ? options.doesCloseOnClickOutside : false, 
-        hasCloseButton: options.hasCloseButton ? options.hasCloseButton : false });
+      });
     }
   }
   useEffect(() => {
@@ -35,8 +34,7 @@ export default function ModalWrap ({ children }) {
     setAwaitingOpenNextModal({ 
       isOpen: true, 
       component, 
-      doesCloseOnClickOutside: options.doesCloseOnClickOutside ? options.doesCloseOnClickOutside : false, 
-      hasCloseButton: options.hasCloseButton ? options.hasCloseButton : false });
+    });
   }
   useEffect(() => {
     if (Object.keys(awaitingOpenNextModal).length > 0) {
@@ -136,18 +134,6 @@ export default function ModalWrap ({ children }) {
 
 
   // OTHER
-  const closeOnButton = () => {
-    if (getTopModal().hasCloseButton) {
-      closeNextModal();
-    }
-  }
-
-  const closeOnClickOutside = (event) => {
-    if ((getTopModal().doesCloseOnClickOutside) && (event.currentTarget === event.target)) {
-      closeNextModal();
-    }
-  }
-
   const getTopModal = () => {
     if (modalStates.length > 0) {
       return modalStates[modalStates.length - 1];
@@ -173,8 +159,7 @@ export default function ModalWrap ({ children }) {
     <ModalContext.Provider value={{ 
       openModal, openNextModal, closeAllModals, closeNextModal, closeMultipleModals,
       modalStates,
-      getBottomModal, getTopModal, getIsVisible, 
-      closeOnClickOutside, closeOnButton
+      getBottomModal, getTopModal, getIsVisible
     }}>
 
       { children }
