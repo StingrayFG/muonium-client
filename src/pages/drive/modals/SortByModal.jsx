@@ -65,22 +65,22 @@ export default function SettingsModal ({ }) {
       </Box>
 
       <Box className='mt-4 grid'>
-        <button className={`h-8 px-2`}
+        <Box className={`h-8 px-2`}
         onClick={handleConfirm}>
           <p className={`transition-all duration-300`}>
             {'Confirm'}
           </p>   
-        </button>
+        </Box>
       </Box>
 
-      <button className='h-12 w-12 fixed top-0 right-0 grid place-content-center
+      <Box className='h-12 w-12 fixed top-0 right-0 grid place-content-center
       hover:opacity-50 hover:bg-transparent bg-transparent'
       onClick={handleClose}>
         <Box className='h-8 w-8 m-2 grid
         rounded-full bg-black/40'>
           <XLg className='w-5 h-5 place-self-center'/>
         </Box>      
-      </button>
+      </Box>
 
     </Box>
   )

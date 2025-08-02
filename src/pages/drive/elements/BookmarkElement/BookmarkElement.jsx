@@ -36,7 +36,7 @@ export default function BookmarkElement ({
   // RENDER
   if (bookmark) {
     return (
-      <button data-testid='bookmark-element'
+      <Box data-testid='bookmark-element'
       className={`w-full h-8 px-2 flex 
       animate-fadein-custom
       ${isSelected ? 'button-sidebar-selected' : 'button-sidebar'}`}
@@ -62,7 +62,7 @@ export default function BookmarkElement ({
           </p>
         </Box>
 
-      </button>
+      </Box>
     );
   } else {
     return null;
