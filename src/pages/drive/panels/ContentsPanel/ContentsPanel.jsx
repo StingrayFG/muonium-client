@@ -263,13 +263,21 @@ export default function ContentsPanel () {
     }
   }
 
+  const handleOpenFile = (element) => {
+    if (['image', 'video', 'audio'].includes(commonUtils.getFileTypeFromName(element.name)) && !element.isRemoved) {
+      modalContext.openModal(<AlbumViewerModal 
+      initialFile={element}
+      allFiles={currentFolderData.sortedElements
+      .filter(e => e.type === 'file')
+      .filter(e => [commonUtils.getFileTypeFromName(element.name)].includes(commonUtils.getFileTypeFromName(e.name)))}/>);
+    }
+  } 
+
   const handleOnElementMouseDown = (event, element, index) => {
     if (isOnMobile) { 
       if (contextMenuContext.selectedElements.length === 0) {
-        if ((element.type === 'file') && (element.thumbnail || element.imageBlob)) {
-          modalContext.openModal(<AlbumViewerModal 
-          initialFile={element}
-          allFiles={currentFolderData.sortedElements.filter(e => (e.thumbnail || e.imageBlob))}/>);
+        if (element.type === 'file') {
+          handleOpenFile(element);
         } else if ((element.type === 'folder') && !element.isRemoved) {
           dispatch(moveToNew({ uuid: element.uuid }));
         }
@@ -312,16 +320,10 @@ export default function ContentsPanel () {
   const handleOnElementDoubleClick = (event, element) => {
     if (!isOnMobile) {
       if (element.type === 'file') {
-        if (element.thumbnail || element.imageBlob) {
-          modalContext.openModal(<AlbumViewerModal 
-          initialFile={element}
-          allFiles={currentFolderData.sortedElements.filter(e => (e.thumbnail || e.imageBlob))}/>);
-        }
-      } else if (element.type === 'folder') {
-        if (!element.isRemoved) {
-          dispatch(moveToNew({ uuid: element.uuid }));
-          contextMenuContext.clearSelectedElements();
-        }
+        handleOpenFile(element);
+      } else if ((element.type === 'folder') && !element.isRemoved) {
+        dispatch(moveToNew({ uuid: element.uuid }));
+        contextMenuContext.clearSelectedElements();
       }
     } 
   };  
@@ -358,7 +360,7 @@ export default function ContentsPanel () {
     return (
       <Box className={`h-8 w-full absolute top-0 flex
       overflow-x-auto scrollbar-hidden
-      border-b border-sky-300/20 bg-gray-900/60`}
+      border-b border-sky-300/20 bg-neutral-950/60`}
       ref={headerRef}
       onContextMenu={contextMenuContext.handleColumnsContextMenuClick}>
 
@@ -516,8 +518,10 @@ export default function ContentsPanel () {
   const getFileThumbnailLink = (file) => {
     if (file.thumbnail) {
       return 'data:image/png;base64,' + file.thumbnail;
-    } else if (file.imageBlob) {
-      return file.imageBlob;
+    } else if (file.fileBlob && ['image'].includes(commonUtils.getFileTypeFromName(file.name))) {
+      return file.fileBlob;
+    } else {
+      return null;
     }
   }
 
@@ -628,14 +632,15 @@ export default function ContentsPanel () {
 
         {getHeaderRowColumns()}
 
-        <Box className={`w-full h-full
+        <Box id={'contents-box'}
+        className={`w-full h-full
         overflow-auto 
         scrollbar scrollbar-thumb-gray-700 scrollbar-track-transparent`}
         ref={contentsRef}
-        onScroll={handleOnScroll}
-        onContextMenu={contextMenuContext.handleOnPanelContextMenu}>
+        onScroll={handleOnScroll}>
           
-          <Box className={`w-full h-fit grid`}>
+          <Box id={'contents-box'}
+          className={`w-full h-fit grid`}>
             {contextMenuContext.isCreatingFolder && (
               <FolderElement 
               index={0}

@@ -19,7 +19,7 @@ const FileService = {
     }) 
   },    
 
-  handleGetImageLink: async (userData, driveData, fileData) => {
+  handleGetFileLink: async (userData, driveData, fileData) => {
     return new Promise( async function(resolve, reject) {  
       const headers = { 'Authorization': `Bearer ${userData.accessToken}` };
       const body = { userData, driveData, fileData };

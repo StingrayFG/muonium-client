@@ -15,7 +15,7 @@ export default function FileElement ({
   handleOnElementContextMenu,
   handleOnElementDoubleClick 
 }) {
-
+  console.log((generatedData.type === 'video') && generatedData)
   const contextMenuContext = useContext(ContextMenuContext);
 
   // HANDLERS

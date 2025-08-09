@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 
 export function useWindowSize () {
+  const windowInnerHeight = useRef(window.innerHeight);
+  const windowInnerWidth = useRef(window.innerWidth);
+
   const [windowSize, setWindowSize] = useState({
-    height: null,
-    width: null
+    height: windowInnerHeight.current,
+    width: windowInnerWidth.current,
   });
   
   useEffect(() => {

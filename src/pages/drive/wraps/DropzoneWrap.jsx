@@ -3,11 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { Box } from '@mui/material';
 
-import { env } from 'env.js'
-
 import { uploadElement } from 'state/slices/currentFolderSlice';
 
+import commonUtils from 'utils/commonUtils';
+
 import { DropzoneContext } from 'contexts/DropzoneContext';
+
+import { env } from 'env.js'
+import extensions from 'extensions.json';
 
 
 export default function DropzoneWrap ({ children }) {
@@ -46,8 +49,8 @@ export default function DropzoneWrap ({ children }) {
         parentUuid: currentFolderData.uuid
       };   
 
-      if (['png', 'webp', 'jpg', 'jpeg'].includes(file.name.split('.').pop())) {
-        newFile.imageBlob = URL.createObjectURL(file);
+      if (['image', 'video'].includes(commonUtils.getFileTypeFromName(newFile.name))) {
+        newFile.fileBlob = URL.createObjectURL(file);
       }
 
       dispatch(uploadElement({ userData, driveData, element: newFile, file }));
@@ -57,7 +60,7 @@ export default function DropzoneWrap ({ children }) {
 
   return (
     <DropzoneContext.Provider value={{ open }}>
-      <Box {...getRootProps()} className='w-full h-full'>
+      <Box {...getRootProps()}>
         <input {...getInputProps()} />
         { children }
       </Box>
